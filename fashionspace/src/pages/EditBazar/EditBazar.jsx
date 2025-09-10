@@ -127,9 +127,11 @@ const EditBazar = () => {
     return (
       <div className="edit-bazar">
         <div className="error-container">
+          <i className="bi bi-exclamation-triangle error-icon"></i>
           <h2>Bazar não encontrado</h2>
           <p>O bazar que você está tentando editar não existe ou foi removido.</p>
           <button className="btn btn-primary" onClick={() => navigate('/perfil')}>
+            <i className="bi bi-person-fill"></i>
             Voltar ao Perfil
           </button>
         </div>
@@ -141,7 +143,8 @@ const EditBazar = () => {
     <div className="edit-bazar">
       <div className="page-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          ← Voltar
+          <i className="bi bi-arrow-left"></i>
+          Voltar
         </button>
         <h1>Editar Bazar</h1>
         <p>Atualize as informações do seu bazar</p>
@@ -149,7 +152,10 @@ const EditBazar = () => {
 
       <form onSubmit={handleSubmit} className="bazar-form">
         <div className="form-section">
-          <h3>Informações Básicas</h3>
+          <h3>
+            <i className="bi bi-info-circle-fill"></i>
+            Informações Básicas
+          </h3>
           
           <div className="form-group">
             <label>Nome do Bazar *</label>
@@ -194,7 +200,10 @@ const EditBazar = () => {
           </div>
 
           <div className="form-group">
-            <label>Imagem do Bazar</label>
+            <label>
+              <i className="bi bi-image-fill"></i>
+              Imagem do Bazar
+            </label>
             <input
               type="file"
               accept="image/*"
@@ -210,7 +219,10 @@ const EditBazar = () => {
         </div>
 
         <div className="form-section">
-          <h3>Endereço</h3>
+          <h3>
+            <i className="bi bi-geo-alt-fill"></i>
+            Endereço
+          </h3>
           
           <div className="form-row">
             <div className="form-group">
@@ -283,7 +295,10 @@ const EditBazar = () => {
         </div>
 
         <div className="form-section">
-          <h3>Contato e Funcionamento</h3>
+          <h3>
+            <i className="bi bi-telephone-fill"></i>
+            Contato e Funcionamento
+          </h3>
           
           <div className="form-group">
             <label>Telefone *</label>
@@ -314,9 +329,11 @@ const EditBazar = () => {
 
         <div className="form-actions">
           <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>
+            <i className="bi bi-x-circle"></i>
             Cancelar
           </button>
           <button type="submit" className="btn btn-primary" disabled={loading}>
+            <i className="bi bi-check-circle-fill"></i>
             {loading ? 'Salvando...' : 'Salvar Alterações'}
           </button>
         </div>

@@ -1,32 +1,34 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useScrollAnimation } from '../../hooks/useScrollAnimation';
+import logoImage from '../../assets/Image.png';
 import './Sidebar.css';
 
-const Sidebar = ({ user }) => {
+const Sidebar = ({ user, visible }) => {
   const location = useLocation();
-  const [sidebarRef, isVisible] = useScrollAnimation();
 
   const menuItems = [
-    { path: '/', icon: '🏠', label: 'Início', gradient: 'from-blue-500 to-purple-600' },
-    { path: '/adicionar-bazar', icon: '➕', label: 'Adicionar Bazar', gradient: 'from-green-500 to-teal-600' },
-    { path: '/favoritos', icon: '❤️', label: 'Favoritos', gradient: 'from-pink-500 to-red-600' },
-    { path: '/perfil', icon: '👤', label: 'Perfil', gradient: 'from-indigo-500 to-blue-600' }
+    { path: '/', icon: 'bi-house-fill', label: 'Início' },
+    { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: 'Adicionar Bazar' },
+    { path: '/favoritos', icon: 'bi-heart-fill', label: 'Favoritos' },
+    { path: '/perfil', icon: 'bi-person-fill', label: 'Perfil' },
+    { path: '/assinatura', icon: 'bi-star-fill', label: 'Planos Premium' },
+    { path: '/ia-assistente', icon: 'bi-robot', label: 'IA Assistente' },
+    { path: '/suporte', icon: 'bi-headset', label: 'Suporte' },
+    { path: '/configuracoes', icon: 'bi-gear-fill', label: 'Configurações' }
   ];
 
   return (
-    <div 
-      ref={sidebarRef}
-      className={`sidebar ${isVisible ? 'visible' : ''}`}
-    >
+    <div className={`sidebar ${visible ? 'visible' : 'hidden'}`}>
       <div className="sidebar-header">
         <div className="logo">
-          <div className="logo-icon">👗</div>
+          <div className="logo-icon">
+            <img src={logoImage} alt="FashionSpace" />
+          </div>
           <h2>FashionSpace</h2>
         </div>
         <div className="user-welcome">
           <div className="user-avatar">
             <img 
-              src={`https://ui-avatars.com/api/?name=${user?.nome}&background=3b82f6&color=fff&size=40`}
+              src={`https://ui-avatars.com/api/?name=${user?.nome}&background=5f81a5&color=fff&size=40`}
               alt="Avatar"
             />
           </div>
@@ -46,7 +48,7 @@ const Sidebar = ({ user }) => {
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             <div className="nav-icon-wrapper">
-              <span className="nav-icon">{item.icon}</span>
+              <i className={`nav-icon ${item.icon}`}></i>
             </div>
             <span className="nav-label">{item.label}</span>
             <div className="nav-indicator"></div>

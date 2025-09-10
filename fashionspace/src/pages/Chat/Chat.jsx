@@ -33,10 +33,8 @@ const Chat = () => {
     if (foundBazar) {
       setBazar(foundBazar);
       
-      // Carregar mensagens salvas
       const savedMessages = JSON.parse(localStorage.getItem(`chat_${id}`) || '[]');
       if (savedMessages.length === 0) {
-        // Primeira mensagem automática
         const welcomeMessage = {
           id: Date.now(),
           text: autoResponses[0],
@@ -74,7 +72,6 @@ const Chat = () => {
     setNewMessage('');
     setIsTyping(true);
 
-    // Simular resposta automática
     setTimeout(() => {
       const randomResponse = autoResponses[Math.floor(Math.random() * autoResponses.length)];
       const bazarMessage = {
@@ -88,11 +85,9 @@ const Chat = () => {
       setMessages(finalMessages);
       setIsTyping(false);
       
-      // Salvar mensagens
       localStorage.setItem(`chat_${id}`, JSON.stringify(finalMessages));
     }, 1500);
 
-    // Salvar mensagem do usuário
     localStorage.setItem(`chat_${id}`, JSON.stringify(updatedMessages));
   };
 
@@ -113,6 +108,7 @@ const Chat = () => {
   if (!bazar) {
     return (
       <div className="chat-loading">
+        <i className="bi bi-arrow-clockwise loading-spinner"></i>
         <p>Carregando chat...</p>
       </div>
     );
@@ -122,7 +118,7 @@ const Chat = () => {
     <div className="chat-container">
       <div className="chat-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          ← Voltar
+          <i className="bi bi-arrow-left"></i>
         </button>
         
         <div className="chat-info">
@@ -133,7 +129,10 @@ const Chat = () => {
           />
           <div className="bazar-details">
             <h3>{bazar.nome}</h3>
-            <span className="online-status">🟢 Online</span>
+            <span className="online-status">
+              <i className="bi bi-circle-fill"></i>
+              Online
+            </span>
           </div>
         </div>
         
@@ -141,7 +140,7 @@ const Chat = () => {
           className="info-btn"
           onClick={() => navigate(`/bazar-detalhes/${id}`)}
         >
-          ℹ️
+          <i className="bi bi-info-circle-fill"></i>
         </button>
       </div>
 
@@ -188,7 +187,7 @@ const Chat = () => {
             disabled={!newMessage.trim()}
             className="send-btn"
           >
-            📤
+            <i className="bi bi-send-fill"></i>
           </button>
         </div>
       </div>

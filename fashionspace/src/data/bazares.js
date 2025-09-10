@@ -5,16 +5,12 @@ export const defaultBazares = [
     descricao: 'Peças únicas e autênticas dos anos 70, 80 e 90. Encontre tesouros vintage com história e estilo.',
     imagem: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500',
     categoria: 'Vintage',
-    endereco: {
-      cep: '01310-100',
-      rua: 'Rua Augusta',
-      numero: '1234',
-      bairro: 'Consolação',
-      cidade: 'São Paulo, SP'
-    },
+    endereco: { cep: '01310-100', rua: 'Rua Augusta', numero: '1234', bairro: 'Consolação', cidade: 'São Paulo, SP' },
     telefone: '(11) 99999-1234',
     horario: 'Seg-Sex: 9h-18h, Sáb: 9h-15h',
-    isDefault: true
+    isDefault: true,
+    avaliacao: 4.8,
+    totalAvaliacoes: 127
   },
   {
     id: 'default-2',
@@ -22,16 +18,12 @@ export const defaultBazares = [
     descricao: 'Marcas independentes com preços especiais. Apoie designers locais e encontre peças exclusivas.',
     imagem: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=500',
     categoria: 'Outlet',
-    endereco: {
-      cep: '22071-900',
-      rua: 'Rua Visconde de Pirajá',
-      numero: '567',
-      bairro: 'Ipanema',
-      cidade: 'Rio de Janeiro, RJ'
-    },
+    endereco: { cep: '22071-900', rua: 'Rua Visconde de Pirajá', numero: '567', bairro: 'Ipanema', cidade: 'Rio de Janeiro, RJ' },
     telefone: '(21) 98888-5678',
     horario: 'Seg-Dom: 10h-20h',
-    isDefault: true
+    isDefault: true,
+    avaliacao: 4.5,
+    totalAvaliacoes: 89
   },
   {
     id: 'default-3',
@@ -39,25 +31,177 @@ export const defaultBazares = [
     descricao: 'Peças artesanais únicas feitas à mão. Bolsas, acessórios e roupas com identidade brasileira.',
     imagem: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500',
     categoria: 'Artesanal',
-    endereco: {
-      cep: '40070-110',
-      rua: 'Largo do Pelourinho',
-      numero: '89',
-      bairro: 'Pelourinho',
-      cidade: 'Salvador, BA'
-    },
+    endereco: { cep: '40070-110', rua: 'Largo do Pelourinho', numero: '89', bairro: 'Pelourinho', cidade: 'Salvador, BA' },
     telefone: '(71) 97777-9012',
     horario: 'Ter-Dom: 8h-17h',
-    isDefault: true
+    isDefault: true,
+    avaliacao: 4.9,
+    totalAvaliacoes: 203
+  },
+  {
+    id: 'default-4',
+    nome: 'Luxo Fashion Store',
+    descricao: 'Peças de luxo e alta costura. Marcas internacionais e nacionais renomadas.',
+    imagem: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500',
+    categoria: 'Bazar de Luxo',
+    endereco: { cep: '04094-050', rua: 'Rua Oscar Freire', numero: '1200', bairro: 'Jardins', cidade: 'São Paulo, SP' },
+    telefone: '(11) 95555-0001',
+    horario: 'Seg-Sáb: 10h-20h',
+    isDefault: true,
+    avaliacao: 4.7,
+    totalAvaliacoes: 156
+  },
+  {
+    id: 'default-5',
+    nome: 'Sebo Cultural',
+    descricao: 'Livros raros, discos de vinil e peças vintage. Um tesouro cultural no coração da cidade.',
+    imagem: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500',
+    categoria: 'Sebo',
+    endereco: { cep: '30112-000', rua: 'Rua da Bahia', numero: '456', bairro: 'Centro', cidade: 'Belo Horizonte, MG' },
+    telefone: '(31) 94444-0002',
+    horario: 'Seg-Sex: 8h-18h, Sáb: 8h-14h',
+    isDefault: true,
+    avaliacao: 4.6,
+    totalAvaliacoes: 78
+  },
+  {
+    id: 'default-6',
+    nome: 'Kids Fashion',
+    descricao: 'Roupas infantis modernas e confortáveis. Do recém-nascido ao adolescente.',
+    imagem: 'https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=500',
+    categoria: 'Infantil',
+    endereco: { cep: '80010-000', rua: 'Rua XV de Novembro', numero: '789', bairro: 'Centro', cidade: 'Curitiba, PR' },
+    telefone: '(41) 93333-0003',
+    horario: 'Seg-Sáb: 9h-19h',
+    isDefault: true,
+    avaliacao: 4.4,
+    totalAvaliacoes: 92
+  },
+  {
+    id: 'default-7',
+    nome: 'Fitness Wear',
+    descricao: 'Roupas esportivas de alta performance. Para academia, corrida e esportes em geral.',
+    imagem: 'https://images.unsplash.com/photo-1506629905607-c28b47d3b6b0?w=500',
+    categoria: 'Fitness',
+    endereco: { cep: '60160-230', rua: 'Av. Beira Mar', numero: '321', bairro: 'Meireles', cidade: 'Fortaleza, CE' },
+    telefone: '(85) 92222-0004',
+    horario: 'Seg-Dom: 6h-22h',
+    isDefault: true,
+    avaliacao: 4.3,
+    totalAvaliacoes: 134
+  },
+  {
+    id: 'default-8',
+    nome: 'Vintage Collection',
+    descricao: 'Coleção exclusiva de peças vintage dos anos 50 aos 90. Autenticidade garantida.',
+    imagem: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500',
+    categoria: 'Vintage',
+    endereco: { cep: '90010-150', rua: 'Rua dos Andradas', numero: '654', bairro: 'Centro Histórico', cidade: 'Porto Alegre, RS' },
+    telefone: '(51) 91111-0005',
+    horario: 'Ter-Sáb: 10h-18h',
+    isDefault: true,
+    avaliacao: 4.8,
+    totalAvaliacoes: 167
+  },
+  {
+    id: 'default-9',
+    nome: 'Outlet Premium',
+    descricao: 'Marcas premium com até 70% de desconto. Qualidade e preço justo.',
+    imagem: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=500',
+    categoria: 'Outlet',
+    endereco: { cep: '70040-010', rua: 'SCS Quadra 2', numero: '100', bairro: 'Asa Sul', cidade: 'Brasília, DF' },
+    telefone: '(61) 90000-0006',
+    horario: 'Seg-Sáb: 10h-22h, Dom: 14h-20h',
+    isDefault: true,
+    avaliacao: 4.2,
+    totalAvaliacoes: 98
+  },
+  {
+    id: 'default-10',
+    nome: 'Arte & Moda',
+    descricao: 'Peças artesanais exclusivas criadas por artistas locais. Arte vestível.',
+    imagem: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500',
+    categoria: 'Artesanal',
+    endereco: { cep: '50030-230', rua: 'Rua do Bom Jesus', numero: '147', bairro: 'Recife Antigo', cidade: 'Recife, PE' },
+    telefone: '(81) 98888-0007',
+    horario: 'Qua-Dom: 9h-17h',
+    isDefault: true,
+    avaliacao: 4.7,
+    totalAvaliacoes: 145
+  },
+  {
+    id: 'default-11',
+    nome: 'Luxe Boutique',
+    descricao: 'Boutique de luxo com peças exclusivas de designers renomados.',
+    imagem: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500',
+    categoria: 'Bazar de Luxo',
+    endereco: { cep: '22071-030', rua: 'Rua Garcia D\'Ávila', numero: '234', bairro: 'Ipanema', cidade: 'Rio de Janeiro, RJ' },
+    telefone: '(21) 97777-0008',
+    horario: 'Seg-Sáb: 10h-20h',
+    isDefault: true,
+    avaliacao: 4.9,
+    totalAvaliacoes: 189
+  },
+  {
+    id: 'default-12',
+    nome: 'Livraria & Café',
+    descricao: 'Sebo com café integrado. Livros, revistas e um ambiente acolhedor.',
+    imagem: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500',
+    categoria: 'Sebo',
+    endereco: { cep: '01310-200', rua: 'Rua Augusta', numero: '2000', bairro: 'Consolação', cidade: 'São Paulo, SP' },
+    telefone: '(11) 96666-0009',
+    horario: 'Seg-Dom: 8h-22h',
+    isDefault: true,
+    avaliacao: 4.5,
+    totalAvaliacoes: 112
+  },
+  {
+    id: 'default-13',
+    nome: 'Baby & Kids',
+    descricao: 'Especializada em roupas para bebês e crianças. Conforto e segurança.',
+    imagem: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=500',
+    categoria: 'Infantil',
+    endereco: { cep: '88010-400', rua: 'Rua Felipe Schmidt', numero: '567', bairro: 'Centro', cidade: 'Florianópolis, SC' },
+    telefone: '(48) 95555-0010',
+    horario: 'Seg-Sáb: 9h-18h',
+    isDefault: true,
+    avaliacao: 4.6,
+    totalAvaliacoes: 87
+  },
+  {
+    id: 'default-14',
+    nome: 'Sport Zone',
+    descricao: 'Equipamentos e roupas esportivas para todos os esportes. Qualidade profissional.',
+    imagem: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500',
+    categoria: 'Fitness',
+    endereco: { cep: '69010-060', rua: 'Av. Eduardo Ribeiro', numero: '890', bairro: 'Centro', cidade: 'Manaus, AM' },
+    telefone: '(92) 94444-0011',
+    horario: 'Seg-Sáb: 7h-21h',
+    isDefault: true,
+    avaliacao: 4.1,
+    totalAvaliacoes: 76
+  },
+  {
+    id: 'default-15',
+    nome: 'Retro Fashion',
+    descricao: 'O melhor do vintage e retrô. Peças colecionáveis e tendências atemporais.',
+    imagem: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500',
+    categoria: 'Vintage',
+    endereco: { cep: '49010-050', rua: 'Rua João Pessoa', numero: '432', bairro: 'Centro', cidade: 'Aracaju, SE' },
+    telefone: '(79) 93333-0012',
+    horario: 'Ter-Sáb: 10h-19h',
+    isDefault: true,
+    avaliacao: 4.4,
+    totalAvaliacoes: 95
   }
 ];
 
 export const categorias = [
-  { id: 'luxo', nome: 'Bazar de Luxo', cor: '#8B5CF6' },
-  { id: 'sebo', nome: 'Sebo', cor: '#F59E0B' },
-  { id: 'vintage', nome: 'Vintage', cor: '#EF4444' },
-  { id: 'outlet', nome: 'Outlet', cor: '#10B981' },
-  { id: 'artesanal', nome: 'Artesanal', cor: '#F97316' },
-  { id: 'infantil', nome: 'Infantil', cor: '#EC4899' },
-  { id: 'fitness', nome: 'Fitness', cor: '#3B82F6' }
+  { id: 'luxo', nome: 'Bazar de Luxo', cor: '#0f2c47', icon: 'bi-gem' },
+  { id: 'sebo', nome: 'Sebo', cor: '#5f81a5', icon: 'bi-book' },
+  { id: 'vintage', nome: 'Vintage', cor: '#000000', icon: 'bi-clock-history' },
+  { id: 'outlet', nome: 'Outlet', cor: '#0f2c47', icon: 'bi-tag' },
+  { id: 'artesanal', nome: 'Artesanal', cor: '#5f81a5', icon: 'bi-palette' },
+  { id: 'infantil', nome: 'Infantil', cor: '#000000', icon: 'bi-balloon' },
+  { id: 'fitness', nome: 'Fitness', cor: '#0f2c47', icon: 'bi-lightning' }
 ];

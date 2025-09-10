@@ -31,13 +31,16 @@ const Favorites = () => {
 
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
-           { cor: '#6c757d', nome: categoria };
+           { cor: '#5f81a5', nome: categoria };
   };
 
   return (
     <div className="favorites">
       <div className="page-header">
-        <h1>❤️ Meus Favoritos</h1>
+        <h1>
+          <i className="bi bi-heart-fill"></i>
+          Meus Favoritos
+        </h1>
         <p>
           {bazaresFavoritos.length === 0 
             ? 'Você ainda não tem bazares favoritos' 
@@ -48,11 +51,12 @@ const Favorites = () => {
 
       {bazaresFavoritos.length === 0 ? (
         <div className="empty-favorites">
-          <div className="empty-icon">💔</div>
+          <i className="bi bi-heart empty-icon"></i>
           <h3>Nenhum favorito ainda</h3>
           <p>Explore os bazares e adicione seus favoritos para vê-los aqui!</p>
           <Link to="/" className="btn btn-primary">
-            🔍 Explorar Bazares
+            <i className="bi bi-search"></i>
+            Explorar Bazares
           </Link>
         </div>
       ) : (
@@ -69,7 +73,7 @@ const Favorites = () => {
                     onClick={() => removeFavorito(bazar.id)}
                     title="Remover dos favoritos"
                   >
-                    ❌
+                    <i className="bi bi-x-circle-fill"></i>
                   </button>
                 </div>
                 
@@ -88,15 +92,15 @@ const Favorites = () => {
                   
                   <div className="card-info">
                     <div className="info-item">
-                      <span className="icon">📍</span>
+                      <i className="bi bi-geo-alt-fill"></i>
                       <span>{bazar.endereco.cidade}</span>
                     </div>
                     <div className="info-item">
-                      <span className="icon">📞</span>
+                      <i className="bi bi-telephone-fill"></i>
                       <span>{bazar.telefone}</span>
                     </div>
                     <div className="info-item">
-                      <span className="icon">🕒</span>
+                      <i className="bi bi-clock-fill"></i>
                       <span>{bazar.horario}</span>
                     </div>
                   </div>
@@ -106,13 +110,15 @@ const Favorites = () => {
                       to={`/bazar-detalhes/${bazar.id}`} 
                       className="btn btn-primary"
                     >
+                      <i className="bi bi-eye-fill"></i>
                       Ver Detalhes
                     </Link>
                     <Link 
                       to={`/chat-bazar/${bazar.id}`} 
                       className="btn btn-secondary"
                     >
-                      💬 Chat
+                      <i className="bi bi-chat-dots-fill"></i>
+                      Chat
                     </Link>
                   </div>
                 </div>
@@ -125,10 +131,12 @@ const Favorites = () => {
       {bazaresFavoritos.length > 0 && (
         <div className="favorites-footer">
           <p className="footer-text">
-            💡 Dica: Clique no ❌ para remover um bazar dos favoritos
+            <i className="bi bi-lightbulb-fill"></i>
+            Dica: Clique no <i className="bi bi-x-circle-fill"></i> para remover um bazar dos favoritos
           </p>
           <Link to="/" className="btn btn-secondary">
-            🔍 Explorar Mais Bazares
+            <i className="bi bi-search"></i>
+            Explorar Mais Bazares
           </Link>
         </div>
       )}

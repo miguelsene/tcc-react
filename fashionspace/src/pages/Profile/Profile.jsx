@@ -32,7 +32,6 @@ const Profile = ({ user, setUser }) => {
       localStorage.setItem('fashionspace_bazares', JSON.stringify(updatedBazares));
       setUserBazares(updatedBazares.filter(bazar => bazar.criadoPor === user.id));
       
-      // Remover dos favoritos também
       const updatedFavoritos = favoritos.filter(id => id !== bazarId);
       localStorage.setItem('fashionspace_favoritos', JSON.stringify(updatedFavoritos));
       setFavoritos(updatedFavoritos);
@@ -41,7 +40,7 @@ const Profile = ({ user, setUser }) => {
 
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
-           { cor: '#6c757d', nome: categoria };
+           { cor: '#5f81a5', nome: categoria };
   };
 
   const formatDate = (dateString) => {
@@ -53,52 +52,69 @@ const Profile = ({ user, setUser }) => {
       <div className="profile-header">
         <div className="user-info">
           <img 
-            src={`https://ui-avatars.com/api/?name=${user.nome}&background=007bff&color=fff&size=80`}
+            src={`https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=80`}
             alt="Avatar"
             className="user-avatar-large"
           />
           <div className="user-details">
             <h1>{user.nome}</h1>
             <p className="user-email">{user.email}</p>
-            <span className="member-badge">👑 Membro desde {formatDate(user.dataCadastro)}</span>
+            <span className="member-badge">
+              <i className="bi bi-award-fill"></i>
+              Membro desde {formatDate(user.dataCadastro)}
+            </span>
           </div>
         </div>
         
         <button className="logout-btn" onClick={handleLogout}>
-          🚪 Sair da Conta
+          <i className="bi bi-box-arrow-right"></i>
+          Sair da Conta
         </button>
       </div>
 
       <div className="profile-stats">
         <div className="stat-card">
           <div className="stat-number">{userBazares.length}</div>
-          <div className="stat-label">Bazares Criados</div>
+          <div className="stat-label">
+            <i className="bi bi-shop"></i>
+            Bazares Criados
+          </div>
         </div>
         <div className="stat-card">
           <div className="stat-number">{favoritos.length}</div>
-          <div className="stat-label">Favoritos</div>
+          <div className="stat-label">
+            <i className="bi bi-heart-fill"></i>
+            Favoritos
+          </div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">⭐</div>
+          <div className="stat-number">
+            <i className="bi bi-star-fill"></i>
+          </div>
           <div className="stat-label">Membro Ativo</div>
         </div>
       </div>
 
       <div className="profile-section">
         <div className="section-header">
-          <h2>🏪 Meus Bazares</h2>
+          <h2>
+            <i className="bi bi-shop"></i>
+            Meus Bazares
+          </h2>
           <Link to="/adicionar-bazar" className="btn btn-primary">
-            ➕ Criar Novo Bazar
+            <i className="bi bi-plus-circle-fill"></i>
+            Criar Novo Bazar
           </Link>
         </div>
 
         {userBazares.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-icon">🏪</div>
+            <i className="bi bi-shop empty-icon"></i>
             <h3>Você ainda não criou nenhum bazar</h3>
             <p>Que tal compartilhar seu primeiro bazar com a comunidade?</p>
             <Link to="/adicionar-bazar" className="btn btn-primary">
-              ➕ Criar Primeiro Bazar
+              <i className="bi bi-plus-circle-fill"></i>
+              Criar Primeiro Bazar
             </Link>
           </div>
         ) : (
@@ -115,13 +131,15 @@ const Profile = ({ user, setUser }) => {
                         to={`/editar-bazar/${bazar.id}`}
                         className="overlay-btn edit-btn"
                       >
-                        ✏️ Editar
+                        <i className="bi bi-pencil-fill"></i>
+                        Editar
                       </Link>
                       <button 
                         onClick={() => deleteBazar(bazar.id)}
                         className="overlay-btn delete-btn"
                       >
-                        🗑️ Excluir
+                        <i className="bi bi-trash-fill"></i>
+                        Excluir
                       </button>
                     </div>
                   </div>
@@ -141,11 +159,11 @@ const Profile = ({ user, setUser }) => {
                     
                     <div className="card-info">
                       <div className="info-item">
-                        <span className="icon">📍</span>
+                        <i className="bi bi-geo-alt-fill"></i>
                         <span>{bazar.endereco.cidade}</span>
                       </div>
                       <div className="info-item">
-                        <span className="icon">📅</span>
+                        <i className="bi bi-calendar-fill"></i>
                         <span>Criado em {formatDate(bazar.dataCriacao)}</span>
                       </div>
                     </div>
@@ -155,13 +173,15 @@ const Profile = ({ user, setUser }) => {
                         to={`/bazar-detalhes/${bazar.id}`} 
                         className="btn btn-secondary"
                       >
-                        👁️ Visualizar
+                        <i className="bi bi-eye-fill"></i>
+                        Visualizar
                       </Link>
                       <Link 
                         to={`/editar-bazar/${bazar.id}`} 
                         className="btn btn-primary"
                       >
-                        ✏️ Editar
+                        <i className="bi bi-pencil-fill"></i>
+                        Editar
                       </Link>
                     </div>
                   </div>
@@ -174,21 +194,29 @@ const Profile = ({ user, setUser }) => {
 
       <div className="profile-actions">
         <Link to="/favoritos" className="action-card">
-          <div className="action-icon">❤️</div>
+          <div className="action-icon">
+            <i className="bi bi-heart-fill"></i>
+          </div>
           <div className="action-content">
             <h3>Meus Favoritos</h3>
             <p>{favoritos.length} bazares favoritados</p>
           </div>
-          <div className="action-arrow">→</div>
+          <div className="action-arrow">
+            <i className="bi bi-arrow-right"></i>
+          </div>
         </Link>
         
         <Link to="/" className="action-card">
-          <div className="action-icon">🔍</div>
+          <div className="action-icon">
+            <i className="bi bi-search"></i>
+          </div>
           <div className="action-content">
             <h3>Explorar Bazares</h3>
             <p>Descubra novos bazares</p>
           </div>
-          <div className="action-arrow">→</div>
+          <div className="action-arrow">
+            <i className="bi bi-arrow-right"></i>
+          </div>
         </Link>
       </div>
     </div>

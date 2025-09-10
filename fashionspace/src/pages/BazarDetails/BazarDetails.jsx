@@ -47,7 +47,6 @@ const BazarDetails = () => {
         console.log('Erro ao compartilhar:', error);
       }
     } else {
-      // Fallback para clipboard
       navigator.clipboard.writeText(window.location.href);
       alert('Link copiado para a área de transferência!');
     }
@@ -61,13 +60,14 @@ const BazarDetails = () => {
 
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
-           { cor: '#6c757d', nome: categoria };
+           { cor: '#5f81a5', nome: categoria };
   };
 
   if (loading) {
     return (
       <div className="loading-container">
-        <div className="loading-spinner">Carregando...</div>
+        <i className="bi bi-arrow-clockwise loading-spinner"></i>
+        <p>Carregando...</p>
       </div>
     );
   }
@@ -75,9 +75,11 @@ const BazarDetails = () => {
   if (!bazar) {
     return (
       <div className="error-container">
+        <i className="bi bi-exclamation-triangle error-icon"></i>
         <h2>Bazar não encontrado</h2>
         <p>O bazar que você está procurando não existe ou foi removido.</p>
         <button className="btn btn-primary" onClick={() => navigate('/')}>
+          <i className="bi bi-house-fill"></i>
           Voltar ao Início
         </button>
       </div>
@@ -90,7 +92,8 @@ const BazarDetails = () => {
     <div className="bazar-details">
       <div className="details-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          ← Voltar
+          <i className="bi bi-arrow-left"></i>
+          Voltar
         </button>
         
         <div className="header-actions">
@@ -98,10 +101,12 @@ const BazarDetails = () => {
             className={`favorite-btn ${isFavorito ? 'active' : ''}`}
             onClick={toggleFavorito}
           >
-            {isFavorito ? '❤️ Favoritado' : '🤍 Favoritar'}
+            <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
+            {isFavorito ? 'Favoritado' : 'Favoritar'}
           </button>
           <button className="share-btn" onClick={handleShare}>
-            📤 Compartilhar
+            <i className="bi bi-share-fill"></i>
+            Compartilhar
           </button>
         </div>
       </div>
@@ -129,13 +134,15 @@ const BazarDetails = () => {
               to={`/chat-bazar/${bazar.id}`} 
               className="btn btn-primary"
             >
-              💬 Enviar Mensagem
+              <i className="bi bi-chat-dots-fill"></i>
+              Enviar Mensagem
             </Link>
             <button 
               className="btn btn-secondary" 
               onClick={handleDirections}
             >
-              📍 Como Chegar
+              <i className="bi bi-geo-alt-fill"></i>
+              Como Chegar
             </button>
           </div>
         </div>
@@ -143,7 +150,10 @@ const BazarDetails = () => {
 
       <div className="details-content">
         <div className="info-section">
-          <h3>📍 Localização</h3>
+          <h3>
+            <i className="bi bi-geo-alt-fill"></i>
+            Localização
+          </h3>
           <div className="location-info">
             <p><strong>Endereço:</strong></p>
             <p>{bazar.endereco.rua}, {bazar.endereco.numero}</p>
@@ -153,7 +163,10 @@ const BazarDetails = () => {
         </div>
 
         <div className="info-section">
-          <h3>📞 Contato</h3>
+          <h3>
+            <i className="bi bi-telephone-fill"></i>
+            Contato
+          </h3>
           <div className="contact-info">
             <p><strong>Telefone:</strong></p>
             <a href={`tel:${bazar.telefone}`} className="contact-link">
@@ -163,7 +176,10 @@ const BazarDetails = () => {
         </div>
 
         <div className="info-section">
-          <h3>🕒 Horário de Funcionamento</h3>
+          <h3>
+            <i className="bi bi-clock-fill"></i>
+            Horário de Funcionamento
+          </h3>
           <div className="schedule-info">
             <p>{bazar.horario}</p>
           </div>
@@ -171,7 +187,10 @@ const BazarDetails = () => {
 
         {bazar.isDefault && (
           <div className="info-section">
-            <h3>ℹ️ Informações Adicionais</h3>
+            <h3>
+              <i className="bi bi-info-circle-fill"></i>
+              Informações Adicionais
+            </h3>
             <div className="additional-info">
               <p>Este é um bazar parceiro da plataforma FashionSpace.</p>
               <p>Entre em contato para mais informações sobre produtos e disponibilidade.</p>
@@ -185,13 +204,15 @@ const BazarDetails = () => {
           to={`/chat-bazar/${bazar.id}`} 
           className="btn btn-primary btn-large"
         >
-          💬 Iniciar Conversa
+          <i className="bi bi-chat-dots-fill"></i>
+          Iniciar Conversa
         </Link>
         <button 
           className="btn btn-secondary btn-large" 
           onClick={handleDirections}
         >
-          🗺️ Ver no Mapa
+          <i className="bi bi-map-fill"></i>
+          Ver no Mapa
         </button>
       </div>
     </div>
