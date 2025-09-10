@@ -10,7 +10,7 @@ const Sidebar = ({ user, visible }) => {
     { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: 'Adicionar Bazar' },
     { path: '/favoritos', icon: 'bi-heart-fill', label: 'Favoritos' },
     { path: '/perfil', icon: 'bi-person-fill', label: 'Perfil' },
-    { path: '/assinatura', icon: 'bi-star-fill', label: 'Planos Premium' },
+    { path: '/assinatura', icon: 'bi-star-fill', label: 'Assinaturas' },
     { path: '/ia-assistente', icon: 'bi-robot', label: 'IA Assistente' },
     { path: '/suporte', icon: 'bi-headset', label: 'Suporte' },
     { path: '/configuracoes', icon: 'bi-gear-fill', label: 'Configurações' }
@@ -46,6 +46,7 @@ const Sidebar = ({ user, visible }) => {
             to={item.path}
             className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
             style={{ animationDelay: `${index * 0.1}s` }}
+            onClick={() => console.log(`Navegando para: ${item.path}`)}
           >
             <div className="nav-icon-wrapper">
               <i className={`nav-icon ${item.icon}`}></i>

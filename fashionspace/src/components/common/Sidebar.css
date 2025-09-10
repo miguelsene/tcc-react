@@ -141,14 +141,15 @@
   color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0;
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
   margin: 0 0.75rem;
-  border-radius: 12px;
   opacity: 0;
   transform: translateX(-20px);
   animation: slideInNav 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  cursor: pointer;
+  z-index: 10;
 }
 
 @keyframes slideInNav {

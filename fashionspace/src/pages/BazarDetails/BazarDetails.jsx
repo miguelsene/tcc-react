@@ -9,6 +9,10 @@ const BazarDetails = () => {
   const [bazar, setBazar] = useState(null);
   const [isFavorito, setIsFavorito] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+  const [userComment, setUserComment] = useState('');
+  const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
     const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
@@ -20,6 +24,9 @@ const BazarDetails = () => {
       
       const favoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
       setIsFavorito(favoritos.includes(id));
+      
+      const savedRatings = JSON.parse(localStorage.getItem(`fashionspace_ratings_${id}`) || '[]');
+      setRatings(savedRatings);
     }
     
     setLoading(false);
@@ -61,6 +68,46 @@ const BazarDetails = () => {
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
            { cor: '#5f81a5', nome: categoria };
+  };
+
+  const handleRatingSubmit = () => {
+    if (userRating === 0) {
+      alert('Por favor, selecione uma avaliação!');
+      return;
+    }
+
+    const newRating = {
+      id: Date.now(),
+      rating: userRating,
+      comment: userComment,
+      userName: 'Usuário Atual',
+      date: new Date().toLocaleDateString()
+    };
+
+    const updatedRatings = [...ratings, newRating];
+    setRatings(updatedRatings);
+    localStorage.setItem(`fashionspace_ratings_${id}`, JSON.stringify(updatedRatings));
+    
+    setShowRatingModal(false);
+    setUserRating(0);
+    setUserComment('');
+    alert('Avaliação enviada com sucesso!');
+  };
+
+  const getAverageRating = () => {
+    if (ratings.length === 0) return 0;
+    const sum = ratings.reduce((acc, rating) => acc + rating.rating, 0);
+    return (sum / ratings.length).toFixed(1);
+  };
+
+  const renderStars = (rating, interactive = false, onStarClick = null) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <i
+        key={index}
+        className={`bi ${index < rating ? 'bi-star-fill' : 'bi-star'} star ${interactive ? 'interactive' : ''}`}
+        onClick={interactive && onStarClick ? () => onStarClick(index + 1) : undefined}
+      />
+    ));
   };
 
   if (loading) {
@@ -119,12 +166,21 @@ const BazarDetails = () => {
         <div className="bazar-info">
           <div className="bazar-title">
             <h1>{bazar.nome}</h1>
-            <span 
-              className="categoria-badge"
-              style={{ backgroundColor: categoriaInfo.cor }}
-            >
-              {categoriaInfo.nome}
-            </span>
+            <div className="bazar-meta">
+              <span 
+                className="categoria-badge"
+                style={{ backgroundColor: categoriaInfo.cor }}
+              >
+                {categoriaInfo.nome}
+              </span>
+              {ratings.length > 0 && (
+                <div className="rating-badge">
+                  <i className="bi bi-star-fill"></i>
+                  <span>{getAverageRating()}</span>
+                  <span className="rating-count">({ratings.length})</span>
+                </div>
+              )}
+            </div>
           </div>
           
           <p className="bazar-description">{bazar.descricao}</p>
@@ -197,6 +253,56 @@ const BazarDetails = () => {
             </div>
           </div>
         )}
+        
+        <div className="info-section">
+          <h3>
+            <i className="bi bi-star-fill"></i>
+            Avaliações
+          </h3>
+          
+          <div className="rating-summary">
+            <div className="average-rating">
+              <div className="rating-number">{getAverageRating()}</div>
+              <div className="rating-stars">
+                {renderStars(Math.round(getAverageRating()))}
+              </div>
+              <div className="rating-count">({ratings.length} avaliações)</div>
+            </div>
+            <button 
+              className="btn btn-primary"
+              onClick={() => setShowRatingModal(true)}
+            >
+              <i className="bi bi-plus-circle-fill"></i>
+              Avaliar Bazar
+            </button>
+          </div>
+
+          <div className="ratings-list">
+            {ratings.length === 0 ? (
+              <p className="no-ratings">Ainda não há avaliações para este bazar.</p>
+            ) : (
+              ratings.map((rating) => (
+                <div key={rating.id} className="rating-item">
+                  <div className="rating-header">
+                    <div className="rating-user">
+                      <i className="bi bi-person-circle"></i>
+                      <span>{rating.userName}</span>
+                    </div>
+                    <div className="rating-info">
+                      <div className="rating-stars">
+                        {renderStars(rating.rating)}
+                      </div>
+                      <span className="rating-date">{rating.date}</span>
+                    </div>
+                  </div>
+                  {rating.comment && (
+                    <p className="rating-comment">{rating.comment}</p>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="action-buttons">
@@ -215,6 +321,56 @@ const BazarDetails = () => {
           Ver no Mapa
         </button>
       </div>
+
+      {showRatingModal && (
+        <div className="modal-overlay" onClick={() => setShowRatingModal(false)}>
+          <div className="rating-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Avaliar {bazar.nome}</h3>
+              <button 
+                className="close-btn"
+                onClick={() => setShowRatingModal(false)}
+              >
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+            
+            <div className="modal-content">
+              <div className="rating-input">
+                <label>Sua avaliação:</label>
+                <div className="stars-input">
+                  {renderStars(userRating, true, setUserRating)}
+                </div>
+              </div>
+              
+              <div className="comment-input">
+                <label>Comentário (opcional):</label>
+                <textarea
+                  value={userComment}
+                  onChange={(e) => setUserComment(e.target.value)}
+                  placeholder="Conte sobre sua experiência..."
+                  rows="4"
+                />
+              </div>
+            </div>
+            
+            <div className="modal-actions">
+              <button 
+                className="btn btn-secondary"
+                onClick={() => setShowRatingModal(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="btn btn-primary"
+                onClick={handleRatingSubmit}
+              >
+                Enviar Avaliação
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -81,10 +81,15 @@
 }
 
 .bazar-title {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
   margin-bottom: 16px;
+}
+
+.bazar-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 8px;
 }
 
 .bazar-title h1 {
@@ -104,6 +109,26 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   flex-shrink: 0;
+}
+
+.rating-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-secondary);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.rating-badge i {
+  color: #ffc107;
+}
+
+.rating-count {
+  color: var(--text-secondary);
+  font-size: 12px;
 }
 
 .bazar-description {
@@ -214,6 +239,185 @@
   margin-bottom: 24px;
 }
 
+.rating-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+}
+
+.average-rating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rating-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: #ffc107;
+  font-size: 1.2rem;
+}
+
+.star.interactive {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.star.interactive:hover {
+  transform: scale(1.2);
+}
+
+.ratings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rating-item {
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.rating-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.rating-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.rating-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rating-date {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.rating-comment {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.no-ratings {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 2rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.rating-modal {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.rating-input, .comment-input {
+  margin-bottom: 20px;
+}
+
+.rating-input label, .comment-input label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.stars-input {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.comment-input textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  resize: vertical;
+  font-family: inherit;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 20px;
+  border-top: 1px solid var(--border);
+}
+
 @media (max-width: 768px) {
   .bazar-details {
     padding: 0 15px;
@@ -236,14 +440,14 @@
     padding: 20px;
   }
   
-  .bazar-title {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
-  }
-  
   .bazar-title h1 {
     font-size: 24px;
+  }
+  
+  .bazar-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
   
   .quick-actions {
@@ -263,5 +467,21 @@
   .btn-large {
     width: 100%;
     min-width: auto;
+  }
+  
+  .rating-summary {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .rating-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
   }
 }
