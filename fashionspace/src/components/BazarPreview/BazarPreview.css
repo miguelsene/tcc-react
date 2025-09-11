@@ -15,7 +15,7 @@
 }
 
 .bazar-preview {
-  background: rgba(255,255,255,0.1);
+  background: rgba(232, 221, 203, 0.3);
   backdrop-filter: blur(20px);
   border-radius: 0.5rem;
   max-width: 600px;
@@ -23,7 +23,7 @@
   max-height: 70vh;
   overflow: hidden;
   box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(205, 179, 128, 0.3);
   position: relative;
   animation: scaleIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }

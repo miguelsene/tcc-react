@@ -1,0 +1,78 @@
+/* Paleta Global - Aplicação em todos os elementos */
+
+/* Elementos base com background transparente */
+.card, .bazar-card, .feature-card, .plan-card, .stat-card, 
+.action-card, .favorite-card, .guide-card, .contact-item,
+.faq-item, .payment-method, .settings-section, .support-content,
+.payment-section, .ai-disclaimer, .chat-container, .bazar-form,
+.error-container, .empty-state, .empty-favorites, .category-filter,
+.bazar-preview, .info-section, .profile-header {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(94, 145, 136, 0.4) !important;
+}
+
+/* Modo escuro */
+.dark .card, .dark .bazar-card, .dark .feature-card, .dark .plan-card, 
+.dark .stat-card, .dark .action-card, .dark .favorite-card, .dark .guide-card,
+.dark .contact-item, .dark .faq-item, .dark .payment-method, .dark .settings-section,
+.dark .support-content, .dark .payment-section, .dark .ai-disclaimer, 
+.dark .chat-container, .dark .bazar-form, .dark .error-container, 
+.dark .empty-state, .dark .empty-favorites, .dark .category-filter,
+.dark .bazar-preview, .dark .info-section, .dark .profile-header {
+  background: rgba(35, 34, 38, 0.4) !important;
+  border: 1px solid rgba(94, 145, 136, 0.3) !important;
+}
+
+/* Inputs e formulários */
+.form-control, .search-input, .message-input, input, textarea, select {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(94, 145, 136, 0.5) !important;
+  color: #232226 !important;
+}
+
+.dark .form-control, .dark .search-input, .dark .message-input, 
+.dark input, .dark textarea, .dark select {
+  background: rgba(35, 34, 38, 0.5) !important;
+  border: 1px solid rgba(94, 145, 136, 0.4) !important;
+  color: #ffffff !important;
+}
+
+/* Botões secundários */
+.btn-secondary, .tab-btn, .category-btn, .action-btn {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border: 2px solid rgba(94, 145, 136, 0.5) !important;
+  color: #232226 !important;
+}
+
+.dark .btn-secondary, .dark .tab-btn, .dark .category-btn, .dark .action-btn {
+  background: rgba(35, 34, 38, 0.5) !important;
+  border: 2px solid rgba(94, 145, 136, 0.4) !important;
+  color: #ffffff !important;
+}
+
+/* Textos com contraste */
+h1, h2, h3, h4, h5, h6 {
+  color: #232226 !important;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: #ffffff !important;
+}
+
+p, span, div, label {
+  color: #253342 !important;
+}
+
+.dark p, .dark span, .dark div, .dark label {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Elementos com cor de destaque */
+.text-muted, .info-item, .rating-text, .notification-time {
+  color: #3e5954 !important;
+}
+
+.dark .text-muted, .dark .info-item, .dark .rating-text, .dark .notification-time {
+  color: rgba(255, 255, 255, 0.7) !important;
+}

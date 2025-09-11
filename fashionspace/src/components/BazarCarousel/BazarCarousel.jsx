@@ -76,6 +76,12 @@ const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
       </div>
 
       <div className="carousel-container">
+        <button className="carousel-arrow prev" onClick={prevSlide}>
+          <i className="bi bi-chevron-left"></i>
+        </button>
+        <button className="carousel-arrow next" onClick={nextSlide}>
+          <i className="bi bi-chevron-right"></i>
+        </button>
         <div 
           className="carousel-track"
           style={{

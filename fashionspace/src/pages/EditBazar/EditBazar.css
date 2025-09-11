@@ -35,11 +35,12 @@
 }
 
 .bazar-form {
-  background: var(--bg-primary);
+  background: rgba(232, 221, 203, 0.3);
+  backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 30px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(205, 179, 128, 0.3);
 }
 
 .form-section {
@@ -166,10 +167,11 @@ select.form-control {
 .error-container {
   text-align: center;
   padding: 60px 20px;
-  background: var(--bg-primary);
+  background: rgba(232, 221, 203, 0.3);
+  backdrop-filter: blur(20px);
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(205, 179, 128, 0.3);
 }
 
 .error-container h2 {
