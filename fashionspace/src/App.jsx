@@ -15,6 +15,7 @@ import Support from './pages/Support/Support';
 import Settings from './pages/Settings/Settings';
 import Subscription from './pages/Subscription/Subscription';
 import AIAssistant from './pages/AIAssistant/AIAssistant';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import './App.css';
 
 function App() {
@@ -30,7 +31,22 @@ function App() {
     const savedTheme = localStorage.getItem('fashionspace_theme');
     const savedSidebar = localStorage.getItem('fashionspace_sidebar');
     
-    if (savedUser) setUser(JSON.parse(savedUser));
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      // Migração: adicionar tipoUsuario se não existir
+      if (!user.tipoUsuario) {
+        user.tipoUsuario = 'casual';
+        localStorage.setItem('fashionspace_user', JSON.stringify(user));
+        
+        // Atualizar também na lista de usuários
+        const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
+        const updatedUsers = users.map(u => u.id === user.id ? user : u);
+        localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
+      }
+      console.log('Usuário carregado:', user);
+      console.log('Tipo de usuário:', user.tipoUsuario);
+      setUser(user);
+    }
     if (savedTheme) setDarkMode(savedTheme === 'dark');
     if (savedSidebar !== null) setSidebarVisible(JSON.parse(savedSidebar));
   }, []);
@@ -67,17 +83,33 @@ function App() {
           />
           <div className="content">
             <Routes>
-              <Route path="/" element={<Home searchTerm={globalSearchTerm} />} />
-              <Route path="/adicionar-bazar" element={<AddBazar />} />
+              <Route path="/" element={<Home searchTerm={globalSearchTerm} user={user} />} />
+              <Route path="/adicionar-bazar" element={
+                <ProtectedRoute user={user} requireDono={true}>
+                  <AddBazar />
+                </ProtectedRoute>
+              } />
               <Route path="/bazar-detalhes/:id" element={<BazarDetails />} />
-              <Route path="/editar-bazar/:id" element={<EditBazar />} />
+              <Route path="/editar-bazar/:id" element={
+                <ProtectedRoute user={user} requireDono={true}>
+                  <EditBazar />
+                </ProtectedRoute>
+              } />
               <Route path="/favoritos" element={<Favorites />} />
               <Route path="/perfil" element={<Profile user={user} setUser={setUser} />} />
               <Route path="/chat-bazar/:id" element={<Chat />} />
               <Route path="/suporte" element={<Support />} />
               <Route path="/configuracoes" element={<Settings />} />
-              <Route path="/assinatura" element={<Subscription />} />
-              <Route path="/ia-assistente" element={<AIAssistant />} />
+              <Route path="/assinatura" element={
+                <ProtectedRoute user={user} requireDono={true}>
+                  <Subscription />
+                </ProtectedRoute>
+              } />
+              <Route path="/ia-assistente" element={
+                <ProtectedRoute user={user} requireDono={true}>
+                  <AIAssistant />
+                </ProtectedRoute>
+              } />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>

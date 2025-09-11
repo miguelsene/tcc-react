@@ -4,7 +4,7 @@ import { defaultBazares, categorias } from '../../data/bazares';
 import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import './Home.css';
 
-const Home = ({ searchTerm: globalSearchTerm }) => {
+const Home = ({ searchTerm: globalSearchTerm, user }) => {
   const [bazares, setBazares] = useState([]);
   const [filteredBazares, setFilteredBazares] = useState([]);
   const [favoritos, setFavoritos] = useState([]);
@@ -190,10 +190,12 @@ const Home = ({ searchTerm: globalSearchTerm }) => {
           <h1>Descubra os Melhores Bazares de Moda</h1>
           <p>Conecte-se com bazares únicos, encontre peças especiais e apoie negócios locais</p>
           <div className="hero-actions">
-            <Link to="/adicionar-bazar" className="btn btn-primary">
-              <i className="bi bi-plus-circle-fill"></i>
-              Criar Bazar
-            </Link>
+            {user?.tipoUsuario === 'dono' && (
+              <Link to="/adicionar-bazar" className="btn btn-primary">
+                <i className="bi bi-plus-circle-fill"></i>
+                Criar Bazar
+              </Link>
+            )}
             <button className="btn btn-secondary" onClick={() => document.getElementById('bazares').scrollIntoView()}>
               <i className="bi bi-search"></i>
               Explorar Agora
@@ -277,7 +279,7 @@ const Home = ({ searchTerm: globalSearchTerm }) => {
                 : 'Seja o primeiro a criar um bazar!'
               }
             </p>
-            {!selectedCategory && !searchTerm && (
+            {!selectedCategory && !searchTerm && user?.tipoUsuario === 'dono' && (
               <Link to="/adicionar-bazar" className="btn btn-primary">
                 <i className="bi bi-plus-circle-fill"></i>
                 Criar Primeiro Bazar

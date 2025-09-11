@@ -7,7 +7,8 @@ const Login = ({ setUser }) => {
     nome: '',
     email: '',
     senha: '',
-    confirmarSenha: ''
+    confirmarSenha: '',
+    tipoUsuario: 'casual'
   });
   const [errors, setErrors] = useState({});
 
@@ -47,6 +48,13 @@ const Login = ({ setUser }) => {
       const user = users.find(u => u.email === formData.email && u.senha === formData.senha);
       
       if (user) {
+        // Migração: adicionar tipoUsuario se não existir
+        if (!user.tipoUsuario) {
+          user.tipoUsuario = 'casual';
+          // Atualizar no localStorage
+          const updatedUsers = users.map(u => u.id === user.id ? user : u);
+          localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
+        }
         localStorage.setItem('fashionspace_user', JSON.stringify(user));
         setUser(user);
       } else {
@@ -65,6 +73,7 @@ const Login = ({ setUser }) => {
         nome: formData.nome,
         email: formData.email,
         senha: formData.senha,
+        tipoUsuario: formData.tipoUsuario,
         dataCadastro: new Date().toISOString()
       };
 
@@ -141,18 +150,53 @@ const Login = ({ setUser }) => {
           </div>
 
           {!isLogin && (
-            <div className="form-group">
-              <label>Confirmar Senha</label>
-              <input
-                type="password"
-                name="confirmarSenha"
-                value={formData.confirmarSenha}
-                onChange={handleChange}
-                className={`form-control ${errors.confirmarSenha ? 'error' : ''}`}
-                placeholder="Confirme sua senha"
-              />
-              {errors.confirmarSenha && <span className="error-text">{errors.confirmarSenha}</span>}
-            </div>
+            <>
+              <div className="form-group">
+                <label>Tipo de Usuário</label>
+                <div className="user-type-selection">
+                  <label className={`user-type-option ${formData.tipoUsuario === 'casual' ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="tipoUsuario"
+                      value="casual"
+                      checked={formData.tipoUsuario === 'casual'}
+                      onChange={handleChange}
+                    />
+                    <div className="option-content">
+                      <i className="bi bi-person-fill"></i>
+                      <span className="option-title">Usuário Casual</span>
+                      <span className="option-desc">Explorar e comprar em bazares</span>
+                    </div>
+                  </label>
+                  <label className={`user-type-option ${formData.tipoUsuario === 'dono' ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="tipoUsuario"
+                      value="dono"
+                      checked={formData.tipoUsuario === 'dono'}
+                      onChange={handleChange}
+                    />
+                    <div className="option-content">
+                      <i className="bi bi-shop-window"></i>
+                      <span className="option-title">Dono de Bazar</span>
+                      <span className="option-desc">Criar e gerenciar bazares</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Confirmar Senha</label>
+                <input
+                  type="password"
+                  name="confirmarSenha"
+                  value={formData.confirmarSenha}
+                  onChange={handleChange}
+                  className={`form-control ${errors.confirmarSenha ? 'error' : ''}`}
+                  placeholder="Confirme sua senha"
+                />
+                {errors.confirmarSenha && <span className="error-text">{errors.confirmarSenha}</span>}
+              </div>
+            </>
           )}
 
           <button type="submit" className="btn btn-primary login-btn">

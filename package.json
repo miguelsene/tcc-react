@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "cd fashionspace && npm run dev",
+    "build": "cd fashionspace && npm run build",
+    "preview": "cd fashionspace && npm run preview",
+    "install": "cd fashionspace && npm install"
   },
   "dependencies": {
     "react": "^18.2.0",

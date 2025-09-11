@@ -4,17 +4,26 @@ import './Sidebar.css';
 
 const Sidebar = ({ user, visible }) => {
   const location = useLocation();
+  
+  console.log('Sidebar - Usuário:', user);
+  console.log('Sidebar - Tipo:', user?.tipoUsuario);
 
-  const menuItems = [
-    { path: '/', icon: 'bi-house-fill', label: 'Início' },
-    { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: 'Adicionar Bazar' },
-    { path: '/favoritos', icon: 'bi-heart-fill', label: 'Favoritos' },
-    { path: '/perfil', icon: 'bi-person-fill', label: 'Perfil' },
-    { path: '/assinatura', icon: 'bi-star-fill', label: 'Assinaturas' },
-    { path: '/ia-assistente', icon: 'bi-robot', label: 'IA Assistente' },
-    { path: '/suporte', icon: 'bi-headset', label: 'Suporte' },
-    { path: '/configuracoes', icon: 'bi-gear-fill', label: 'Configurações' }
+  const allMenuItems = [
+    { path: '/', icon: 'bi-house-fill', label: 'Início', forAll: true },
+    { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: 'Adicionar Bazar', onlyDono: true },
+    { path: '/favoritos', icon: 'bi-heart-fill', label: 'Favoritos', forAll: true },
+    { path: '/perfil', icon: 'bi-person-fill', label: 'Perfil', forAll: true },
+    { path: '/assinatura', icon: 'bi-star-fill', label: 'Assinaturas', onlyDono: true },
+    { path: '/ia-assistente', icon: 'bi-robot', label: 'IA Assistente', onlyDono: true },
+    { path: '/suporte', icon: 'bi-headset', label: 'Suporte', forAll: true },
+    { path: '/configuracoes', icon: 'bi-gear-fill', label: 'Configurações', forAll: true }
   ];
+
+  const menuItems = allMenuItems.filter(item => {
+    if (item.forAll) return true;
+    if (item.onlyDono && user?.tipoUsuario === 'dono') return true;
+    return false;
+  });
 
   return (
     <div className={`sidebar ${visible ? 'visible' : 'hidden'}`}>
@@ -35,6 +44,7 @@ const Sidebar = ({ user, visible }) => {
           <div className="user-info">
             <p className="user-greeting">Olá,</p>
             <p className="user-name">{user?.nome}!</p>
+            <p className="user-type">{user?.tipoUsuario === 'dono' ? 'Dono de Bazar' : 'Usuário'}</p>
           </div>
         </div>
       </div>

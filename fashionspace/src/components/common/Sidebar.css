@@ -126,6 +126,15 @@
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
+.user-type {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.7rem;
+  margin: 0;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .sidebar-nav {
   flex: 1;
   padding: 1.5rem 0;

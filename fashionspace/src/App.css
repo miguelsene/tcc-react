@@ -14,6 +14,9 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app {
@@ -54,31 +57,32 @@ body {
 
 /* Tema Escuro */
 .app.dark {
-  --bg-primary: #0f2c47;
-  --bg-secondary: #1a3a5c;
-  --bg-tertiary: #2a4a6b;
-  --text-primary: #f4eddc;
-  --text-secondary: #d4c4a8;
-  --text-muted: #5f81a5;
-  --border: #2a4a6b;
-  --border-light: #3a5a7b;
-  --accent: #5f81a5;
-  --accent-hover: #7a9bc5;
-  --accent-light: #1a3a5c;
-  --success: #10b981;
-  --success-light: #064e3b;
-  --danger: #ef4444;
-  --danger-light: #7f1d1d;
-  --warning: #f59e0b;
-  --warning-light: #78350f;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 10px 10px -5px rgba(0, 0, 0, 0.6);
-  --gradient-primary: linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%);
-  --gradient-secondary: linear-gradient(135deg, #0f2c47 0%, #f4eddc 100%);
-  --gradient-accent: linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%);
+  --bg-primary: #1a202c;
+  --bg-secondary: #2d3748;
+  --bg-tertiary: #4a5568;
+  --bg-pattern: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  --text-primary: #f7fafc;
+  --text-secondary: #e2e8f0;
+  --text-muted: #a0aec0;
+  --border: #4a5568;
+  --border-light: #718096;
+  --accent: #63b3ed;
+  --accent-hover: #4299e1;
+  --accent-light: #2a4365;
+  --success: #48bb78;
+  --success-light: #22543d;
+  --danger: #f56565;
+  --danger-light: #742a2a;
+  --warning: #ed8936;
+  --warning-light: #7b341e;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.7), 0 1px 2px 0 rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.7), 0 2px 4px -1px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.8), 0 4px 6px -2px rgba(0, 0, 0, 0.7);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.9), 0 10px 10px -5px rgba(0, 0, 0, 0.8);
+  --gradient-primary: linear-gradient(135deg, #63b3ed 0%, #2b6cb0 100%);
+  --gradient-secondary: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  --gradient-accent: linear-gradient(135deg, #63b3ed 0%, #2b6cb0 100%);
 }
 
 .main-content {
@@ -500,4 +504,47 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* Garantir que todos os elementos herdem as cores do tema */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Estilos específicos para modo dark */
+.dark input,
+.dark textarea,
+.dark select {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: var(--text-primary);
+}
+
+.dark p, .dark span, .dark div {
+  color: inherit;
+}
+
+.dark .card {
+  background: var(--bg-primary);
+  border-color: var(--border);
+}
+
+.dark .btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.dark .btn-secondary:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent);
 }
