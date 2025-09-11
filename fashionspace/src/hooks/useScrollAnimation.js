@@ -42,7 +42,7 @@ export const useScrollAnimationMultiple = () => {
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
 
-    const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale');
+    const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .scroll-animate-fade');
     elements.forEach((el) => observer.observe(el));
 
     return () => {

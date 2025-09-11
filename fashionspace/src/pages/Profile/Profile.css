@@ -7,12 +7,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--bg-primary);
-  border-radius: 16px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 0.5rem;
   padding: 30px;
   margin-bottom: 30px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .user-info {
@@ -29,9 +30,10 @@
 }
 
 .user-details h1 {
-  color: var(--text-primary);
+  color: white;
   font-size: 28px;
   margin: 0 0 8px 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .user-email {
@@ -54,7 +56,7 @@
   color: white;
   border: none;
   padding: 12px 20px;
-  border-radius: 8px;
+  border-radius: 0.25rem;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -73,12 +75,13 @@
 }
 
 .stat-card {
-  background: var(--bg-primary);
-  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 0.5rem;
   padding: 24px;
   text-align: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .stat-number {
@@ -106,18 +109,20 @@
 }
 
 .section-header h2 {
-  color: var(--text-primary);
+  color: white;
   font-size: 24px;
   margin: 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  background: var(--bg-primary);
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .empty-icon {
@@ -144,12 +149,13 @@
 }
 
 .bazar-card {
-  background: var(--bg-primary);
-  border-radius: 16px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .bazar-card:hover {
@@ -196,7 +202,7 @@
 .overlay-btn {
   padding: 8px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 0.25rem;
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
@@ -231,11 +237,12 @@
 }
 
 .card-header h3 {
-  color: var(--text-primary);
+  color: white;
   font-size: 18px;
   font-weight: 600;
   margin: 0;
   flex: 1;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
 .categoria-badge {
@@ -250,7 +257,7 @@
 }
 
 .card-description {
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.9);
   font-size: 14px;
   line-height: 1.5;
   margin-bottom: 16px;
@@ -258,6 +265,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .card-info {
@@ -270,7 +278,8 @@
   gap: 8px;
   margin-bottom: 6px;
   font-size: 13px;
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.8);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .info-item .icon {
@@ -300,12 +309,13 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: var(--bg-primary);
-  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 0.5rem;
   padding: 20px;
   text-decoration: none;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 

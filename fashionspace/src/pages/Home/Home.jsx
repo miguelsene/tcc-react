@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
 import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
+import BazarPreview from '../../components/BazarPreview/BazarPreview';
 import './Home.css';
 
 const Home = ({ searchTerm: globalSearchTerm, user }) => {
@@ -10,6 +11,8 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
   const [favoritos, setFavoritos] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [previewBazar, setPreviewBazar] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   useScrollAnimationMultiple();
 
@@ -57,6 +60,21 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
     
     setFavoritos(newFavoritos);
     localStorage.setItem('fashionspace_favoritos', JSON.stringify(newFavoritos));
+  };
+
+  const handleCardHover = (bazar) => {
+    setPreviewBazar(bazar);
+    setShowPreview(true);
+  };
+
+  const handleCardLeave = () => {
+    setShowPreview(false);
+    setPreviewBazar(null);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+    setPreviewBazar(null);
   };
 
   const getCategoriaInfo = (categoria) => {
@@ -124,7 +142,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
             
             return (
               <div key={bazar.id} className="carousel-item">
-                <div className="bazar-card">
+                <div className="bazar-card" onMouseEnter={() => handleCardHover(bazar)} onMouseLeave={handleCardLeave}>
                   <div className="bazar-image">
                     <img src={bazar.imagem} alt={bazar.nome} />
                     <button 
@@ -185,7 +203,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
 
   return (
     <div className="home">
-      <section className="hero scroll-animate">
+      <section className="hero scroll-animate-fade">
         <div className="hero-content">
           <h1>Descubra os Melhores Bazares de Moda</h1>
           <p>Conecte-se com bazares únicos, encontre peças especiais e apoie negócios locais</p>
@@ -202,7 +220,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
             </button>
           </div>
         </div>
-        <div className="hero-stats scroll-animate-right">
+        <div className="hero-stats scroll-animate-scale">
           <div className="stat-item">
             <div className="stat-number">{bazares.length}</div>
             <div className="stat-label">Bazares Ativos</div>
@@ -218,10 +236,45 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
         </div>
       </section>
 
-      {renderCarousel("Destaques", destaques, "bi-star-fill", "destaques")}
-      {renderCarousel("Novidades", novidades, "bi-lightning-fill", "novidades")}
-      {renderCarousel("Mais Populares", populares, "bi-fire", "populares")}
-      {renderCarousel("Promoções", promocoes, "bi-tag-fill", "promocoes")}
+      <div className="category-filter scroll-animate">
+        <h3>
+          <i className="bi bi-funnel-fill"></i>
+          Filtrar por Categoria
+        </h3>
+        <div className="categories-grid">
+          <button
+            className={`category-btn ${selectedCategory === '' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('')}
+          >
+            <i className="bi bi-grid-fill"></i>
+            <span>Todas</span>
+          </button>
+          {categorias.map(categoria => (
+            <button
+              key={categoria.id}
+              className={`category-btn ${selectedCategory === categoria.nome ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(categoria.nome)}
+              style={{ '--category-color': categoria.cor }}
+            >
+              <i className={categoria.icon}></i>
+              <span>{categoria.nome}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="scroll-animate">
+        {renderCarousel("Destaques", destaques, "bi-star-fill", "destaques")}
+      </div>
+      <div className="scroll-animate-left">
+        {renderCarousel("Novidades", novidades, "bi-lightning-fill", "novidades")}
+      </div>
+      <div className="scroll-animate-right">
+        {renderCarousel("Mais Populares", populares, "bi-fire", "populares")}
+      </div>
+      <div className="scroll-animate">
+        {renderCarousel("Promoções", promocoes, "bi-tag-fill", "promocoes")}
+      </div>
 
       <section id="bazares" className="bazares-section">
         <div className="section-header scroll-animate">
@@ -239,33 +292,6 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
             />
-          </div>
-        </div>
-
-        <div className="category-filter scroll-animate">
-          <h3>
-            <i className="bi bi-funnel-fill"></i>
-            Filtrar por Categoria
-          </h3>
-          <div className="categories-grid">
-            <button
-              className={`category-btn ${selectedCategory === '' ? 'active' : ''}`}
-              onClick={() => setSelectedCategory('')}
-            >
-              <i className="bi bi-grid-fill"></i>
-              <span>Todas</span>
-            </button>
-            {categorias.map(categoria => (
-              <button
-                key={categoria.id}
-                className={`category-btn ${selectedCategory === categoria.nome ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(categoria.nome)}
-                style={{ '--category-color': categoria.cor }}
-              >
-                <i className={categoria.icon}></i>
-                <span>{categoria.nome}</span>
-              </button>
-            ))}
           </div>
         </div>
 
@@ -309,6 +335,8 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
                   key={bazar.id} 
                   className="bazar-card scroll-animate-scale"
                   style={{ animationDelay: `${index * 0.1}s` }}
+                  onMouseEnter={() => handleCardHover(bazar)}
+                  onMouseLeave={handleCardLeave}
                 >
                   <div className="bazar-image">
                     <img src={bazar.imagem} alt={bazar.nome} />
@@ -378,6 +406,15 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
           </div>
         )}
       </section>
+      
+      {previewBazar && (
+        <BazarPreview
+          bazar={previewBazar}
+          isVisible={showPreview}
+          onClose={handleClosePreview}
+          categoriaInfo={getCategoriaInfo(previewBazar.categoria)}
+        />
+      )}
     </div>
   );
 };

@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
+import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
+import BazarPreview from '../../components/BazarPreview/BazarPreview';
 import './Favorites.css';
 
 const Favorites = () => {
   const [favoritos, setFavoritos] = useState([]);
   const [bazaresFavoritos, setBazaresFavoritos] = useState([]);
+  const [previewBazar, setPreviewBazar] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  
+  useScrollAnimationMultiple();
 
   useEffect(() => {
     const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
@@ -32,6 +38,21 @@ const Favorites = () => {
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
            { cor: '#5f81a5', nome: categoria };
+  };
+
+  const handleCardHover = (bazar) => {
+    setPreviewBazar(bazar);
+    setShowPreview(true);
+  };
+
+  const handleCardLeave = () => {
+    setShowPreview(false);
+    setPreviewBazar(null);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+    setPreviewBazar(null);
   };
 
   return (
@@ -65,7 +86,7 @@ const Favorites = () => {
             const categoriaInfo = getCategoriaInfo(bazar.categoria);
             
             return (
-              <div key={bazar.id} className="favorite-card">
+              <div key={bazar.id} className="favorite-card scroll-animate-scale" onMouseEnter={() => handleCardHover(bazar)} onMouseLeave={handleCardLeave}>
                 <div className="card-image">
                   <img src={bazar.imagem} alt={bazar.nome} />
                   <button 
@@ -129,7 +150,7 @@ const Favorites = () => {
       )}
 
       {bazaresFavoritos.length > 0 && (
-        <div className="favorites-footer">
+        <div className="favorites-footer scroll-animate">
           <p className="footer-text">
             <i className="bi bi-lightbulb-fill"></i>
             Dica: Clique no <i className="bi bi-x-circle-fill"></i> para remover um bazar dos favoritos
@@ -139,6 +160,15 @@ const Favorites = () => {
             Explorar Mais Bazares
           </Link>
         </div>
+      )}
+      
+      {previewBazar && (
+        <BazarPreview
+          bazar={previewBazar}
+          isVisible={showPreview}
+          onClose={handleClosePreview}
+          categoriaInfo={getCategoriaInfo(previewBazar.categoria)}
+        />
       )}
     </div>
   );

@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import './Login.css';
 
 const Login = ({ setUser }) => {
   const [isLogin, setIsLogin] = useState(true);
+  
+  useScrollAnimationMultiple();
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -86,13 +89,14 @@ const Login = ({ setUser }) => {
 
   return (
     <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
+
+      <div className="login-card scroll-animate">
+        <div className="login-header scroll-animate-fade">
           <h1>FashionSpace</h1>
           <p>Conecte-se aos melhores bazares de moda</p>
         </div>
 
-        <div className="login-tabs">
+        <div className="login-tabs scroll-animate-left">
           <button 
             className={isLogin ? 'active' : ''} 
             onClick={() => setIsLogin(true)}
@@ -107,7 +111,7 @@ const Login = ({ setUser }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="login-form scroll-animate-right">
           {!isLogin && (
             <div className="form-group">
               <label>Nome Completo</label>

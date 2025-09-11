@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import { categorias } from '../../data/bazares';
+import BazarPreview from '../../components/BazarPreview/BazarPreview';
 import './Profile.css';
 
 const Profile = ({ user, setUser }) => {
   const navigate = useNavigate();
   const [userBazares, setUserBazares] = useState([]);
   const [favoritos, setFavoritos] = useState([]);
+  const [previewBazar, setPreviewBazar] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  
+  useScrollAnimationMultiple();
 
   useEffect(() => {
     const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
@@ -47,10 +53,25 @@ const Profile = ({ user, setUser }) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
+  const handleCardHover = (bazar) => {
+    setPreviewBazar(bazar);
+    setShowPreview(true);
+  };
+
+  const handleCardLeave = () => {
+    setShowPreview(false);
+    setPreviewBazar(null);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+    setPreviewBazar(null);
+  };
+
   return (
     <div className="profile">
-      <div className="profile-header">
-        <div className="user-info">
+      <div className="profile-header scroll-animate">
+        <div className="user-info scroll-animate-left">
           <img 
             src={`https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=80`}
             alt="Avatar"
@@ -66,13 +87,13 @@ const Profile = ({ user, setUser }) => {
           </div>
         </div>
         
-        <button className="logout-btn" onClick={handleLogout}>
+        <button className="logout-btn scroll-animate-right" onClick={handleLogout}>
           <i className="bi bi-box-arrow-right"></i>
           Sair da Conta
         </button>
       </div>
 
-      <div className="profile-stats">
+      <div className="profile-stats scroll-animate">
         <div className="stat-card">
           <div className="stat-number">{userBazares.length}</div>
           <div className="stat-label">
@@ -95,8 +116,8 @@ const Profile = ({ user, setUser }) => {
         </div>
       </div>
 
-      <div className="profile-section">
-        <div className="section-header">
+      <div className="profile-section scroll-animate">
+        <div className="section-header scroll-animate-left">
           <h2>
             <i className="bi bi-shop"></i>
             Meus Bazares
@@ -108,7 +129,7 @@ const Profile = ({ user, setUser }) => {
         </div>
 
         {userBazares.length === 0 ? (
-          <div className="empty-state">
+          <div className="empty-state scroll-animate-scale">
             <i className="bi bi-shop empty-icon"></i>
             <h3>Você ainda não criou nenhum bazar</h3>
             <p>Que tal compartilhar seu primeiro bazar com a comunidade?</p>
@@ -119,11 +140,11 @@ const Profile = ({ user, setUser }) => {
           </div>
         ) : (
           <div className="bazares-grid">
-            {userBazares.map(bazar => {
+            {userBazares.map((bazar, index) => {
               const categoriaInfo = getCategoriaInfo(bazar.categoria);
               
               return (
-                <div key={bazar.id} className="bazar-card">
+                <div key={bazar.id} className="bazar-card scroll-animate-scale" style={{ animationDelay: `${index * 0.1}s` }} onMouseEnter={() => handleCardHover(bazar)} onMouseLeave={handleCardLeave}>
                   <div className="card-image">
                     <img src={bazar.imagem} alt={bazar.nome} />
                     <div className="card-overlay">
@@ -219,6 +240,15 @@ const Profile = ({ user, setUser }) => {
           </div>
         </Link>
       </div>
+      
+      {previewBazar && (
+        <BazarPreview
+          bazar={previewBazar}
+          isVisible={showPreview}
+          onClose={handleClosePreview}
+          categoriaInfo={getCategoriaInfo(previewBazar.categoria)}
+        />
+      )}
     </div>
   );
 };
