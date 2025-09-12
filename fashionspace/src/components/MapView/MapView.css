@@ -1,0 +1,149 @@
+.map-view {
+  padding: 1rem;
+}
+
+.map-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.distance-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.distance-filter label {
+  font-weight: 600;
+  color: #0f2c47;
+}
+
+.distance-filter select {
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  background: white;
+}
+
+.map-container {
+  height: 400px;
+  margin-bottom: 2rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.map-placeholder {
+  height: 100%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.map-placeholder i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.nearby-bazares h3 {
+  color: #0f2c47;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bazares-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bazar-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.bazar-item:hover {
+  transform: translateY(-2px);
+}
+
+.bazar-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.bazar-info {
+  flex: 1;
+}
+
+.bazar-info h4 {
+  margin: 0 0 0.25rem 0;
+  color: #0f2c47;
+  font-size: 1.1rem;
+}
+
+.bazar-info .address {
+  color: #6c757d;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.bazar-info .distance {
+  color: #5f81a5;
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.bazar-info .rating {
+  color: #ffc107;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.bazar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bazar-actions .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .map-controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .bazar-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .bazar-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+}

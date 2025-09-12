@@ -1,78 +1,247 @@
-/* Paleta Global - Aplicação em todos os elementos */
+:root {
+  --primary: #0f2c47;
+  --secondary: #649fde;
+  --light: #f0f0f0;
+  --dark: #000000;
+}
 
-/* Elementos base com background transparente */
+:root,
+.app.light {
+  --bg-primary: #f0f0f0;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: rgba(15, 44, 71, 0.05);
+  --bg-pattern: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
+  
+  --text-primary: #000000;
+  --text-secondary: #0f2c47;
+  --text-muted: #0f2c47;
+  --text-accent: #649fde;
+  
+  --border: rgba(15, 44, 71, 0.2);
+  --border-light: rgba(15, 44, 71, 0.1);
+  
+  --accent: #649fde;
+  --accent-hover: #0f2c47;
+  --accent-light: rgba(100, 159, 222, 0.1);
+  
+  --success: #28a745;
+  --success-light: rgba(40, 167, 69, 0.1);
+  --danger: #dc3545;
+  --danger-light: rgba(220, 53, 69, 0.1);
+  --warning: #ffc107;
+  --warning-light: rgba(255, 193, 7, 0.1);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(15, 44, 71, 0.1);
+  --shadow: 0 4px 6px -1px rgba(15, 44, 71, 0.15), 0 2px 4px -1px rgba(15, 44, 71, 0.1);
+  --shadow-md: 0 10px 15px -3px rgba(15, 44, 71, 0.15), 0 4px 6px -2px rgba(15, 44, 71, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(15, 44, 71, 0.15), 0 10px 10px -5px rgba(15, 44, 71, 0.1);
+  --shadow-xl: 0 25px 50px -12px rgba(15, 44, 71, 0.25);
+  
+  --gradient-primary: linear-gradient(135deg, #649fde 0%, #0f2c47 100%);
+  --gradient-secondary: linear-gradient(135deg, #0f2c47 0%, #649fde 100%);
+  --gradient-accent: linear-gradient(135deg, #649fde 0%, #0f2c47 100%);
+}
+
+.app.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #0f2c47;
+  --bg-tertiary: rgba(100, 159, 222, 0.1);
+  --bg-pattern: linear-gradient(135deg, #000000 0%, #0f2c47 100%);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #f0f0f0;
+  --text-muted: #f0f0f0;
+  --text-accent: #649fde;
+  
+  --border: rgba(100, 159, 222, 0.3);
+  --border-light: rgba(100, 159, 222, 0.2);
+  
+  --accent: #649fde;
+  --accent-hover: #f0f0f0;
+  --accent-light: rgba(100, 159, 222, 0.2);
+  
+  --success: #28a745;
+  --success-light: rgba(40, 167, 69, 0.2);
+  --danger: #dc3545;
+  --danger-light: rgba(220, 53, 69, 0.2);
+  --warning: #ffc107;
+  --warning-light: rgba(255, 193, 7, 0.2);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  
+  --gradient-primary: linear-gradient(135deg, #0f2c47 0%, #649fde 100%);
+  --gradient-secondary: linear-gradient(135deg, #649fde 0%, #0f2c47 100%);
+  --gradient-accent: linear-gradient(135deg, #0f2c47 0%, #649fde 100%);
+}
+
+/* Componentes base - aplicam as variáveis CSS */
 .card, .bazar-card, .feature-card, .plan-card, .stat-card, 
 .action-card, .favorite-card, .guide-card, .contact-item,
 .faq-item, .payment-method, .settings-section, .support-content,
 .payment-section, .ai-disclaimer, .chat-container, .bazar-form,
 .error-container, .empty-state, .empty-favorites, .category-filter,
-.bazar-preview, .info-section, .profile-header {
-  background: rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(94, 145, 136, 0.4) !important;
+.bazar-preview, .info-section, .profile-header, .notification-item,
+.post-card, .review-card, .social-feed, .map-container {
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow) !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(10px) !important;
+  color: var(--text-primary) !important;
 }
 
-/* Modo escuro */
-.dark .card, .dark .bazar-card, .dark .feature-card, .dark .plan-card, 
-.dark .stat-card, .dark .action-card, .dark .favorite-card, .dark .guide-card,
-.dark .contact-item, .dark .faq-item, .dark .payment-method, .dark .settings-section,
-.dark .support-content, .dark .payment-section, .dark .ai-disclaimer, 
-.dark .chat-container, .dark .bazar-form, .dark .error-container, 
-.dark .empty-state, .dark .empty-favorites, .dark .category-filter,
-.dark .bazar-preview, .dark .info-section, .dark .profile-header {
-  background: rgba(35, 34, 38, 0.4) !important;
-  border: 1px solid rgba(94, 145, 136, 0.3) !important;
+.card:hover, .bazar-card:hover, .feature-card:hover, .plan-card:hover,
+.stat-card:hover, .action-card:hover, .favorite-card:hover, .guide-card:hover,
+.contact-item:hover, .faq-item:hover, .payment-method:hover, .settings-section:hover,
+.support-content:hover, .payment-section:hover, .notification-item:hover,
+.post-card:hover, .review-card:hover {
+  box-shadow: var(--shadow-lg) !important;
+  transform: translateY(-2px) !important;
+  border-color: var(--accent) !important;
 }
 
 /* Inputs e formulários */
 .form-control, .search-input, .message-input, input, textarea, select {
-  background: rgba(255, 255, 255, 0.4) !important;
-  border: 1px solid rgba(94, 145, 136, 0.5) !important;
-  color: #232226 !important;
+  background: var(--bg-secondary) !important;
+  border: 2px solid var(--border) !important;
+  border-radius: 8px !important;
+  color: var(--text-primary) !important;
+  padding: 12px 16px !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(5px) !important;
 }
 
-.dark .form-control, .dark .search-input, .dark .message-input, 
-.dark input, .dark textarea, .dark select {
-  background: rgba(35, 34, 38, 0.5) !important;
-  border: 1px solid rgba(94, 145, 136, 0.4) !important;
-  color: #ffffff !important;
+.form-control:focus, .search-input:focus, .message-input:focus, 
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-light) !important;
+  outline: none !important;
+  background: var(--bg-primary) !important;
+}
+
+.form-control::placeholder, .search-input::placeholder, .message-input::placeholder,
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Botões primários */
+.btn-primary {
+  background: var(--gradient-primary) !important;
+  border: none !important;
+  color: white !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+  background: var(--accent-hover) !important;
 }
 
 /* Botões secundários */
 .btn-secondary, .tab-btn, .category-btn, .action-btn {
-  background: rgba(255, 255, 255, 0.3) !important;
-  border: 2px solid rgba(94, 145, 136, 0.5) !important;
-  color: #232226 !important;
+  background: var(--bg-secondary) !important;
+  border: 2px solid var(--accent) !important;
+  color: var(--accent) !important;
+  padding: 10px 20px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(5px) !important;
 }
 
-.dark .btn-secondary, .dark .tab-btn, .dark .category-btn, .dark .action-btn {
-  background: rgba(35, 34, 38, 0.5) !important;
-  border: 2px solid rgba(94, 145, 136, 0.4) !important;
-  color: #ffffff !important;
+.btn-secondary:hover, .tab-btn:hover, .category-btn:hover, .action-btn:hover {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--shadow-md) !important;
 }
 
-/* Textos com contraste */
+/* Textos */
 h1, h2, h3, h4, h5, h6 {
-  color: #232226 !important;
-}
-
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-  color: #ffffff !important;
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
 }
 
 p, span, div, label {
-  color: #253342 !important;
+  color: var(--text-secondary) !important;
 }
 
-.dark p, .dark span, .dark div, .dark label {
-  color: rgba(255, 255, 255, 0.9) !important;
-}
-
-/* Elementos com cor de destaque */
 .text-muted, .info-item, .rating-text, .notification-time {
-  color: #3e5954 !important;
+  color: var(--text-muted) !important;
+  opacity: 0.8 !important;
 }
 
-.dark .text-muted, .dark .info-item, .dark .rating-text, .dark .notification-time {
-  color: rgba(255, 255, 255, 0.7) !important;
+/* Elementos especiais */
+.hero {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+}
+
+.sidebar {
+  background: var(--gradient-secondary) !important;
+  border-right: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.topbar {
+  background: var(--bg-primary) !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* Badges e tags */
+.badge, .categoria-badge, .rating-badge {
+  background: var(--accent) !important;
+  color: white !important;
+  padding: 4px 12px !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+/* Estados ativos */
+.active, .tab-btn.active, .category-btn.active {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Animações suaves */
+* {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+}
+
+/* Garantir transições suaves */
+* {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease !important;
 }

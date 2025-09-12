@@ -204,6 +204,8 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
   return (
     <div className="home">
       <section className="hero scroll-animate-fade">
+        <div className="wave-1"></div>
+        <div className="wave-2"></div>
         <div className="hero-content">
           <h1>Descubra os Melhores Bazares de Moda</h1>
           <p>Conecte-se com bazares únicos, encontre peças especiais e apoie negócios locais</p>

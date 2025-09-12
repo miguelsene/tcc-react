@@ -1,0 +1,209 @@
+/* Correções específicas para garantir que o sistema de temas funcione corretamente */
+
+/* Força a aplicação das variáveis CSS em todos os elementos */
+* {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Garante que o body use as variáveis corretas */
+body {
+  background: var(--bg-pattern) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Força a aplicação das variáveis nos elementos principais */
+.app {
+  background: var(--bg-pattern) !important;
+  color: var(--text-primary) !important;
+}
+
+.app * {
+  color: inherit;
+}
+
+/* Garante que os textos usem as cores corretas */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+}
+
+p, span, div:not(.btn):not(.card):not(.sidebar):not(.topbar) {
+  color: var(--text-secondary) !important;
+}
+
+/* Força a aplicação das variáveis nos componentes principais */
+.topbar {
+  background: var(--bg-primary) !important;
+  border-bottom-color: var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.sidebar {
+  background: var(--gradient-secondary) !important;
+  border-right-color: var(--border) !important;
+}
+
+.card, .bazar-card {
+  background: var(--bg-primary) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.btn-primary {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+}
+
+.btn-secondary {
+  background: var(--bg-secondary) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.form-control, input, textarea, select {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.form-control:focus, input:focus, textarea:focus, select:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-light) !important;
+}
+
+/* Garante que os placeholders usem a cor correta */
+::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Força a aplicação das variáveis nos elementos de navegação */
+.nav-item {
+  color: var(--text-accent) !important;
+}
+
+.nav-item:hover {
+  background: var(--accent-light) !important;
+  color: var(--text-primary) !important;
+}
+
+.nav-item.active {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+}
+
+/* Garante que os badges usem as cores corretas */
+.badge, .categoria-badge {
+  background: var(--accent) !important;
+  color: white !important;
+}
+
+/* Força a aplicação das variáveis nos elementos de busca */
+.search-input {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.search-input:focus {
+  border-color: var(--accent) !important;
+  background: var(--bg-primary) !important;
+}
+
+/* Garante que os botões de tema funcionem corretamente */
+.theme-toggle, .sidebar-toggle, .notification-btn {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.theme-toggle:hover, .sidebar-toggle:hover, .notification-btn:hover {
+  border-color: var(--accent) !important;
+  background: var(--accent-light) !important;
+}
+
+/* Força a aplicação das variáveis nos dropdowns */
+.notifications-dropdown, .user-dropdown {
+  background: var(--bg-primary) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.dropdown-item {
+  color: var(--text-primary) !important;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--accent) !important;
+}
+
+/* Garante que os elementos de estatísticas usem as cores corretas */
+.stat-item {
+  color: var(--text-primary) !important;
+}
+
+.stat-number {
+  color: var(--accent) !important;
+}
+
+/* Força a aplicação das variáveis nos elementos de categoria */
+.category-btn {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.category-btn:hover, .category-btn.active {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+}
+
+/* Garante que os elementos de avaliação usem as cores corretas */
+.star-filled {
+  color: #ffc107 !important;
+}
+
+.star-empty {
+  color: var(--text-muted) !important;
+}
+
+/* Força a aplicação das variáveis nos elementos de informação */
+.info-item {
+  color: var(--text-muted) !important;
+}
+
+/* Garante que os elementos de ação usem as cores corretas */
+.favorite-btn {
+  background: var(--bg-primary) !important;
+  color: var(--danger) !important;
+}
+
+.favorite-btn.active {
+  color: var(--danger) !important;
+}
+
+/* Força a aplicação das variáveis nos elementos de overlay */
+.rating-overlay {
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: white !important;
+}
+
+/* Garante que os elementos de estado vazio usem as cores corretas */
+.empty-state {
+  color: var(--text-muted) !important;
+}
+
+.empty-icon {
+  color: var(--text-muted) !important;
+}
+
+/* Força a aplicação das variáveis nos elementos de carrossel */
+.carousel-btn {
+  background: var(--bg-primary) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+.carousel-btn:hover {
+  background: var(--accent) !important;
+  color: white !important;
+}

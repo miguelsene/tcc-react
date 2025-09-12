@@ -1,6 +1,6 @@
 .sidebar {
   width: 280px;
-  background: var(--bg-primary);
+  background: var(--gradient-secondary);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -10,7 +10,6 @@
   left: 0;
   z-index: 1000;
   overflow: hidden;
-  backdrop-filter: blur(20px);
   box-shadow: var(--shadow-lg);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -26,7 +25,7 @@
 .sidebar-header {
   padding: 2rem 1.5rem;
   border-bottom: 1px solid var(--border);
-  background: var(--gradient-primary);
+  background: var(--accent-light);
   position: relative;
   overflow: hidden;
 }
@@ -147,10 +146,10 @@
   display: flex;
   align-items: center;
   padding: 0.875rem 1.5rem;
-  color: var(--text-secondary);
+  color: var(--text-accent);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0.25rem;
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
   margin: 0 0.75rem;
@@ -184,15 +183,15 @@
 }
 
 .nav-item:hover {
-  background: var(--bg-tertiary);
+  background: var(--accent-light);
   color: var(--text-primary);
   transform: translateX(4px);
   box-shadow: var(--shadow-md);
 }
 
 .nav-item.active {
-  background: var(--accent-light);
-  color: var(--accent);
+  background: var(--gradient-primary);
+  color: white;
   font-weight: 600;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--accent);

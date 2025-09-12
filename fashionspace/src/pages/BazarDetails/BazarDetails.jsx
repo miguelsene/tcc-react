@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
+import ReviewSystem from '../../components/ReviewSystem/ReviewSystem';
+import MapView from '../../components/MapView/MapView';
 import './BazarDetails.css';
 
 const BazarDetails = () => {
@@ -13,11 +15,14 @@ const BazarDetails = () => {
   const [userRating, setUserRating] = useState(0);
   const [userComment, setUserComment] = useState('');
   const [ratings, setRatings] = useState([]);
+  const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('info');
 
   useEffect(() => {
     const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
     const allBazares = [...defaultBazares, ...userBazares];
     const foundBazar = allBazares.find(b => b.id === id);
+    const savedUser = JSON.parse(localStorage.getItem('fashionspace_user') || 'null');
     
     if (foundBazar) {
       setBazar(foundBazar);
@@ -29,6 +34,7 @@ const BazarDetails = () => {
       setRatings(savedRatings);
     }
     
+    setUser(savedUser);
     setLoading(false);
   }, [id]);
 
@@ -204,105 +210,95 @@ const BazarDetails = () => {
         </div>
       </div>
 
+      <div className="details-tabs">
+        <button 
+          className={`tab-btn ${activeTab === 'info' ? 'active' : ''}`}
+          onClick={() => setActiveTab('info')}
+        >
+          <i className="bi bi-info-circle"></i> Informações
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+          onClick={() => setActiveTab('reviews')}
+        >
+          <i className="bi bi-star"></i> Avaliações
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+          onClick={() => setActiveTab('map')}
+        >
+          <i className="bi bi-geo-alt"></i> Localização
+        </button>
+      </div>
+
       <div className="details-content">
-        <div className="info-section">
-          <h3>
-            <i className="bi bi-geo-alt-fill"></i>
-            Localização
-          </h3>
-          <div className="location-info">
-            <p><strong>Endereço:</strong></p>
-            <p>{bazar.endereco.rua}, {bazar.endereco.numero}</p>
-            <p>{bazar.endereco.bairro} - {bazar.endereco.cidade}</p>
-            <p><strong>CEP:</strong> {bazar.endereco.cep}</p>
-          </div>
-        </div>
-
-        <div className="info-section">
-          <h3>
-            <i className="bi bi-telephone-fill"></i>
-            Contato
-          </h3>
-          <div className="contact-info">
-            <p><strong>Telefone:</strong></p>
-            <a href={`tel:${bazar.telefone}`} className="contact-link">
-              {bazar.telefone}
-            </a>
-          </div>
-        </div>
-
-        <div className="info-section">
-          <h3>
-            <i className="bi bi-clock-fill"></i>
-            Horário de Funcionamento
-          </h3>
-          <div className="schedule-info">
-            <p>{bazar.horario}</p>
-          </div>
-        </div>
-
-        {bazar.isDefault && (
-          <div className="info-section">
-            <h3>
-              <i className="bi bi-info-circle-fill"></i>
-              Informações Adicionais
-            </h3>
-            <div className="additional-info">
-              <p>Este é um bazar parceiro da plataforma FashionSpace.</p>
-              <p>Entre em contato para mais informações sobre produtos e disponibilidade.</p>
+        {activeTab === 'info' && (
+          <>
+            <div className="info-section">
+              <h3>
+                <i className="bi bi-geo-alt-fill"></i>
+                Localização
+              </h3>
+              <div className="location-info">
+                <p><strong>Endereço:</strong></p>
+                <p>{bazar.endereco.rua}, {bazar.endereco.numero}</p>
+                <p>{bazar.endereco.bairro} - {bazar.endereco.cidade}</p>
+                <p><strong>CEP:</strong> {bazar.endereco.cep}</p>
+              </div>
             </div>
-          </div>
+
+            <div className="info-section">
+              <h3>
+                <i className="bi bi-telephone-fill"></i>
+                Contato
+              </h3>
+              <div className="contact-info">
+                <p><strong>Telefone:</strong></p>
+                {bazar.telefone ? (
+                  <a href={`tel:${bazar.telefone}`} className="contact-link">
+                    {bazar.telefone}
+                  </a>
+                ) : (
+                  <p>Não informado</p>
+                )}
+              </div>
+            </div>
+
+            <div className="info-section">
+              <h3>
+                <i className="bi bi-clock-fill"></i>
+                Horário de Funcionamento
+              </h3>
+              <div className="schedule-info">
+                <p>{bazar.horario}</p>
+              </div>
+            </div>
+
+            {bazar.isDefault && (
+              <div className="info-section">
+                <h3>
+                  <i className="bi bi-info-circle-fill"></i>
+                  Informações Adicionais
+                </h3>
+                <div className="additional-info">
+                  <p>Este é um bazar parceiro da plataforma FashionSpace.</p>
+                  <p>Entre em contato para mais informações sobre produtos e disponibilidade.</p>
+                </div>
+              </div>
+            )}
+          </>
         )}
         
-        <div className="info-section">
-          <h3>
-            <i className="bi bi-star-fill"></i>
-            Avaliações
-          </h3>
-          
-          <div className="rating-summary">
-            <div className="average-rating">
-              <div className="rating-number">{getAverageRating()}</div>
-              <div className="rating-stars">
-                {renderStars(Math.round(getAverageRating()))}
-              </div>
-              <div className="rating-count">({ratings.length} avaliações)</div>
-            </div>
-            <button 
-              className="btn btn-primary"
-              onClick={() => setShowRatingModal(true)}
-            >
-              <i className="bi bi-plus-circle-fill"></i>
-              Avaliar Bazar
-            </button>
-          </div>
-
-          <div className="ratings-list">
-            {ratings.length === 0 ? (
-              <p className="no-ratings">Ainda não há avaliações para este bazar.</p>
-            ) : (
-              ratings.map((rating) => (
-                <div key={rating.id} className="rating-item">
-                  <div className="rating-header">
-                    <div className="rating-user">
-                      <i className="bi bi-person-circle"></i>
-                      <span>{rating.userName}</span>
-                    </div>
-                    <div className="rating-info">
-                      <div className="rating-stars">
-                        {renderStars(rating.rating)}
-                      </div>
-                      <span className="rating-date">{rating.date}</span>
-                    </div>
-                  </div>
-                  {rating.comment && (
-                    <p className="rating-comment">{rating.comment}</p>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        {activeTab === 'reviews' && user && (
+          <ReviewSystem bazarId={bazar.id} user={user} />
+        )}
+        
+        {activeTab === 'map' && (
+          <MapView 
+            bazares={[bazar]} 
+            onBazarSelect={() => {}} 
+          />
+        )}
       </div>
 
       <div className="action-buttons">

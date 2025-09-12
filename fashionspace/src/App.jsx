@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useScrollAnimationMultiple } from './hooks/useScrollAnimation';
+import { NotificationProvider } from './components/NotificationSystem/NotificationSystem';
 import Sidebar from './components/common/Sidebar';
 import Topbar from './components/common/Topbar';
+import './components/common/Button.css';
 import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import AddBazar from './pages/AddBazar/AddBazar';
@@ -15,8 +17,12 @@ import Support from './pages/Support/Support';
 import Settings from './pages/Settings/Settings';
 import Subscription from './pages/Subscription/Subscription';
 import AIAssistant from './pages/AIAssistant/AIAssistant';
+import SocialFeedPage from './pages/SocialFeed/SocialFeedPage';
+import NotificationCenter from './components/NotificationSystem/NotificationSystem';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import './App.css';
+import './global-palette.css';
+import './theme-fix.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -68,8 +74,9 @@ function App() {
   }
 
   return (
-    <div className={`app ${darkMode ? 'dark' : 'light'} ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
-      <Router>
+    <NotificationProvider>
+      <div className={`app ${darkMode ? 'dark' : 'light'} ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
+        <Router>
         <Sidebar user={user} visible={sidebarVisible} />
         <div className="main-content">
           <Topbar 
@@ -110,12 +117,15 @@ function App() {
                   <AIAssistant />
                 </ProtectedRoute>
               } />
+              <Route path="/feed" element={<SocialFeedPage user={user} />} />
+              <Route path="/notificacoes" element={<NotificationCenter />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>
         </div>
-      </Router>
-    </div>
+        </Router>
+      </div>
+    </NotificationProvider>
   );
 }
 

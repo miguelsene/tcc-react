@@ -10,6 +10,8 @@ const Sidebar = ({ user, visible }) => {
 
   const allMenuItems = [
     { path: '/', icon: 'bi-house-fill', label: 'Início', forAll: true },
+    { path: '/feed', icon: 'bi-newspaper', label: 'Feed', forAll: true },
+    { path: '/notificacoes', icon: 'bi-bell-fill', label: 'Notificações', forAll: true },
     { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: 'Adicionar Bazar', onlyDono: true },
     { path: '/favoritos', icon: 'bi-heart-fill', label: 'Favoritos', forAll: true },
     { path: '/perfil', icon: 'bi-person-fill', label: 'Perfil', forAll: true },
