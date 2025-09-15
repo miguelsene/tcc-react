@@ -58,7 +58,7 @@ const Sidebar = ({ user, visible }) => {
             to={item.path}
             className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
             style={{ animationDelay: `${index * 0.1}s` }}
-            onClick={() => console.log(`Navegando para: ${item.path}`)}
+
           >
             <div className="nav-icon-wrapper">
               <i className={`nav-icon ${item.icon}`}></i>
@@ -69,13 +69,7 @@ const Sidebar = ({ user, visible }) => {
         ))}
       </nav>
 
-      <div className="sidebar-footer">
-        <div className="footer-decoration">
-          <div className="decoration-circle"></div>
-          <div className="decoration-circle"></div>
-          <div className="decoration-circle"></div>
-        </div>
-      </div>
+
     </div>
   );
 };

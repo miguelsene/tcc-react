@@ -14,24 +14,40 @@ const Favorites = () => {
   useScrollAnimationMultiple();
 
   useEffect(() => {
-    const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-    const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-    const allBazares = [...defaultBazares, ...userBazares];
+    const loadFavorites = () => {
+      const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
+      const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+      const allBazares = [...defaultBazares, ...userBazares];
+      
+      const bazaresFavs = allBazares.filter(bazar => savedFavoritos.includes(bazar.id));
+      
+      setFavoritos(savedFavoritos);
+      setBazaresFavoritos(bazaresFavs);
+    };
+
+    loadFavorites();
     
-    const bazaresFavs = allBazares.filter(bazar => savedFavoritos.includes(bazar.id));
+    const handleFavoritesUpdate = () => {
+      loadFavorites();
+    };
     
-    setFavoritos(savedFavoritos);
-    setBazaresFavoritos(bazaresFavs);
+    window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
+    window.addEventListener('storage', handleFavoritesUpdate);
+    
+    return () => {
+      window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
+      window.removeEventListener('storage', handleFavoritesUpdate);
+    };
   }, []);
 
   const removeFavorito = (bazarId) => {
     if (window.confirm('Deseja remover este bazar dos favoritos?')) {
       const newFavoritos = favoritos.filter(id => id !== bazarId);
-      const newBazaresFavoritos = bazaresFavoritos.filter(bazar => bazar.id !== bazarId);
       
       setFavoritos(newFavoritos);
-      setBazaresFavoritos(newBazaresFavoritos);
       localStorage.setItem('fashionspace_favoritos', JSON.stringify(newFavoritos));
+      
+      window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: newFavoritos }));
     }
   };
 

@@ -11,7 +11,29 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     loadNotifications();
     requestNotificationPermission();
+    startAutoNotifications();
   }, []);
+
+  const startAutoNotifications = () => {
+    const offerNotifications = [
+      { title: '🔥 Oferta Especial!', message: 'Desconto de 30% em roupas vintage até meia-noite!', category: 'promotion' },
+      { title: '⚡ Flash Sale!', message: 'Liquidação relâmpago: Acessórios com até 50% OFF!', category: 'promotion' },
+      { title: '🎯 Oferta Limitada!', message: 'Últimas peças da coleção de inverno com preços imperdíveis!', category: 'promotion' },
+      { title: '💎 Promoção VIP!', message: 'Membros premium: Frete grátis + 20% desconto extra!', category: 'promotion' },
+      { title: '🛍️ Mega Promoção!', message: 'Compre 2 e leve 3! Válido para toda a loja!', category: 'promotion' },
+      { title: '🌟 Novidade!', message: 'Nova coleção primavera-verão chegou! Confira já!', category: 'system' },
+      { title: '📦 Entrega Express!', message: 'Entrega no mesmo dia para pedidos até 14h!', category: 'system' }
+    ];
+
+    setInterval(() => {
+      const randomOffer = offerNotifications[Math.floor(Math.random() * offerNotifications.length)];
+      addNotification({
+        ...randomOffer,
+        type: 'toast',
+        priority: 'medium'
+      });
+    }, 45000); // 45 segundos
+  };
 
   const loadNotifications = () => {
     const saved = JSON.parse(localStorage.getItem('fashionspace_notifications') || '[]');
@@ -32,21 +54,24 @@ export const NotificationProvider = ({ children }) => {
       read: false
     };
 
-    const updated = [newNotification, ...notifications];
-    setNotifications(updated);
-    localStorage.setItem('fashionspace_notifications', JSON.stringify(updated));
+    setNotifications(prev => {
+      const updated = [newNotification, ...prev];
+      localStorage.setItem('fashionspace_notifications', JSON.stringify(updated));
+      return updated;
+    });
 
     // Push notification
-    if (Notification.permission === 'granted') {
+    if (Notification.permission === 'granted' && notification.type === 'toast') {
       new Notification(notification.title, {
         body: notification.message,
-        icon: '/favicon.ico'
+        icon: '/favicon.ico',
+        badge: '/favicon.ico'
       });
     }
 
-    // Auto remove after 5 seconds for toast notifications
+    // Auto remove after 6 seconds for toast notifications
     if (notification.type === 'toast') {
-      setTimeout(() => removeNotification(newNotification.id), 5000);
+      setTimeout(() => removeNotification(newNotification.id), 6000);
     }
   };
 
@@ -88,11 +113,15 @@ const NotificationToasts = ({ notifications }) => {
 
   return (
     <div className="notification-toasts">
-      {notifications.map(notification => (
-        <div key={notification.id} className={`toast toast-${notification.priority || 'info'}`}>
+      {notifications.map((notification, index) => (
+        <div 
+          key={notification.id} 
+          className={`toast toast-${notification.priority || 'info'} toast-enter`}
+          style={{ animationDelay: `${index * 0.1}s` }}
+        >
           <div className="toast-content">
             <div className="toast-icon">
-              <i className={getNotificationIcon(notification.type, notification.priority)}></i>
+              <i className={getNotificationIcon(notification.category, notification.priority)}></i>
             </div>
             <div className="toast-text">
               <h4>{notification.title}</h4>
@@ -105,6 +134,7 @@ const NotificationToasts = ({ notifications }) => {
               <i className="bi bi-x"></i>
             </button>
           </div>
+          <div className="toast-progress"></div>
         </div>
       ))}
     </div>
@@ -201,20 +231,20 @@ const NotificationItem = ({ notification, onMarkAsRead, onRemove }) => {
 
 const getNotificationIcon = (category, priority) => {
   const icons = {
-    review: 'bi-star',
-    message: 'bi-chat-dots',
-    promotion: 'bi-tag',
-    system: 'bi-gear',
-    social: 'bi-people'
+    review: 'bi-star-fill',
+    message: 'bi-chat-dots-fill',
+    promotion: 'bi-tag-fill',
+    system: 'bi-gear-fill',
+    social: 'bi-people-fill'
   };
 
   const priorityIcons = {
-    high: 'bi-exclamation-triangle',
-    medium: 'bi-info-circle',
-    low: 'bi-check-circle'
+    high: 'bi-exclamation-triangle-fill',
+    medium: 'bi-info-circle-fill',
+    low: 'bi-check-circle-fill'
   };
 
-  return icons[category] || priorityIcons[priority] || 'bi-bell';
+  return icons[category] || priorityIcons[priority] || 'bi-bell-fill';
 };
 
 export default NotificationCenter;

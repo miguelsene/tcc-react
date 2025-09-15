@@ -70,7 +70,10 @@ const AddBazar = () => {
 
       const newBazar = {
         id: Date.now().toString(),
-        ...formData,
+        nome: formData.nome,
+        descricao: formData.descricao,
+        imagem: formData.imagem || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500',
+        categoria: formData.categoria,
         endereco: {
           cep: formData.cep,
           rua: formData.rua,
@@ -78,21 +81,27 @@ const AddBazar = () => {
           bairro: formData.bairro,
           cidade: formData.cidade
         },
+        telefone: formData.telefone,
+        horario: formData.horario,
         criadoPor: user.id,
         dataCriacao: new Date().toISOString(),
-        imagem: formData.imagem || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500'
+        avaliacao: 4.5,
+        totalAvaliacoes: 0,
+        isDefault: false
       };
 
+      console.log('Criando bazar:', newBazar);
       bazares.push(newBazar);
       localStorage.setItem('fashionspace_bazares', JSON.stringify(bazares));
-
-      setTimeout(() => {
-        setLoading(false);
-        navigate('/');
-      }, 1000);
+      console.log('Bazares salvos:', bazares);
+      
+      alert('Bazar criado com sucesso!');
+      setLoading(false);
+      navigate('/');
 
     } catch (error) {
       setLoading(false);
+      alert('Erro ao criar bazar. Tente novamente.');
       console.error('Erro ao criar bazar:', error);
     }
   };

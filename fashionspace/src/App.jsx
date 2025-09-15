@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState, useEffect } from 'react';
 import { useScrollAnimationMultiple } from './hooks/useScrollAnimation';
 import { NotificationProvider } from './components/NotificationSystem/NotificationSystem';
+import PageTransition from './components/common/PageTransition';
 import Sidebar from './components/common/Sidebar';
 import Topbar from './components/common/Topbar';
 import './components/common/Button.css';
@@ -89,38 +90,40 @@ function App() {
             onSearch={setGlobalSearchTerm}
           />
           <div className="content">
-            <Routes>
-              <Route path="/" element={<Home searchTerm={globalSearchTerm} user={user} />} />
-              <Route path="/adicionar-bazar" element={
-                <ProtectedRoute user={user} requireDono={true}>
-                  <AddBazar />
-                </ProtectedRoute>
-              } />
-              <Route path="/bazar-detalhes/:id" element={<BazarDetails />} />
-              <Route path="/editar-bazar/:id" element={
-                <ProtectedRoute user={user} requireDono={true}>
-                  <EditBazar />
-                </ProtectedRoute>
-              } />
-              <Route path="/favoritos" element={<Favorites />} />
-              <Route path="/perfil" element={<Profile user={user} setUser={setUser} />} />
-              <Route path="/chat-bazar/:id" element={<Chat />} />
-              <Route path="/suporte" element={<Support />} />
-              <Route path="/configuracoes" element={<Settings />} />
-              <Route path="/assinatura" element={
-                <ProtectedRoute user={user} requireDono={true}>
-                  <Subscription />
-                </ProtectedRoute>
-              } />
-              <Route path="/ia-assistente" element={
-                <ProtectedRoute user={user} requireDono={true}>
-                  <AIAssistant />
-                </ProtectedRoute>
-              } />
-              <Route path="/feed" element={<SocialFeedPage user={user} />} />
-              <Route path="/notificacoes" element={<NotificationCenter />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
+            <PageTransition>
+              <Routes>
+                <Route path="/" element={<Home searchTerm={globalSearchTerm} user={user} />} />
+                <Route path="/adicionar-bazar" element={
+                  <ProtectedRoute user={user} requireDono={true}>
+                    <AddBazar />
+                  </ProtectedRoute>
+                } />
+                <Route path="/bazar-detalhes/:id" element={<BazarDetails />} />
+                <Route path="/editar-bazar/:id" element={
+                  <ProtectedRoute user={user} requireDono={true}>
+                    <EditBazar />
+                  </ProtectedRoute>
+                } />
+                <Route path="/favoritos" element={<Favorites />} />
+                <Route path="/perfil" element={<Profile user={user} setUser={setUser} />} />
+                <Route path="/chat-bazar/:id" element={<Chat />} />
+                <Route path="/suporte" element={<Support />} />
+                <Route path="/configuracoes" element={<Settings />} />
+                <Route path="/assinatura" element={
+                  <ProtectedRoute user={user} requireDono={true}>
+                    <Subscription />
+                  </ProtectedRoute>
+                } />
+                <Route path="/ia-assistente" element={
+                  <ProtectedRoute user={user} requireDono={true}>
+                    <AIAssistant />
+                  </ProtectedRoute>
+                } />
+                <Route path="/feed" element={<SocialFeedPage user={user} />} />
+                <Route path="/notificacoes" element={<NotificationCenter />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </PageTransition>
           </div>
         </div>
         </Router>

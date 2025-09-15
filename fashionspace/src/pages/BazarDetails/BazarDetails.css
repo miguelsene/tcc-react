@@ -14,25 +14,27 @@
   background: none;
   border: none;
   padding: 1rem 1.5rem;
-  color: #6c757d;
+  color: var(--text-muted);
   cursor: pointer;
   border-bottom: 3px solid transparent;
-  transition: all 0.3s;
+  transition: all var(--animation-normal) var(--ease-out-quart);
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
+  transform: translateZ(0);
 }
 
 .tab-btn:hover {
-  color: #5f81a5;
-  background: #f8f9fa;
+  color: var(--accent);
+  background: var(--bg-secondary);
+  transform: translateY(-1px) translateZ(0);
 }
 
 .tab-btn.active {
-  color: #0f2c47;
-  border-bottom-color: #5f81a5;
-  background: #f8f9fa;
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+  background: var(--bg-secondary);
 }
 
 .details-header {
@@ -69,11 +71,14 @@
   color: var(--text-primary);
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all var(--animation-normal) var(--ease-out-quart);
+  transform: translateZ(0);
 }
 
 .favorite-btn:hover, .share-btn:hover {
   background: var(--bg-secondary);
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: var(--shadow-md);
 }
 
 .favorite-btn.active {
@@ -305,11 +310,12 @@
 
 .star.interactive {
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform var(--animation-fast) var(--ease-out-quart);
+  transform: translateZ(0);
 }
 
 .star.interactive:hover {
-  transform: scale(1.2);
+  transform: scale(1.2) translateZ(0);
 }
 
 .ratings-list {

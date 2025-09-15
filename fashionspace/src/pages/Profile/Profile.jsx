@@ -11,16 +11,41 @@ const Profile = ({ user, setUser }) => {
   const [favoritos, setFavoritos] = useState([]);
   const [previewBazar, setPreviewBazar] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({ nome: user.nome, email: user.email });
+  const [stats, setStats] = useState({ views: 0, likes: 0, messages: 0 });
   
   useScrollAnimationMultiple();
 
   useEffect(() => {
-    const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-    const userCreatedBazares = bazares.filter(bazar => bazar.criadoPor === user.id);
-    const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
+    const loadUserData = () => {
+      const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+      const userCreatedBazares = bazares.filter(bazar => bazar.criadoPor === user.id);
+      const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
+      const posts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
+      const userPosts = posts.filter(post => post.userId === user.id);
+      
+      // Calcular estatísticas
+      const totalLikes = userPosts.reduce((sum, post) => sum + post.likes.length, 0);
+      const totalViews = userCreatedBazares.length * 150 + Math.floor(Math.random() * 500);
+      const totalMessages = Math.floor(Math.random() * 50) + userCreatedBazares.length * 5;
+      
+      setUserBazares(userCreatedBazares);
+      setFavoritos(savedFavoritos);
+      setStats({ views: totalViews, likes: totalLikes, messages: totalMessages });
+    };
+
+    loadUserData();
     
-    setUserBazares(userCreatedBazares);
-    setFavoritos(savedFavoritos);
+    const handleBazaresUpdate = () => {
+      loadUserData();
+    };
+    
+    window.addEventListener('bazaresUpdated', handleBazaresUpdate);
+    
+    return () => {
+      window.removeEventListener('bazaresUpdated', handleBazaresUpdate);
+    };
   }, [user.id]);
 
   const handleLogout = () => {
@@ -28,6 +53,21 @@ const Profile = ({ user, setUser }) => {
       localStorage.removeItem('fashionspace_user');
       setUser(null);
     }
+  };
+
+  const handleEditProfile = () => {
+    if (isEditing) {
+      // Salvar alterações
+      const updatedUser = { ...user, ...editData };
+      setUser(updatedUser);
+      localStorage.setItem('fashionspace_user', JSON.stringify(updatedUser));
+      
+      // Atualizar na lista de usuários
+      const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
+      const updatedUsers = users.map(u => u.id === user.id ? updatedUser : u);
+      localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
+    }
+    setIsEditing(!isEditing);
   };
 
   const deleteBazar = (bazarId) => {
@@ -78,41 +118,99 @@ const Profile = ({ user, setUser }) => {
             className="user-avatar-large"
           />
           <div className="user-details">
-            <h1>{user.nome}</h1>
-            <p className="user-email">{user.email}</p>
-            <span className="member-badge">
-              <i className="bi bi-award-fill"></i>
-              Membro desde {formatDate(user.dataCadastro)}
-            </span>
+            {isEditing ? (
+              <div className="edit-form">
+                <input
+                  type="text"
+                  value={editData.nome}
+                  onChange={(e) => setEditData({...editData, nome: e.target.value})}
+                  className="form-control"
+                  placeholder="Nome"
+                />
+                <input
+                  type="email"
+                  value={editData.email}
+                  onChange={(e) => setEditData({...editData, email: e.target.value})}
+                  className="form-control"
+                  placeholder="Email"
+                />
+              </div>
+            ) : (
+              <>
+                <h1>{user.nome}</h1>
+                <p className="user-email">{user.email}</p>
+              </>
+            )}
+            <div className="user-badges">
+              <span className="member-badge">
+                <i className="bi bi-award-fill"></i>
+                Membro desde {formatDate(user.dataCadastro)}
+              </span>
+              <span className="type-badge">
+                <i className="bi bi-person-fill"></i>
+                {user.tipoUsuario === 'dono' ? 'Dono de Bazar' : 'Usuário'}
+              </span>
+            </div>
           </div>
         </div>
         
-        <button className="logout-btn scroll-animate-right" onClick={handleLogout}>
-          <i className="bi bi-box-arrow-right"></i>
-          Sair da Conta
-        </button>
+        <div className="profile-actions scroll-animate-right">
+          <button className="edit-btn" onClick={handleEditProfile}>
+            <i className={`bi ${isEditing ? 'bi-check-circle-fill' : 'bi-pencil-fill'}`}></i>
+            {isEditing ? 'Salvar' : 'Editar'}
+          </button>
+          <button className="logout-btn" onClick={handleLogout}>
+            <i className="bi bi-box-arrow-right"></i>
+            Sair
+          </button>
+        </div>
       </div>
 
       <div className="profile-stats scroll-animate">
         <div className="stat-card">
-          <div className="stat-number">{userBazares.length}</div>
-          <div className="stat-label">
+          <div className="stat-icon">
             <i className="bi bi-shop"></i>
-            Bazares Criados
+          </div>
+          <div className="stat-info">
+            <div className="stat-number">{userBazares.length}</div>
+            <div className="stat-label">Bazares Criados</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">{favoritos.length}</div>
-          <div className="stat-label">
+          <div className="stat-icon">
             <i className="bi bi-heart-fill"></i>
-            Favoritos
+          </div>
+          <div className="stat-info">
+            <div className="stat-number">{favoritos.length}</div>
+            <div className="stat-label">Favoritos</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-number">
-            <i className="bi bi-star-fill"></i>
+          <div className="stat-icon">
+            <i className="bi bi-eye-fill"></i>
           </div>
-          <div className="stat-label">Membro Ativo</div>
+          <div className="stat-info">
+            <div className="stat-number">{stats.views}</div>
+            <div className="stat-label">Visualizações</div>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">
+            <i className="bi bi-hand-thumbs-up-fill"></i>
+          </div>
+          <div className="stat-info">
+            <div className="stat-number">{stats.likes}</div>
+            <div className="stat-label">Curtidas</div>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon">
+            <i className="bi bi-chat-dots-fill"></i>
+          </div>
+          <div className="stat-info">
+            <div className="stat-number">{stats.messages}</div>
+            <div className="stat-label">Mensagens</div>
+          </div>
         </div>
       </div>
 
@@ -122,10 +220,12 @@ const Profile = ({ user, setUser }) => {
             <i className="bi bi-shop"></i>
             Meus Bazares
           </h2>
-          <Link to="/adicionar-bazar" className="btn btn-primary">
-            <i className="bi bi-plus-circle-fill"></i>
-            Criar Novo Bazar
-          </Link>
+          {user.tipoUsuario === 'dono' && (
+            <Link to="/adicionar-bazar" className="btn btn-primary">
+              <i className="bi bi-plus-circle-fill"></i>
+              Criar Novo Bazar
+            </Link>
+          )}
         </div>
 
         {userBazares.length === 0 ? (
@@ -133,10 +233,12 @@ const Profile = ({ user, setUser }) => {
             <i className="bi bi-shop empty-icon"></i>
             <h3>Você ainda não criou nenhum bazar</h3>
             <p>Que tal compartilhar seu primeiro bazar com a comunidade?</p>
-            <Link to="/adicionar-bazar" className="btn btn-primary">
-              <i className="bi bi-plus-circle-fill"></i>
-              Criar Primeiro Bazar
-            </Link>
+            {user.tipoUsuario === 'dono' && (
+              <Link to="/adicionar-bazar" className="btn btn-primary">
+                <i className="bi bi-plus-circle-fill"></i>
+                Criar Primeiro Bazar
+              </Link>
+            )}
           </div>
         ) : (
           <div className="bazares-grid">

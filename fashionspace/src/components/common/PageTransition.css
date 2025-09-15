@@ -1,0 +1,30 @@
+.page-transition {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all var(--animation-slow) var(--ease-out-quart);
+}
+
+.page-transition.page-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1rem;
+}
+
+.page-loading .loading-spinner {
+  width: 50px;
+  height: 50px;
+}
+
+.loading-text {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}

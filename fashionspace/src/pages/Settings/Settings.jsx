@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Settings = () => {
   const [settings, setSettings] = useState({
@@ -8,7 +8,7 @@ const Settings = () => {
       sms: false,
       newBazares: true,
       messages: true,
-      promotions: false
+      promotions: true
     },
     privacy: {
       profileVisible: true,
@@ -23,6 +23,14 @@ const Settings = () => {
       distance: 'km'
     }
   });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const savedSettings = JSON.parse(localStorage.getItem('fashionspace_settings') || '{}');
+    if (Object.keys(savedSettings).length > 0) {
+      setSettings(prev => ({ ...prev, ...savedSettings }));
+    }
+  }, []);
 
   const handleToggle = (section, key) => {
     setSettings(prev => ({
@@ -44,15 +52,65 @@ const Settings = () => {
     }));
   };
 
-  const handleSave = () => {
-    localStorage.setItem('fashionspace_settings', JSON.stringify(settings));
-    alert('Configurações salvas com sucesso!');
+  const handleSave = async () => {
+    setLoading(true);
+    
+    try {
+      localStorage.setItem('fashionspace_settings', JSON.stringify(settings));
+      
+      // Simular salvamento no servidor
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Aplicar tema se mudou
+      if (settings.preferences.theme !== 'auto') {
+        document.documentElement.setAttribute('data-theme', settings.preferences.theme);
+      }
+      
+      alert('✓ Configurações salvas com sucesso!');
+    } catch (error) {
+      alert('⚠️ Erro ao salvar configurações. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
     if (confirm('Tem certeza que deseja restaurar as configurações padrão?')) {
-      localStorage.removeItem('fashionspace_settings');
-      window.location.reload();
+      const defaultSettings = {
+        notifications: {
+          push: true,
+          email: true,
+          sms: false,
+          newBazares: true,
+          messages: true,
+          promotions: true
+        },
+        privacy: {
+          profileVisible: true,
+          showEmail: false,
+          showPhone: false,
+          allowMessages: true
+        },
+        preferences: {
+          language: 'pt-BR',
+          theme: 'auto',
+          currency: 'BRL',
+          distance: 'km'
+        }
+      };
+      
+      setSettings(defaultSettings);
+      localStorage.setItem('fashionspace_settings', JSON.stringify(defaultSettings));
+      alert('✓ Configurações restauradas para o padrão!');
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    if (confirm('ATENÇÃO: Esta ação é irreversível! Deseja realmente excluir sua conta?')) {
+      if (confirm('Digite "EXCLUIR" para confirmar:') === 'EXCLUIR') {
+        localStorage.clear();
+        window.location.reload();
+      }
     }
   };
 
@@ -145,27 +203,89 @@ const Settings = () => {
               <h4>Notificações por Email</h4>
               <p>Receba atualizações por email</p>
             </div>
-            <label className="toggle">
+            <label style={{
+              position: 'relative',
+              display: 'inline-block',
+              width: '60px',
+              height: '34px'
+            }}>
               <input 
                 type="checkbox" 
                 checked={settings.notifications.email}
                 onChange={() => handleToggle('notifications', 'email')}
+                style={{ opacity: 0, width: 0, height: 0 }}
               />
-              <span className="slider"></span>
+              <span style={{
+                position: 'absolute',
+                cursor: 'pointer',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: settings.notifications.email ? '#5f81a5' : '#ccc',
+                transition: '0.4s',
+                borderRadius: '34px'
+              }}>
+                <span style={{
+                  position: 'absolute',
+                  content: '',
+                  height: '26px',
+                  width: '26px',
+                  left: settings.notifications.email ? '30px' : '4px',
+                  bottom: '4px',
+                  backgroundColor: 'white',
+                  transition: '0.4s',
+                  borderRadius: '50%'
+                }}></span>
+              </span>
             </label>
           </div>
-          <div className="setting-item">
-            <div className="setting-info">
-              <h4>Novos Bazares</h4>
-              <p>Seja notificado sobre novos bazares na sua região</p>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '1rem 0',
+            borderBottom: '1px solid #f1f3f4'
+          }}>
+            <div>
+              <h4 style={{ color: '#0f2c47', fontWeight: '600', margin: '0 0 0.25rem 0' }}>Novos Bazares</h4>
+              <p style={{ color: '#5f81a5', fontSize: '0.875rem', margin: 0 }}>Seja notificado sobre novos bazares na sua região</p>
             </div>
-            <label className="toggle">
+            <label style={{
+              position: 'relative',
+              display: 'inline-block',
+              width: '60px',
+              height: '34px'
+            }}>
               <input 
                 type="checkbox" 
                 checked={settings.notifications.newBazares}
                 onChange={() => handleToggle('notifications', 'newBazares')}
+                style={{ opacity: 0, width: 0, height: 0 }}
               />
-              <span className="slider"></span>
+              <span style={{
+                position: 'absolute',
+                cursor: 'pointer',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: settings.notifications.newBazares ? '#5f81a5' : '#ccc',
+                transition: '0.4s',
+                borderRadius: '34px'
+              }}>
+                <span style={{
+                  position: 'absolute',
+                  content: '',
+                  height: '26px',
+                  width: '26px',
+                  left: settings.notifications.newBazares ? '30px' : '4px',
+                  bottom: '4px',
+                  backgroundColor: 'white',
+                  transition: '0.4s',
+                  borderRadius: '50%'
+                }}></span>
+              </span>
             </label>
           </div>
           <div className="setting-item">
@@ -353,19 +473,22 @@ const Settings = () => {
             >
               <i className="bi bi-arrow-clockwise"></i> Restaurar Padrões
             </button>
-            <button style={{
-              background: '#ef4444',
-              color: 'white',
-              border: 'none',
-              padding: '0.75rem 1.5rem',
-              borderRadius: '0.75rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              transition: 'all 0.3s ease'
-            }}>
+            <button 
+              onClick={handleDeleteAccount}
+              style={{
+                background: '#ef4444',
+                color: 'white',
+                border: 'none',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '0.75rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                transition: 'all 0.3s ease'
+              }}
+            >
               <i className="bi bi-trash-fill"></i> Excluir Conta
             </button>
           </div>
@@ -374,20 +497,27 @@ const Settings = () => {
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
           <button 
             onClick={handleSave}
+            disabled={loading}
             style={{
-              background: 'linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%)',
+              background: loading ? '#ccc' : 'linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%)',
               color: 'white',
               border: 'none',
               padding: '1rem 2rem',
               borderRadius: '0.75rem',
               fontWeight: '600',
-              cursor: 'pointer',
+              cursor: loading ? 'not-allowed' : 'pointer',
               fontSize: '1rem',
               boxShadow: '0 4px 15px rgba(95, 129, 165, 0.3)',
-              transition: 'transform 0.3s ease'
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}
           >
-            <i className="bi bi-check-circle-fill"></i> Salvar Configurações
+            <i className={`bi ${loading ? 'bi-arrow-repeat' : 'bi-check-circle-fill'}`} style={{
+              animation: loading ? 'spin 1s linear infinite' : 'none'
+            }}></i> 
+            {loading ? 'Salvando...' : 'Salvar Configurações'}
           </button>
           <button style={{
             background: '#f8f9fa',
