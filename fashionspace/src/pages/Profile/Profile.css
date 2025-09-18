@@ -85,6 +85,43 @@
   right: 2rem;
 }
 
+/* Quick actions posicionadas no final da página */
+.profile-quick-actions {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.profile-quick-actions .action-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.profile-quick-actions .action-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+}
+
+.profile-quick-actions .action-arrow {
+  color: var(--text-muted);
+}
+
 .edit-btn,
 .logout-btn {
   padding: 12px 20px;
@@ -227,7 +264,7 @@
 }
 
 .bazar-card:hover {
-  transform: translateY(-8px) translateZ(0);
+  transform: translateY(-8px) scale(1) translateZ(0);
   box-shadow: var(--shadow-lg);
 }
 
@@ -242,6 +279,9 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .bazar-card:hover .card-image img {
@@ -261,10 +301,12 @@
   gap: 1rem;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none; /* não interfere no :hover do card */
 }
 
 .bazar-card:hover .card-overlay {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .overlay-btn {
@@ -276,6 +318,8 @@
   transition: all 0.3s ease;
   text-decoration: none;
   font-size: 0.875rem;
+  pointer-events: auto; /* permite clique mesmo com overlay sem eventos */
+  backface-visibility: hidden;
 }
 
 .edit-btn {

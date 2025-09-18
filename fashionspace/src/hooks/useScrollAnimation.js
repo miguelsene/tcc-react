@@ -36,28 +36,56 @@ export const useScrollAnimation = (threshold = 0.1, rootMargin = '0px', triggerO
 
 export const useScrollAnimationMultiple = () => {
   useEffect(() => {
+    const selector = '.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .scroll-animate-fade, .scroll-animate-rotate';
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            const delay = entry.target.dataset.delay || 0;
+            const delay = Number(entry.target.dataset.delay || 0);
             if (delay > 0) {
               setTimeout(() => {
                 entry.target.classList.add('visible');
               }, delay);
             }
+            observer.unobserve(entry.target);
           }
         });
       },
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
 
-    const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .scroll-animate-fade, .scroll-animate-rotate');
-    elements.forEach((el) => observer.observe(el));
+    const observeEl = (el) => {
+      if (!el || el.classList.contains('visible')) return;
+      observer.observe(el);
+    };
+
+    // Observar elementos existentes
+    document.querySelectorAll(selector).forEach(observeEl);
+
+    // Observar novos elementos adicionados dinamicamente
+    const mo = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'childList') {
+          m.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) {
+              if (node.matches && node.matches(selector)) observeEl(node);
+              node.querySelectorAll && node.querySelectorAll(selector).forEach(observeEl);
+            }
+          });
+        }
+        if (m.type === 'attributes' && m.target.matches && m.target.matches(selector)) {
+          observeEl(m.target);
+        }
+      }
+    });
+
+    mo.observe(document.body, { childList: true, subtree: true, attributes: false });
 
     return () => {
-      elements.forEach((el) => observer.unobserve(el));
+      observer.disconnect();
+      mo.disconnect();
     };
   }, []);
 };

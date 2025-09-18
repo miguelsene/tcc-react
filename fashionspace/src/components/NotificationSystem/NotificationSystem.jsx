@@ -11,7 +11,8 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     loadNotifications();
     requestNotificationPermission();
-    startAutoNotifications();
+    const autoId = startAutoNotifications();
+    return () => clearInterval(autoId);
   }, []);
 
   const startAutoNotifications = () => {
@@ -25,7 +26,7 @@ export const NotificationProvider = ({ children }) => {
       { title: '📦 Entrega Express!', message: 'Entrega no mesmo dia para pedidos até 14h!', category: 'system' }
     ];
 
-    setInterval(() => {
+    return setInterval(() => {
       const randomOffer = offerNotifications[Math.floor(Math.random() * offerNotifications.length)];
       addNotification({
         ...randomOffer,
@@ -37,7 +38,9 @@ export const NotificationProvider = ({ children }) => {
 
   const loadNotifications = () => {
     const saved = JSON.parse(localStorage.getItem('fashionspace_notifications') || '[]');
-    setNotifications(saved);
+    // Não carregar toasts persistidos (toasts são efêmeros)
+    const filtered = Array.isArray(saved) ? saved.filter(n => n.type !== 'toast') : [];
+    setNotifications(filtered);
   };
 
   const requestNotificationPermission = () => {
@@ -56,7 +59,8 @@ export const NotificationProvider = ({ children }) => {
 
     setNotifications(prev => {
       const updated = [newNotification, ...prev];
-      localStorage.setItem('fashionspace_notifications', JSON.stringify(updated));
+      const toPersist = updated.filter(n => n.type !== 'toast');
+      localStorage.setItem('fashionspace_notifications', JSON.stringify(toPersist));
       return updated;
     });
 
@@ -76,17 +80,21 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const markAsRead = (id) => {
-    const updated = notifications.map(n => 
-      n.id === id ? { ...n, read: true } : n
-    );
-    setNotifications(updated);
-    localStorage.setItem('fashionspace_notifications', JSON.stringify(updated));
+    setNotifications(prev => {
+      const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
+      const toPersist = updated.filter(n => n.type !== 'toast');
+      localStorage.setItem('fashionspace_notifications', JSON.stringify(toPersist));
+      return updated;
+    });
   };
 
   const removeNotification = (id) => {
-    const updated = notifications.filter(n => n.id !== id);
-    setNotifications(updated);
-    localStorage.setItem('fashionspace_notifications', JSON.stringify(updated));
+    setNotifications(prev => {
+      const updated = prev.filter(n => n.id !== id);
+      const toPersist = updated.filter(n => n.type !== 'toast');
+      localStorage.setItem('fashionspace_notifications', JSON.stringify(toPersist));
+      return updated;
+    });
   };
 
   const clearAll = () => {

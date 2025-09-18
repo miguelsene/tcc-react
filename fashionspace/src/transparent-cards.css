@@ -1,0 +1,159 @@
+/* Overrides para ajustar transparência dos cards (50%) e fundo da animação seguindo a paleta */
+
+:root {
+  /* Transparência 50% para cards */
+  --card-bg-light: rgba(255, 255, 255, 0.3);
+  --card-bg-dark: rgba(14, 27, 42, 0.3); /* #0e1b2a com alpha */
+  --card-blur-light: 8px;
+  --card-blur-dark: 10px;
+}
+
+/* Conjunto de seletores unificado para todos os tipos de card */
+.app.light .card,
+.app.light .bazar-card,
+.app.light .feature-card,
+.app.light .plan-card,
+.app.light .stat-card,
+.app.light .action-card,
+.app.light .favorite-card,
+.app.light .guide-card,
+.app.light .contact-item,
+.app.light .faq-item,
+.app.light .payment-method,
+.app.light .settings-section,
+.app.light .support-content,
+.app.light .bazar-preview,
+.app.light .info-section,
+.app.light .profile-header,
+.app.light .notification-item,
+.app.light .post-card,
+.app.light .review-card,
+.app.light .map-container,
+.app.light .login-card,
+.app.light .test-card,
+.app.light .credit-card-form,
+.app.light .disclaimer-card {
+  background: var(--card-bg-light) !important;
+  backdrop-filter: blur(var(--card-blur-light)) !important;
+}
+
+.app.dark .card,
+.app.dark .bazar-card,
+.app.dark .feature-card,
+.app.dark .plan-card,
+.app.dark .stat-card,
+.app.dark .action-card,
+.app.dark .favorite-card,
+.app.dark .guide-card,
+.app.dark .contact-item,
+.app.dark .faq-item,
+.app.dark .payment-method,
+.app.dark .settings-section,
+.app.dark .support-content,
+.app.dark .bazar-preview,
+.app.dark .info-section,
+.app.dark .profile-header,
+.app.dark .notification-item,
+.app.dark .post-card,
+.app.dark .review-card,
+.app.dark .map-container,
+.app.dark .login-card,
+.app.dark .test-card,
+.app.dark .credit-card-form,
+.app.dark .disclaimer-card {
+  background: var(--card-bg-dark) !important;
+  backdrop-filter: blur(var(--card-blur-dark)) !important;
+}
+
+/* Conteúdos internos herdam o mesmo fundo */
+.card .card-content,
+.bazar-card .card-content,
+.favorite-card .card-content,
+.post-card .card-content,
+.review-card .card-content {
+  background: inherit !important;
+}
+
+/* Estados hover mantêm a mesma opacidade para consistência */
+.app.light .plan-card.selected,
+.app.light .plan-card.popular,
+.app.light .guide-card:hover,
+.app.light .feature-card:hover,
+.app.light .bazar-card:hover,
+.app.light .favorite-card:hover,
+.app.light .post-card:hover,
+.app.light .review-card:hover,
+.app.light .stat-card:hover {
+  background: var(--card-bg-light) !important;
+}
+
+.app.dark .plan-card.selected,
+.app.dark .plan-card.popular,
+.app.dark .guide-card:hover,
+.app.dark .feature-card:hover,
+.app.dark .bazar-card:hover,
+.app.dark .favorite-card:hover,
+.app.dark .post-card:hover,
+.app.dark .review-card:hover,
+.app.dark .stat-card:hover {
+  background: var(--card-bg-dark) !important;
+}
+
+/* ===== Fundo da animação de ondas com cor diferente seguindo a paleta ===== */
+/* Override carregado após App.css para garantir precedência */
+/* Tema claro: destaque com a cor secundária (#5f81a5) e acentos de #649fde */
+.app::after {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 320'%3E%3Cpath d='M0 200 Q 480 140 960 200 T 1920 200' fill='none' stroke='%230f2c47' stroke-width='7.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 320'%3E%3Cpath d='M0 230 Q 320 170 640 230 T 1280 230' fill='none' stroke='%23649fde' stroke-width='6.0'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 320'%3E%3Cpath d='M0 260 Q 240 200 480 260 T 960 260' fill='none' stroke='%235f81a5' stroke-width='4.5'/%3E%3C/svg%3E"),
+    /* fundo modificado: mais secundário, diferente do anterior */
+    linear-gradient(to top, rgba(95,129,165,0.50) 0%, rgba(100,159,222,0.28) 45%, rgba(100,159,222,0.14) 65%, rgba(255,255,255,0) 90%) !important;
+}
+
+/* Tema escuro: base com acento/primário, com leve ajuste para contraste */
+.app.dark::after {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 320'%3E%3Cpath d='M0 200 Q 480 140 960 200 T 1920 200' fill='none' stroke='%23649fde' stroke-width='7.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 320'%3E%3Cpath d='M0 230 Q 320 170 640 230 T 1280 230' fill='none' stroke='%23e8eef5' stroke-width='4.8'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 960 320'%3E%3Cpath d='M0 260 Q 240 200 480 260 T 960 260' fill='none' stroke='%230f2c47' stroke-width='4.5'/%3E%3C/svg%3E"),
+    /* fundo modificado: mistura de secundário e primário, diferente do anterior */
+    linear-gradient(to top, rgba(95,129,165,0.46) 0%, rgba(15,44,71,0.32) 45%, rgba(15,44,71,0.18) 65%, rgba(0,0,0,0) 90%) !important;
+}
+
+/* Fix hover dos cards de Favoritos e z-index do botão de remover */
+.favorite-card {
+  transition: transform var(--animation-normal) var(--ease-out-quart), box-shadow var(--animation-normal) var(--ease-out-quart) !important;
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  will-change: transform !important;
+}
+.favorite-card:hover {
+  transform: translateY(-8px) translateZ(0) !important;
+}
+.favorite-card .card-image img {
+  transition: transform var(--animation-slow) var(--ease-out-quart) !important;
+}
+.remove-favorite {
+  z-index: 2 !important;
+}
+
+/* Oculta controles duplicados do cabeçalho do carrossel (deixa só as setas sobrepostas) */
+.carousel-controls {
+  display: none !important;
+}
+
+/* Remove o hero da Home */
+.home .hero {
+  display: none !important;
+}
+
+/* Garante visibilidade das setas sobrepostas do carrossel */
+.bazar-carousel .carousel-arrow {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 20 !important;
+}
+.bazar-carousel .carousel-arrow.prev { left: 15px !important; }
+.bazar-carousel .carousel-arrow.next { right: 15px !important; }

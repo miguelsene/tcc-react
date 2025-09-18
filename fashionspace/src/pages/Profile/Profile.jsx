@@ -315,7 +315,7 @@ const Profile = ({ user, setUser }) => {
         )}
       </div>
 
-      <div className="profile-actions">
+      <div className="profile-quick-actions">
         <Link to="/favoritos" className="action-card">
           <div className="action-icon">
             <i className="bi bi-heart-fill"></i>

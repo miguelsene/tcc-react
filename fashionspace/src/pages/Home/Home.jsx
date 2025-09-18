@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
+import BazarCarousel from '../../components/BazarCarousel/BazarCarousel';
 import './Home.css';
 
 const Home = ({ searchTerm: globalSearchTerm, user }) => {
@@ -49,12 +50,33 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
     
     setFavoritos(newFavoritos);
     localStorage.setItem('fashionspace_favoritos', JSON.stringify(newFavoritos));
+    // Notifica outras telas para atualizar a lista de favoritos
+    window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: newFavoritos }));
   };
 
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
            { cor: '#5f81a5', nome: categoria, icon: 'bi-shop' };
   };
+
+  // Agrupar bazares filtrados por categoria na ordem definida em categorias
+  const groups = (() => {
+    const order = categorias.map(c => c.nome);
+    const known = new Set(order);
+    const orderedGroups = order
+      .map(name => ({ name, items: filteredBazares.filter(b => b.categoria === name) }))
+      .filter(g => g.items.length > 0);
+
+    const unknownNames = Array.from(new Set(
+      filteredBazares.filter(b => !known.has(b.categoria)).map(b => b.categoria)
+    ));
+    const unknownGroups = unknownNames.map(name => ({
+      name,
+      items: filteredBazares.filter(b => b.categoria === name)
+    }));
+
+    return [...orderedGroups, ...unknownGroups];
+  })();
 
   return (
     <div className="home">
@@ -129,61 +151,20 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
             <p>Tente ajustar os filtros ou buscar por outros termos.</p>
           </div>
         ) : (
-          <div className="bazares-grid">
-            {filteredBazares.map((bazar) => {
-              const categoriaInfo = getCategoriaInfo(bazar.categoria);
-              const isFavorito = favoritos.includes(bazar.id);
-              
-              return (
-                <div key={bazar.id} className="bazar-card">
-                  <div className="bazar-image">
-                    <img src={bazar.imagem} alt={bazar.nome} />
-                    <button 
-                      className={`favorite-btn ${isFavorito ? 'active' : ''}`}
-                      onClick={() => toggleFavorito(bazar.id)}
-                    >
-                      <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
-                    </button>
-                  </div>
-                  
-                  <div className="bazar-content">
-                    <div className="bazar-header">
-                      <h3>{bazar.nome}</h3>
-                      <span 
-                        className="categoria-badge"
-                        style={{ backgroundColor: categoriaInfo.cor }}
-                      >
-                        {categoriaInfo.nome}
-                      </span>
-                    </div>
-                    
-                    <p className="bazar-description">{bazar.descricao}</p>
-                    
-                    <div className="bazar-info">
-                      <div className="info-item">
-                        <i className="bi bi-geo-alt-fill"></i>
-                        <span>{bazar.endereco.cidade}</span>
-                      </div>
-                      <div className="info-item">
-                        <i className="bi bi-telephone-fill"></i>
-                        <span>{bazar.telefone}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="bazar-actions">
-                      <Link 
-                        to={`/bazar-detalhes/${bazar.id}`} 
-                        className="btn btn-primary"
-                      >
-                        <i className="bi bi-eye-fill"></i>
-                        Ver Detalhes
-                      </Link>
-                    </div>
-                  </div>
+          <>
+            {groups.map(group => (
+              <div key={group.name} className="category-carousel-section">
+                <div className="section-header">
+                  <h3>{group.name}</h3>
                 </div>
-              );
-            })}
-          </div>
+                <BazarCarousel 
+                  bazares={group.items} 
+                  favoritos={favoritos} 
+                  onToggleFavorito={toggleFavorito}
+                />
+              </div>
+            ))}
+          </>
         )}
       </section>
     </div>

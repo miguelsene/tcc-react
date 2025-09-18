@@ -32,10 +32,12 @@ const Favorites = () => {
     };
     
     window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
+    window.addEventListener('bazaresUpdated', handleFavoritesUpdate);
     window.addEventListener('storage', handleFavoritesUpdate);
     
     return () => {
       window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
+      window.removeEventListener('bazaresUpdated', handleFavoritesUpdate);
       window.removeEventListener('storage', handleFavoritesUpdate);
     };
   }, []);

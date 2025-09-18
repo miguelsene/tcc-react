@@ -46,6 +46,8 @@ const BazarDetails = () => {
     
     localStorage.setItem('fashionspace_favoritos', JSON.stringify(newFavoritos));
     setIsFavorito(!isFavorito);
+    // Notifica outras telas para atualizar favoritos imediatamente
+    window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: newFavoritos }));
   };
 
   const handleShare = async () => {
@@ -164,31 +166,8 @@ const BazarDetails = () => {
         </div>
       </div>
 
-      <div className="bazar-hero">
-        <div className="bazar-image">
-          <img src={bazar.imagem} alt={bazar.nome} />
-        </div>
-        
-        <div className="bazar-info">
-          <div className="bazar-title">
-            <h1>{bazar.nome}</h1>
-            <div className="bazar-meta">
-              <span 
-                className="categoria-badge"
-                style={{ backgroundColor: categoriaInfo.cor }}
-              >
-                {categoriaInfo.nome}
-              </span>
-              {ratings.length > 0 && (
-                <div className="rating-badge">
-                  <i className="bi bi-star-fill"></i>
-                  <span>{getAverageRating()}</span>
-                  <span className="rating-count">({ratings.length})</span>
-                </div>
-              )}
-            </div>
-          </div>
-          
+      
+      
           <p className="bazar-description">{bazar.descricao}</p>
           
           <div className="quick-actions">
