@@ -7,18 +7,18 @@
 
 :root,
 .app.light {
-  --bg-primary: #f0f0f0;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: rgba(15, 44, 71, 0.05);
-  --bg-pattern: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f9fc;
+  --bg-tertiary: rgba(15, 44, 71, 0.04);
+  --bg-pattern: linear-gradient(135deg, #f7f9fc 0%, #ffffff 100%);
   
   --text-primary: #000000;
   --text-secondary: #0f2c47;
-  --text-muted: #0f2c47;
+  --text-muted: rgba(15, 44, 71, 0.65);
   --text-accent: #649fde;
   
-  --border: rgba(15, 44, 71, 0.2);
-  --border-light: rgba(15, 44, 71, 0.1);
+  --border: rgba(15, 44, 71, 0.15);
+  --border-light: rgba(15, 44, 71, 0.08);
   
   --accent: #649fde;
   --accent-hover: #0f2c47;
@@ -43,18 +43,18 @@
 }
 
 .app.dark {
-  --bg-primary: #000000;
+  --bg-primary: #0e1b2a;
   --bg-secondary: #0f2c47;
-  --bg-tertiary: rgba(100, 159, 222, 0.1);
-  --bg-pattern: linear-gradient(135deg, #000000 0%, #0f2c47 100%);
+  --bg-tertiary: rgba(100, 159, 222, 0.12);
+  --bg-pattern: linear-gradient(135deg, #0a0f14 0%, #0f2c47 100%);
   
-  --text-primary: #ffffff;
-  --text-secondary: #f0f0f0;
-  --text-muted: #f0f0f0;
+  --text-primary: #e8eef5;
+  --text-secondary: #c8d6e5;
+  --text-muted: rgba(232, 238, 245, 0.7);
   --text-accent: #649fde;
   
-  --border: rgba(100, 159, 222, 0.3);
-  --border-light: rgba(100, 159, 222, 0.2);
+  --border: rgba(100, 159, 222, 0.35);
+  --border-light: rgba(100, 159, 222, 0.22);
   
   --accent: #649fde;
   --accent-hover: #f0f0f0;

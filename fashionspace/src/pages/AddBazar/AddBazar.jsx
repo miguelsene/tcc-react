@@ -96,8 +96,11 @@ const AddBazar = () => {
       console.log('Bazares salvos:', bazares);
       
       alert('Bazar criado com sucesso!');
+      // Notificar outras telas para recarregar a lista
+      window.dispatchEvent(new Event('bazaresUpdated'));
       setLoading(false);
-      navigate('/');
+      // Ir direto ao perfil para ver o novo bazar
+      navigate('/perfil');
 
     } catch (error) {
       setLoading(false);
