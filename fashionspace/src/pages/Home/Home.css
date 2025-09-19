@@ -16,6 +16,28 @@
   padding-top: 140px;
 }
 
+/* Banner específico da Home sem gradiente e sem margens negativas */
+.hero.home-hero {
+  position: relative;
+  background: url('../../assets/HomeSlide1.webp') center/cover no-repeat !important;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  margin: 0 0 3rem 0;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Remove o overlay animado somente do banner principal */
+.hero.home-hero::before {
+  content: none !important;
+}
+
 .hero::before {
   content: '';
   position: absolute;
@@ -474,9 +496,10 @@
 }
 
 @media (max-width: 768px) {
-  .hero {
-    margin: -80px -1rem 2rem -1rem;
-    padding: 100px 1rem 2rem;
+  .hero.home-hero {
+    margin: 0 0 2rem 0;
+    padding: 0 1rem 2rem;
+    min-height: 50vh;
   }
   
   .hero h1 {

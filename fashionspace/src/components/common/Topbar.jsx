@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import './Topbar.css';
+import { useI18n } from '../../i18n/i18n';
+import { Link } from 'react-router-dom';
 
 const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVisible, onSearch }) => {
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
   const [notifications] = useState([
     { id: 1, text: 'Novo bazar adicionado na sua região', time: '5 min', unread: true },
     { id: 2, text: 'Seu bazar recebeu uma nova avaliação', time: '1 hora', unread: true },
     { id: 3, text: 'Promoção especial em bazares vintage', time: '2 horas', unread: false }
   ]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const { t } = useI18n();
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
@@ -38,7 +40,7 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
         <button 
           className="sidebar-toggle"
           onClick={toggleSidebar}
-          title={sidebarVisible ? 'Ocultar Menu' : 'Mostrar Menu'}
+          title={sidebarVisible ? t('topbar.hideMenu') : t('topbar.showMenu')}
         >
           <i className={`bi ${sidebarVisible ? 'bi-list' : 'bi-list'}`}></i>
         </button>
@@ -48,7 +50,7 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
             <i className="bi bi-search search-icon"></i>
             <input
               type="text"
-              placeholder="Buscar bazares..."
+              placeholder={t('topbar.searchPlaceholder')}
               value={searchTerm}
               onChange={handleSearchChange}
               className="search-input"
@@ -69,8 +71,8 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
         {showNotifications && (
           <div className="notifications-dropdown">
             <div className="notifications-header">
-              <h4>Notificações</h4>
-              <span className="notifications-count">{unreadCount} não lidas</span>
+              <h4>{t('topbar.notificationsTitle')}</h4>
+              <span className="notifications-count">{t('topbar.unreadCount', { count: unreadCount })}</span>
             </div>
             <div className="notifications-list">
               {notifications.map(notification => (
@@ -89,80 +91,23 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
         <button 
           className="theme-toggle" 
           onClick={toggleTheme}
-          title={darkMode ? 'Modo Claro' : 'Modo Escuro'}
+          title={darkMode ? t('topbar.lightMode') : t('topbar.darkMode')}
         >
           <i className={darkMode ? 'bi bi-sun-fill' : 'bi bi-moon-fill'}></i>
         </button>
-        
-        <div className="user-menu">
-          <button 
-            className="user-profile-btn"
-            onClick={() => setIsProfileOpen(!isProfileOpen)}
-          >
-            <img 
-              src={`https://ui-avatars.com/api/?name=${user?.nome}&background=5f81a5&color=fff&size=40`}
-              alt="Avatar"
-              className="user-avatar"
-            />
-            <div className="user-details">
-              <span className="user-name">{user?.nome}</span>
-              <span className="user-status">
-                <i className="bi bi-circle-fill"></i>
-                Online
-              </span>
-            </div>
-            <div className={`dropdown-arrow ${isProfileOpen ? 'open' : ''}`}>
-              <i className="bi bi-chevron-down"></i>
-            </div>
-          </button>
-          
-          {isProfileOpen && (
-            <div className="user-dropdown">
-              <div className="dropdown-header">
-                <img 
-                  src={`https://ui-avatars.com/api/?name=${user?.nome}&background=5f81a5&color=fff&size=50`}
-                  alt="Avatar"
-                  className="dropdown-avatar"
-                />
-                <div className="dropdown-user-info">
-                  <h4>{user?.nome}</h4>
-                  <p>{user?.email}</p>
-                </div>
-              </div>
-              
-              <div className="dropdown-divider"></div>
-              
-              <div className="dropdown-menu">
-                <button className="dropdown-item">
-                  <i className="item-icon bi bi-person-fill"></i>
-                  Meu Perfil
-                </button>
-                <button className="dropdown-item">
-                  <i className="item-icon bi bi-gear-fill"></i>
-                  Configurações
-                </button>
-                <button className="dropdown-item">
-                  <i className="item-icon bi bi-question-circle-fill"></i>
-                  Ajuda
-                </button>
-              </div>
-              
-              <div className="dropdown-divider"></div>
-              
-              <button className="dropdown-item logout-item" onClick={handleLogout}>
-                <i className="item-icon bi bi-box-arrow-right"></i>
-                Sair da Conta
-              </button>
-            </div>
-          )}
-        </div>
+
+        <Link to="/perfil" className="icon-btn" title={t('topbar.myProfile')}>
+          <i className="bi bi-person-fill"></i>
+        </Link>
+        <button className="icon-btn" title={t('topbar.logout')} onClick={handleLogout}>
+          <i className="bi bi-box-arrow-right"></i>
+        </button>
       </div>
       
-      {(isProfileOpen || showNotifications) && (
+      {showNotifications && (
         <div 
           className="dropdown-overlay" 
           onClick={() => {
-            setIsProfileOpen(false);
             setShowNotifications(false);
           }}
         ></div>

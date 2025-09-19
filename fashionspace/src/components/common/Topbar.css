@@ -4,15 +4,16 @@
   right: 0;
   left: 280px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(95, 129, 165, 0.1);
+  background: color-mix(in oklab, var(--bg-primary) 78%, transparent);
+  backdrop-filter: blur(16px) saturate(120%);
+  border-bottom: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
   z-index: 999;
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--elev-2);
 }
 
 .app.sidebar-hidden .topbar {
@@ -53,9 +54,9 @@
 .search-input {
   width: 100%;
   padding: 12px 16px 12px 44px;
-  border: 2px solid rgba(95, 129, 165, 0.2);
+  border: 1px solid color-mix(in oklab, var(--border) 35%, transparent);
   border-radius: 24px;
-  background: rgba(255, 255, 255, 0.9);
+  background: color-mix(in oklab, var(--bg-secondary) 85%, transparent);
   backdrop-filter: blur(10px);
   font-size: 14px;
   transition: all 0.3s ease;
@@ -64,7 +65,7 @@
 .search-input:focus {
   outline: none;
   border-color: var(--secondary);
-  box-shadow: 0 0 0 3px rgba(95, 129, 165, 0.1);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 20%, transparent);
   background: white;
 }
 
@@ -192,13 +193,13 @@
 
 /* Dark Mode */
 .app.dark .topbar {
-  background: rgba(15, 44, 71, 0.95);
-  border-bottom-color: rgba(95, 129, 165, 0.3);
+  background: color-mix(in oklab, var(--bg-primary) 35%, transparent);
+  border-bottom: none;
 }
 
 .app.dark .search-input {
-  background: rgba(15, 44, 71, 0.8);
-  border-color: rgba(95, 129, 165, 0.3);
+  background: color-mix(in oklab, var(--bg-secondary) 30%, transparent);
+  border-color: color-mix(in oklab, var(--border) 25%, transparent);
   color: white;
 }
 

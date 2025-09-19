@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
 import BazarCarousel from '../../components/BazarCarousel/BazarCarousel';
 import './Home.css';
+import { useI18n } from '../../i18n/i18n';
 
 const Home = ({ searchTerm: globalSearchTerm, user }) => {
   const [bazares, setBazares] = useState([]);
@@ -78,22 +79,23 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
     return [...orderedGroups, ...unknownGroups];
   })();
 
+  const { t } = useI18n();
   return (
     <div className="home">
-      <section className="hero">
+      <section className="hero home-hero">
         <div className="hero-content">
-          <h1>Descubra os Melhores Bazares de Moda</h1>
-          <p>Conecte-se com bazares únicos, encontre peças especiais e apoie negócios locais</p>
+          <h1>{t('home.heroTitle')}</h1>
+          <p>{t('home.heroSubtitle')}</p>
           <div className="hero-actions">
             {user?.tipoUsuario === 'dono' && (
               <Link to="/adicionar-bazar" className="btn btn-primary">
                 <i className="bi bi-plus-circle-fill"></i>
-                Criar Bazar
+                {t('home.createBazar')}
               </Link>
             )}
             <button className="btn btn-secondary" onClick={() => document.getElementById('bazares')?.scrollIntoView()}>
               <i className="bi bi-search"></i>
-              Explorar Agora
+              {t('home.exploreNow')}
             </button>
           </div>
         </div>
@@ -102,7 +104,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
       <div className="category-filter">
         <h3>
           <i className="bi bi-funnel-fill"></i>
-          Filtrar por Categoria
+          {t('home.filterByCategory')}
         </h3>
         <div className="categories-grid">
           <button
@@ -110,7 +112,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
             onClick={() => setSelectedCategory('')}
           >
             <i className="bi bi-grid-fill"></i>
-            <span>Todas</span>
+            <span>{t('home.all')}</span>
           </button>
           {categorias.map(categoria => (
             <button
@@ -127,8 +129,8 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
 
       <section id="bazares" className="bazares-section">
         <div className="section-header">
-          <h2>Explore Todos os Bazares</h2>
-          <p>Encontre o bazar perfeito para você</p>
+          <h2>{t('home.allBazaresTitle')}</h2>
+          <p>{t('home.allBazaresSubtitle')}</p>
         </div>
 
         <div className="search-and-filter">
@@ -136,7 +138,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
             <i className="bi bi-search search-icon"></i>
             <input
               type="text"
-              placeholder="Buscar bazares por nome, descrição ou cidade..."
+              placeholder={t('home.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -147,8 +149,8 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
         {filteredBazares.length === 0 ? (
           <div className="empty-state">
             <i className="bi bi-shop empty-icon"></i>
-            <h3>Nenhum bazar encontrado</h3>
-            <p>Tente ajustar os filtros ou buscar por outros termos.</p>
+            <h3>{t('home.emptyTitle')}</h3>
+            <p>{t('home.emptyDescription')}</p>
           </div>
         ) : (
           <>

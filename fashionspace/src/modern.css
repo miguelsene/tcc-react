@@ -111,12 +111,12 @@ small { opacity: 0.9; }
 .error-container, .empty-state, .empty-favorites, .category-filter,
 .bazar-preview, .info-section, .profile-header, .notification-item,
 .post-card, .review-card, .social-feed, .map-container {
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg-primary) 78%, transparent);
+  border: none;
   border-radius: var(--radius-lg);
   box-shadow: var(--elev-2);
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
-  backdrop-filter: blur(10px);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), background-color var(--transition-base);
+  backdrop-filter: blur(14px) saturate(120%);
 }
 
 .surface:hover,
@@ -127,13 +127,46 @@ small { opacity: 0.9; }
 .post-card:hover, .review-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--elev-4);
-  border-color: var(--accent);
 }
 
 .glass {
   background: color-mix(in oklab, var(--bg-secondary) 70%, transparent);
   border: 1px solid var(--border-light);
   backdrop-filter: blur(12px) saturate(120%);
+}
+
+/* Glass overrides for higher transparency and no borders */
+.card, .bazar-card { background: color-mix(in oklab, var(--bg-primary) 72%, transparent) !important; border: none !important; }
+.empty-state, .category-filter, .settings-section, .support-content, .payment-section { border: none !important; }
+
+/* Softer inputs without strong borders */
+.input, .form-control, .search-input, .message-input, input, select, textarea {
+  border: 1px solid color-mix(in oklab, var(--border) 35%, transparent) !important;
+  background: color-mix(in oklab, var(--bg-secondary) 85%, transparent) !important;
+  backdrop-filter: blur(8px) saturate(110%) !important;
+}
+.input:focus, .form-control:focus, input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 20%, transparent) !important;
+}
+
+/* Dark mode glass enhancements */
+.app.dark .surface,
+.app.dark .card, .app.dark .panel, .app.dark .bazar-card, .app.dark .feature-card, .app.dark .plan-card, .app.dark .stat-card,
+.app.dark .action-card, .app.dark .favorite-card, .app.dark .guide-card, .app.dark .contact-item,
+.app.dark .faq-item, .app.dark .payment-method, .app.dark .settings-section, .app.dark .support-content,
+.app.dark .payment-section, .app.dark .ai-disclaimer, .app.dark .chat-container, .app.dark .bazar-form,
+.app.dark .error-container, .app.dark .empty-state, .app.dark .empty-favorites, .app.dark .category-filter,
+.app.dark .bazar-preview, .app.dark .info-section, .app.dark .profile-header, .app.dark .notification-item,
+.app.dark .post-card, .app.dark .review-card, .app.dark .social-feed, .app.dark .map-container {
+  background: color-mix(in oklab, var(--bg-primary) 40%, transparent) !important;
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45) !important;
+}
+.app.dark .topbar { background: color-mix(in oklab, var(--bg-primary) 35%, transparent) !important; border-bottom: none !important; box-shadow: var(--elev-2) !important; }
+.app.dark .sidebar { background: color-mix(in oklab, var(--bg-primary) 42%, transparent) !important; border-right: none !important; }
+.app.dark .input, .app.dark .form-control, .app.dark .search-input, .app.dark .message-input, .app.dark input, .app.dark select, .app.dark textarea {
+  border: 1px solid color-mix(in oklab, var(--border) 25%, transparent) !important;
+  background: color-mix(in oklab, var(--bg-secondary) 30%, transparent) !important;
 }
 
 /* 5) Inputs e formulários */
@@ -201,20 +234,21 @@ small { opacity: 0.9; }
 /* 7) Navegação: Topbar e Sidebar */
 .topbar {
   position: sticky; top: 0; z-index: 10;
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--elev-1);
-  backdrop-filter: blur(12px);
+  background: color-mix(in oklab, var(--bg-primary) 75%, transparent);
+  border-bottom: none;
+  box-shadow: var(--elev-2);
+  backdrop-filter: blur(14px) saturate(120%);
 }
 .topbar-inner { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-4); height: 64px; padding: 0 16px; }
 .topbar .search-input { max-width: 480px; }
 
 .sidebar {
   position: fixed; top: 0; left: 0; height: 100vh; width: 280px;
-  background: var(--gradient-secondary);
-  border-right: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg-primary) 80%, transparent);
+  border-right: none;
   box-shadow: var(--elev-3);
   overflow-y: auto;
+  backdrop-filter: blur(14px) saturate(120%);
 }
 .sidebar .nav-group { padding: 16px; }
 .nav-item { display: flex; align-items: center; gap: var(--gap-3); padding: 10px 12px; border-radius: var(--radius-md); color: var(--text-accent); transition: background-color var(--transition-base), color var(--transition-base); }

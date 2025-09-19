@@ -10,6 +10,7 @@ const EditBazar = () => {
     nome: '',
     descricao: '',
     imagem: '',
+    fotoPerfil: '',
     categoria: '',
     cep: '',
     rua: '',
@@ -32,6 +33,7 @@ const EditBazar = () => {
         nome: bazar.nome,
         descricao: bazar.descricao,
         imagem: bazar.imagem,
+        fotoPerfil: bazar.fotoPerfil || '',
         categoria: bazar.categoria,
         cep: bazar.endereco.cep,
         rua: bazar.endereco.rua,
@@ -60,6 +62,17 @@ const EditBazar = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setFormData({ ...formData, imagem: e.target.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleProfileImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFormData({ ...formData, fotoPerfil: e.target.result });
       };
       reader.readAsDataURL(file);
     }
@@ -98,6 +111,7 @@ const EditBazar = () => {
         const updatedBazar = {
           ...bazares[bazarIndex],
           ...formData,
+          fotoPerfil: formData.fotoPerfil,
           endereco: {
             cep: formData.cep,
             rua: formData.rua,
@@ -213,6 +227,24 @@ const EditBazar = () => {
             {formData.imagem && (
               <div className="image-preview">
                 <img src={formData.imagem} alt="Preview" />
+              </div>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>
+              <i className="bi bi-person-badge-fill"></i>
+              Foto de Perfil do Bazar (avatar)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleProfileImageUpload}
+              className="form-control"
+            />
+            {formData.fotoPerfil && (
+              <div className="image-preview" style={{ width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden' }}>
+                <img src={formData.fotoPerfil} alt="Avatar do Bazar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             )}
           </div>

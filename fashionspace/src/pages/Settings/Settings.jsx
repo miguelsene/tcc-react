@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useI18n } from '../../i18n/i18n';
 
 const Settings = () => {
   const [settings, setSettings] = useState({
@@ -24,6 +25,7 @@ const Settings = () => {
     }
   });
   const [loading, setLoading] = useState(false);
+  const { t, setLanguage } = useI18n();
 
   useEffect(() => {
     const savedSettings = JSON.parse(localStorage.getItem('fashionspace_settings') || '{}');
@@ -64,6 +66,11 @@ const Settings = () => {
       // Aplicar tema se mudou
       if (settings.preferences.theme !== 'auto') {
         document.documentElement.setAttribute('data-theme', settings.preferences.theme);
+      }
+
+      // Aplicar idioma global imediatamente
+      if (settings.preferences.language) {
+        setLanguage(settings.preferences.language);
       }
       
       alert('✓ Configurações salvas com sucesso!');
@@ -127,8 +134,8 @@ const Settings = () => {
         boxShadow: '0 10px 30px rgba(15, 44, 71, 0.3)'
       }}>
         <div style={{ fontSize: '4rem', marginBottom: '1rem' }}><i className="bi bi-gear-fill"></i></div>
-        <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', margin: 0 }}>Configurações</h1>
-        <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0 }}>Personalize sua experiência no FashionSpace</p>
+        <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', margin: 0 }}>{t('settings.title')}</h1>
+        <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0 }}>{t('settings.subtitle')}</p>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         <div style={{
@@ -148,7 +155,7 @@ const Settings = () => {
             gap: '0.75rem'
           }}>
             <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', color: '#5f81a5' }}></i>
-            Notificações
+            {t('settings.notifications')}
           </h2>
           <div style={{
             display: 'flex',
@@ -321,7 +328,7 @@ const Settings = () => {
             gap: '0.75rem'
           }}>
             <i className="bi bi-shield-fill" style={{ fontSize: '1.5rem', color: '#5f81a5' }}></i>
-            Privacidade
+            {t('settings.privacy')}
           </h2>
           <div className="setting-item">
             <div className="setting-info">
@@ -384,18 +391,18 @@ const Settings = () => {
             gap: '0.75rem'
           }}>
             <i className="bi bi-palette-fill" style={{ fontSize: '1.5rem', color: '#5f81a5' }}></i>
-            Preferências
+            {t('settings.preferences')}
           </h2>
           <div className="setting-item">
             <div className="setting-info">
-              <h4>Idioma</h4>
-              <p>Escolha o idioma da interface</p>
+              <h4>{t('settings.language')}</h4>
+              <p>{t('settings.language')}</p>
             </div>
             <select 
               className="form-control" 
               style={{width: 'auto'}}
               value={settings.preferences.language}
-              onChange={(e) => handleSelect('preferences', 'language', e.target.value)}
+              onChange={(e) => { handleSelect('preferences', 'language', e.target.value); setLanguage(e.target.value); }}
             >
               <option value="pt-BR">Português (Brasil)</option>
               <option value="en-US">English (US)</option>
@@ -404,8 +411,8 @@ const Settings = () => {
           </div>
           <div className="setting-item">
             <div className="setting-info">
-              <h4>Tema</h4>
-              <p>Escolha a aparência da interface</p>
+              <h4>{t('settings.theme')}</h4>
+              <p>{t('settings.theme')}</p>
             </div>
             <select 
               className="form-control" 
@@ -413,28 +420,12 @@ const Settings = () => {
               value={settings.preferences.theme}
               onChange={(e) => handleSelect('preferences', 'theme', e.target.value)}
             >
-              <option value="auto">Automático</option>
-              <option value="light">Claro</option>
-              <option value="dark">Escuro</option>
+              <option value="auto">{t('settings.automatic')}</option>
+              <option value="light">{t('settings.light')}</option>
+              <option value="dark">{t('settings.dark')}</option>
             </select>
           </div>
-          <div className="setting-item">
-            <div className="setting-info">
-              <h4>Moeda</h4>
-              <p>Moeda padrão para exibição de preços</p>
-            </div>
-            <select 
-              className="form-control" 
-              style={{width: 'auto'}}
-              value={settings.preferences.currency}
-              onChange={(e) => handleSelect('preferences', 'currency', e.target.value)}
-            >
-              <option value="BRL">Real (R$)</option>
-              <option value="USD">Dólar ($)</option>
-              <option value="EUR">Euro (€)</option>
-            </select>
-          </div>
-        </div>
+                  </div>
 
         <div style={{
           background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
@@ -517,7 +508,7 @@ const Settings = () => {
             <i className={`bi ${loading ? 'bi-arrow-repeat' : 'bi-check-circle-fill'}`} style={{
               animation: loading ? 'spin 1s linear infinite' : 'none'
             }}></i> 
-            {loading ? 'Salvando...' : 'Salvar Configurações'}
+            {loading ? t('settings.saving') : t('settings.save')}
           </button>
           <button style={{
             background: '#f8f9fa',
@@ -530,7 +521,7 @@ const Settings = () => {
             fontSize: '1rem',
             transition: 'all 0.3s ease'
           }}>
-            <i className="bi bi-x-circle-fill"></i> Cancelar
+            <i className="bi bi-x-circle-fill"></i> {t('settings.cancel')}
           </button>
         </div>
       </div>

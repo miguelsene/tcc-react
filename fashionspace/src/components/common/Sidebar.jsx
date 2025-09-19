@@ -1,24 +1,26 @@
 import { Link, useLocation } from 'react-router-dom';
 import logoImage from '../../assets/Image.png';
 import './Sidebar.css';
+import { useI18n } from '../../i18n/i18n';
 
 const Sidebar = ({ user, visible }) => {
   const location = useLocation();
+  const { t } = useI18n();
   
   console.log('Sidebar - Usuário:', user);
   console.log('Sidebar - Tipo:', user?.tipoUsuario);
 
   const allMenuItems = [
-    { path: '/', icon: 'bi-house-fill', label: 'Início', forAll: true },
-    { path: '/feed', icon: 'bi-newspaper', label: 'Feed', forAll: true },
-    { path: '/notificacoes', icon: 'bi-bell-fill', label: 'Notificações', forAll: true },
-    { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: 'Adicionar Bazar', onlyDono: true },
-    { path: '/favoritos', icon: 'bi-heart-fill', label: 'Favoritos', forAll: true },
-    { path: '/perfil', icon: 'bi-person-fill', label: 'Perfil', forAll: true },
-    { path: '/assinatura', icon: 'bi-star-fill', label: 'Assinaturas', onlyDono: true },
-    { path: '/ia-assistente', icon: 'bi-robot', label: 'IA Assistente', onlyDono: true },
-    { path: '/suporte', icon: 'bi-headset', label: 'Suporte', forAll: true },
-    { path: '/configuracoes', icon: 'bi-gear-fill', label: 'Configurações', forAll: true }
+    { path: '/', icon: 'bi-house-fill', label: t('nav.home'), forAll: true },
+    { path: '/feed', icon: 'bi-newspaper', label: t('nav.feed'), forAll: true },
+    { path: '/notificacoes', icon: 'bi-bell-fill', label: t('nav.notifications'), forAll: true },
+    { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: t('nav.addBazar'), onlyDono: true },
+    { path: '/favoritos', icon: 'bi-heart-fill', label: t('nav.favorites'), forAll: true },
+    { path: '/perfil', icon: 'bi-person-fill', label: t('nav.profile'), forAll: true },
+    { path: '/assinatura', icon: 'bi-star-fill', label: t('nav.subscription'), onlyDono: true },
+    { path: '/ia-assistente', icon: 'bi-robot', label: t('nav.aiAssistant'), onlyDono: true },
+    { path: '/suporte', icon: 'bi-headset', label: t('nav.support'), forAll: true },
+    { path: '/configuracoes', icon: 'bi-gear-fill', label: t('nav.settings'), forAll: true }
   ];
 
   const menuItems = allMenuItems.filter(item => {
@@ -39,14 +41,14 @@ const Sidebar = ({ user, visible }) => {
         <div className="user-welcome">
           <div className="user-avatar">
             <img 
-              src={`https://ui-avatars.com/api/?name=${user?.nome}&background=5f81a5&color=fff&size=40`}
+              src={user?.fotoPerfilUsuario || `https://ui-avatars.com/api/?name=${user?.nome}&background=5f81a5&color=fff&size=40`}
               alt="Avatar"
             />
           </div>
           <div className="user-info">
-            <p className="user-greeting">Olá,</p>
+            <p className="user-greeting">{t('sidebar.hello')}</p>
             <p className="user-name">{user?.nome}!</p>
-            <p className="user-type">{user?.tipoUsuario === 'dono' ? 'Dono de Bazar' : 'Usuário'}</p>
+            <p className="user-type">{user?.tipoUsuario === 'dono' ? t('sidebar.owner') : t('sidebar.user')}</p>
           </div>
         </div>
       </div>

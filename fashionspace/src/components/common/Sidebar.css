@@ -4,21 +4,33 @@
   left: 0;
   width: 280px;
   height: 100vh;
-  background: linear-gradient(180deg, #0f2c47 0%, #5f81a5 100%);
-  backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: color-mix(in oklab, var(--bg-primary) 80%, transparent);
+  backdrop-filter: blur(16px) saturate(120%);
+  border-right: none;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 1000;
   overflow-y: auto;
+  box-shadow: var(--elev-3);
+  transform: translateX(0);
 }
 
 .sidebar.hidden {
   transform: translateX(-100%);
 }
 
+/* Animação suave ao abrir a sidebar */
+.sidebar.visible {
+  animation: sidebarSlideIn 480ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sidebarSlideIn {
+  0% { transform: translateX(-24px); opacity: 0.4; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
 .sidebar-header {
   padding: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
 }
 
 .logo {
@@ -47,7 +59,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in oklab, #ffffff 12%, transparent);
   border-radius: 16px;
   backdrop-filter: blur(10px);
 }
@@ -91,21 +103,22 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem 2rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.88);
   text-decoration: none;
   transition: all 0.3s ease;
   position: relative;
   border-left: 3px solid transparent;
+  border-radius: 12px;
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in oklab, #ffffff 16%, transparent);
   color: white;
   border-left-color: #649fde;
 }
 
 .nav-item.active {
-  background: rgba(100, 159, 222, 0.2);
+  background: color-mix(in oklab, #649fde 20%, transparent);
   color: white;
   border-left-color: #649fde;
 }
@@ -113,13 +126,13 @@
 .nav-item.active::after {
   content: '';
   position: absolute;
-  right: 0;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  width: 4px;
-  height: 20px;
+  width: 8px;
+  height: 8px;
   background: #649fde;
-  border-radius: 2px;
+  border-radius: 50%;
 }
 
 .nav-icon {
