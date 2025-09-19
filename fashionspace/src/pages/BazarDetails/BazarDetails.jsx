@@ -168,24 +168,24 @@ const BazarDetails = () => {
 
       
       
-          <p className="bazar-description">{bazar.descricao}</p>
-          
-          <div className="quick-actions">
-            <Link 
-              to={`/chat-bazar/${bazar.id}`} 
-              className="btn btn-primary"
-            >
-              <i className="bi bi-chat-dots-fill"></i>
-              Enviar Mensagem
-            </Link>
-            <button 
-              className="btn btn-secondary" 
-              onClick={handleDirections}
-            >
-              <i className="bi bi-geo-alt-fill"></i>
-              Como Chegar
-            </button>
-          </div>
+          <div className="bazar-overview">
+        <p className="bazar-description">{bazar.descricao}</p>
+        
+        <div className="quick-actions">
+          <Link 
+            to={`/chat-bazar/${bazar.id}`} 
+            className="btn btn-primary"
+          >
+            <i className="bi bi-chat-dots-fill"></i>
+            Enviar Mensagem
+          </Link>
+          <button 
+            className="btn btn-secondary" 
+            onClick={handleDirections}
+          >
+            <i className="bi bi-geo-alt-fill"></i>
+            Como Chegar
+          </button>
         </div>
       </div>
 
