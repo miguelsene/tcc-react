@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ChatBot — Modelo Responsivo</title>
+  <meta name="description" content="Chat moderno, responsivo e bonito criado com HTML, CSS e JavaScript." />
+ <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="chat-wrap" role="application" aria-label="Chatbot interativo">
+    <aside class="sidebar" aria-label="Lista de conversas">
+      <div class="brand">
+        <div class="logo">CB</div>
+        <div>
+          <h1>ChatBot</h1>
+          <p>Assistente local — offline</p>
+        </div>
+      </div>
+
+      <div class="search" role="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"></circle></svg>
+        <input id="search" placeholder="Procurar respostas..." aria-label="Pesquisar conversas" />
+      </div>
+
+      <div class="preset-list" id="presetList" tabindex="0">
+        <div class="preset" data-id="default">
+          <div class="avatar">AI</div>
+          <div class="meta">
+            <div class="name">Assistente</div>
+            <div class="sub">Conversa padrão</div>
+          </div>
+        </div>
+        <div class="preset" data-id="study">
+          <div class="avatar">📚</div>
+          <div class="meta"><div class="name">Estudo</div><div class="sub">Resumos, exercícios</div></div>
+        </div>
+        <div class="preset" data-id="dev">
+          <div class="avatar">💻</div>
+          <div class="meta"><div class="name">Desenvolvedor</div><div class="sub">Ajuda com código</div></div>
+        </div>
+      </div>
+
+      <div style="margin-top:auto;display:flex;gap:8px;align-items:center;justify-content:space-between">
+        <small style="color:var(--muted)">Tema</small>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="themeToggle" class="icon-btn" title="Alternar tema">🌓</button>
+          <button id="clearBtn" class="icon-btn" title="Limpar chat">🗑️</button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="chat-panel" aria-label="Área de chat">
+      <header class="chat-header">
+        <div style="display:flex;flex-direction:column;flex:1">
+          <h2 id="chatTitle">Assistente</h2>
+          <p id="chatSubtitle">Pronto para ajudar — escreva algo</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="downloadLog" class="icon-btn" title="Baixar histórico">⬇️</button>
+        </div>
+      </header>
+
+      <div class="messages" id="messages" role="log" aria-live="polite" tabindex="0"></div>
+
+      <div class="composer" role="form" aria-label="Enviar mensagem">
+        <textarea id="input" placeholder="Escreva sua mensagem..." aria-label="Mensagem" maxlength="2000"></textarea>
+        <button id="sendBtn" class="btn" aria-label="Enviar">Enviar</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" style="display:none"></div>
+
+  <script src="Script.js"></script>
+</body>
+</html>

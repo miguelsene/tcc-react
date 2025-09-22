@@ -112,7 +112,9 @@
 
 /* Filtros */
 .category-filter {
-  margin-bottom: 4rem;
+  width: min(1100px, 100%);
+  margin: clamp(24px, 5vw, 56px) auto 4rem;
+  padding: clamp(16px, 3vw, 28px);
   text-align: center;
 }
 
@@ -230,7 +232,7 @@
 
 .carousel-btn:hover {
   background: var(--secondary);
-  color: white;
+  color: rgb(59, 55, 121);
 }
 
 .carousel-container {
@@ -250,8 +252,8 @@
 
 /* Cards de Bazar */
 .bazar-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(26, 35, 77, 0.95);
+  backdrop-filter: blur(150px);
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--shadow);

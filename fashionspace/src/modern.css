@@ -352,3 +352,36 @@ small { opacity: 0.9; }
 .notification-btn, .theme-toggle, .sidebar-toggle, .carousel-btn {
   transition: color var(--transition-base), background-color var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
 }
+
+/* 21) Responsividade global adicional */
+@media (max-width: 1024px) {
+  .container { padding-inline: 12px; }
+  .page-actions { flex-wrap: wrap; }
+}
+
+@media (max-width: 768px) {
+  .page-header { flex-direction: column; align-items: stretch; gap: var(--gap-3); }
+  .page-actions { width: 100%; justify-content: flex-start; gap: var(--gap-3); }
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table { display: block; overflow-x: auto; white-space: nowrap; }
+  .hero { padding: 24px; }
+  .grid { gap: var(--gap-4); }
+  .content .search-container { width: 100%; max-width: none; }
+}
+
+@media (max-width: 480px) {
+  .section, .section-lg { padding: 24px 0; }
+  .btn { padding: 10px 16px; font-size: 0.9rem; }
+  .card { padding: 16px; }
+}
+
+/* 22) Utilitários responsivos */
+.show-sm { display: none !important; }
+.hide-sm { display: initial !important; }
+.stack-sm { /* aplica stack em telas pequenas para flex containers existentes */ }
+
+@media (max-width: 768px) {
+  .show-sm { display: initial !important; }
+  .hide-sm { display: none !important; }
+  .stack-sm { display: flex; flex-direction: column; align-items: stretch; gap: var(--gap-3); }
+}

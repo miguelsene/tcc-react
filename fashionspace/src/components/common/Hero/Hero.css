@@ -1,0 +1,95 @@
+/* Hero (banner) reutilizável para o topo do site */
+
+.site-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  min-height: min(80vh, 720px);
+  padding: 120px 16px 64px; /* Espaço extra para topbar fixa */
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+/* Overlay de gradiente para melhorar legibilidade do texto */
+.site-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.35) 100%);
+  pointer-events: none;
+}
+
+/* Brilho suave vindo de cima (sutil) */
+.site-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1200px 320px at 50% 0%, rgba(100, 159, 222, 0.25), transparent 60%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.hero-title {
+  font-weight: 800;
+  line-height: 1.1;
+  font-size: clamp(2rem, 1.2rem + 3vw, 3.25rem);
+  margin: 0 auto;
+  background: linear-gradient(45deg, #ffffff, #cfe3f8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 0.9rem + 0.8vw, 1.25rem);
+  margin: 0 auto;
+  color: rgba(255,255,255,0.92);
+  max-width: 72ch;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.hero-actions .btn {
+  padding: 12px 20px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .site-hero { padding: 96px 12px 40px; min-height: 60vh; }
+  .hero-actions { gap: 10px; }
+}
+
+/* Modo escuro: overlay um pouco mais forte */
+.app.dark .site-hero::before { background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.45) 100%); }

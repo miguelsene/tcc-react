@@ -1,0 +1,358 @@
+:root {
+    --bg: #0f1724;
+    /* deep navy */
+    --card: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    --glass: rgba(255, 255, 255, 0.04);
+    --accent-1: #7c5cff;
+    --accent-2: #00d4ff;
+    --muted: rgba(255, 255, 255, 0.65);
+    --radius: 16px;
+    --shadow: 0 6px 22px rgba(2, 6, 23, 0.6);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.04);
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100%;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(124, 92, 255, 0.12), transparent),
+        radial-gradient(800px 500px at 90% 90%, rgba(0, 212, 255, 0.06), transparent),
+        var(--bg);
+    color: #e6eef8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    gap: 20px;
+}
+
+/* container */
+.chat-wrap {
+    width: 100%;
+    max-width: 1050px;
+    height: 88vh;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+}
+
+/* left panel (contacts/settings) */
+.sidebar {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 240px;
+    max-height: 88vh;
+    overflow: hidden;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.brand h1 {
+    font-size: 16px;
+    margin: 0
+}
+
+.brand p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--muted)
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: var(--glass);
+    border: var(--glass-border);
+}
+
+.search input {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    width: 100%;
+    outline: none
+}
+
+.preset-list {
+    overflow: auto;
+    padding-right: 6px
+}
+
+.preset {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer
+}
+
+.preset:hover {
+    background: rgba(255, 255, 255, 0.02)
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    display: grid;
+    place-items: center;
+    font-weight: 700
+}
+
+.preset .meta {
+    display: flex;
+    flex-direction: column
+}
+
+.name {
+    font-weight: 600
+}
+
+.sub {
+    font-size: 12px;
+    color: var(--muted)
+}
+
+/* chat area */
+.chat-panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03)
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-size: 16px
+}
+
+.chat-header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--muted)
+}
+
+.messages {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: auto;
+    flex: 1;
+    scroll-behavior: smooth;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.02));
+}
+
+.msg {
+    max-width: 78%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    line-height: 1.35;
+    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.35)
+}
+
+.user {
+    align-self: flex-end;
+    background: linear-gradient(180deg, var(--accent-1), #5f72ff);
+    border-bottom-right-radius: 6px
+}
+
+.bot {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom-left-radius: 6px;
+    color: var(--muted)
+}
+
+.meta-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted)
+}
+
+.typing {
+    display: inline-block;
+    height: 10px
+}
+
+.dots {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    opacity: 0;
+    transform: translateY(6px)
+}
+
+.anim1 {
+    animation: pop 900ms infinite 0ms
+}
+
+.anim2 {
+    animation: pop 900ms infinite 120ms
+}
+
+.anim3 {
+    animation: pop 900ms infinite 240ms
+}
+
+@keyframes pop {
+    0% {
+        opacity: 0;
+        transform: translateY(6px)
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(0)
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-3px)
+    }
+}
+
+.composer {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    align-items: center
+}
+
+.composer textarea {
+    resize: none;
+    height: 48px;
+    border-radius: 12px;
+    padding: 12px;
+    background: transparent;
+    border: var(--glass-border);
+    color: inherit;
+    outline: none;
+    flex: 1
+}
+
+.btn {
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    border: 0;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer
+}
+
+.icon-btn {
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer
+}
+
+/* small-screen adjustments */
+@media (max-width:880px) {
+    .chat-wrap {
+        grid-template-columns: 1fr;
+        max-width: 680px;
+        padding-bottom: 20px
+    }
+
+    .sidebar {
+        display: none
+    }
+
+    .chat-panel {
+        height: 94vh
+    }
+}
+
+/* compact mobile */
+@media (max-width:420px) {
+    .composer textarea {
+        height: 44px;
+        padding: 10px
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px
+    }
+}
+
+/* subtle toast */
+.toast {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 14px;
+    border-radius: 999px;
+    color: white;
+    font-size: 13px
+}
+
+/* accessibility focus */
+button:focus,
+.preset:focus,
+.search input:focus {
+    outline: 2px solid rgba(124, 92, 255, 0.28);
+    outline-offset: 2px
+}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
 import BazarCarousel from '../../components/BazarCarousel/BazarCarousel';
+import Hero from '../../components/common/Hero/Hero';
 import './Home.css';
 import { useI18n } from '../../i18n/i18n';
 
@@ -11,6 +12,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
   const [favoritos, setFavoritos] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const frequentSearches = ['vestido floral', 'jaqueta jeans', 'camisa social', 'calça wide leg', 'tênis branco', 'saia midi', 'blazer oversized', 'moletom', 'bota de couro', 'acessórios vintage'];
 
   useEffect(() => {
     const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
@@ -79,14 +81,39 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
     return [...orderedGroups, ...unknownGroups];
   })();
 
+  const eyebrowTicker = (
+    <>
+      <style>{`
+        .eyebrow-ticker{display:inline-flex;align-items:center;gap:8px;}
+        .eyebrow-ticker .ticker-viewport{position:relative;width:min(60vw,520px);overflow:hidden;height:1.4em;}
+        .eyebrow-ticker .ticker-track{display:inline-block;white-space:nowrap;animation:ticker-scroll 16s linear infinite;}
+        .eyebrow-ticker .ticker-item{display:inline-flex;align-items:center;margin-right:24px;opacity:.95}
+        @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+        @media(max-width:768px){.eyebrow-ticker .ticker-viewport{width:min(70vw,320px)}}
+        @media (prefers-reduced-motion: reduce){.eyebrow-ticker .ticker-track{animation:none}}
+      `}</style>
+      <div className="eyebrow-ticker">
+        <i className="bi bi-search" aria-hidden="true"></i>
+        <div className="ticker-viewport" aria-label="Pesquisas frequentes">
+          <div className="ticker-track">
+            {frequentSearches.map((q, idx) => (<span className="ticker-item" key={'t1-'+idx}>{q}</span>))}
+            {frequentSearches.map((q, idx) => (<span className="ticker-item" key={'t2-'+idx}>{q}</span>))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   const { t } = useI18n();
   return (
     <div className="home">
-      <section className="hero home-hero">
-        <div className="hero-content">
-          <h1>{t('home.heroTitle')}</h1>
-          <p>{t('home.heroSubtitle')}</p>
-          <div className="hero-actions">
+      <Hero
+        eyebrow={eyebrowTicker}
+        title={<span style={{textShadow:'0 2px 10px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.25)', WebkitTextStroke:'0.5px rgba(255,255,255,0.35)', letterSpacing:'0.3px'}}>{'para todos mas não qualquer um '}</span>}
+        subtitle={t('home.heroSubtitle')}
+        backgroundImage={new URL('../../assets/HomeSlide1.webp', import.meta.url).toString()}
+        actions={(
+          <>
             {user?.tipoUsuario === 'dono' && (
               <Link to="/adicionar-bazar" className="btn btn-primary">
                 <i className="bi bi-plus-circle-fill"></i>
@@ -97,9 +124,9 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
               <i className="bi bi-search"></i>
               {t('home.exploreNow')}
             </button>
-          </div>
-        </div>
-      </section>
+          </>
+        )}
+      />
 
       <div className="category-filter">
         <h3>
