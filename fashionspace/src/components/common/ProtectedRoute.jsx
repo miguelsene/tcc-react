@@ -1,8 +1,12 @@
 import { Navigate } from 'react-router-dom';
 import './ProtectedRoute.css';
 
-const ProtectedRoute = ({ children, user, requireDono = false }) => {
+const ProtectedRoute = ({ children, user, requireDono = false, blockGuest = false }) => {
   if (!user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (blockGuest && user.tipoUsuario === 'guest') {
     return <Navigate to="/" replace />;
   }
 

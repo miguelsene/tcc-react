@@ -206,6 +206,23 @@ const Login = ({ setUser }) => {
           <button type="submit" className="btn btn-primary login-btn">
             {isLogin ? 'Entrar' : 'Cadastrar'}
           </button>
+          <button 
+            type="button" 
+            className="btn btn-secondary login-btn"
+            onClick={() => {
+              const guest = {
+                id: 'guest',
+                nome: 'Convidado',
+                email: null,
+                tipoUsuario: 'guest'
+              };
+              localStorage.setItem('fashionspace_user', JSON.stringify(guest));
+              setUser(guest);
+            }}
+            style={{ marginTop: '10px' }}
+          >
+            Entrar sem conta
+          </button>
         </form>
       </div>
     </div>

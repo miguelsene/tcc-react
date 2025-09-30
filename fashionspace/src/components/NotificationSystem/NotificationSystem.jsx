@@ -5,15 +5,16 @@ const NotificationContext = createContext();
 
 export const useNotifications = () => useContext(NotificationContext);
 
-export const NotificationProvider = ({ children }) => {
+export const NotificationProvider = ({ children, enabled = true }) => {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     loadNotifications();
+    if (!enabled) return; 
     requestNotificationPermission();
     const autoId = startAutoNotifications();
     return () => clearInterval(autoId);
-  }, []);
+  }, [enabled]);
 
   const startAutoNotifications = () => {
     const offerNotifications = [
@@ -44,12 +45,14 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const requestNotificationPermission = () => {
+    if (!enabled) return;
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
     }
   };
 
   const addNotification = (notification) => {
+    if (!enabled) return;
     const newNotification = {
       id: Date.now().toString(),
       ...notification,
@@ -65,7 +68,7 @@ export const NotificationProvider = ({ children }) => {
     });
 
     // Push notification
-    if (Notification.permission === 'granted' && notification.type === 'toast') {
+    if (enabled && Notification.permission === 'granted' && notification.type === 'toast') {
       new Notification(notification.title, {
         body: notification.message,
         icon: '/favicon.ico',

@@ -111,9 +111,10 @@ const SocialFeed = ({ user }) => {
       {user.tipoUsuario === 'dono' && (
         <div className="create-post">
           <div className="post-form">
-            <img src={user.avatar || '/default-avatar.png'} alt={user.nome} />
+            <img src={user.avatar || '/default-avatar.png'} alt={user.nome} className="user-avatar" />
             <div className="form-content">
               <textarea
+                className="post-textarea"
                 placeholder="Compartilhe novidades do seu bazar..."
                 value={newPost.content}
                 onChange={(e) => setNewPost({...newPost, content: e.target.value})}
@@ -224,7 +225,7 @@ const PostCard = ({ post, currentUser, onLike, onComment, onShare }) => {
       {showComments && (
         <div className="comments-section">
           <div className="comment-form">
-            <img src={currentUser.avatar || '/default-avatar.png'} alt={currentUser.nome} />
+            <img src={currentUser.avatar || '/default-avatar.png'} alt={currentUser.nome} className="comment-avatar" />
             <div className="comment-input">
               <input
                 type="text"
@@ -242,11 +243,15 @@ const PostCard = ({ post, currentUser, onLike, onComment, onShare }) => {
           <div className="comments-list">
             {post.comments.map(comment => (
               <div key={comment.id} className="comment">
-                <strong>{comment.userName}</strong>
-                <p>{comment.content}</p>
-                <span className="timestamp">
-                  {new Date(comment.timestamp).toLocaleString()}
-                </span>
+                <div className="comment-content">
+                  <div className="comment-bubble">
+                    <strong>{comment.userName}</strong>
+                    <p>{comment.content}</p>
+                  </div>
+                  <div className="comment-timestamp">
+                    {new Date(comment.timestamp).toLocaleString()}
+                  </div>
+                </div>
               </div>
             ))}
           </div>

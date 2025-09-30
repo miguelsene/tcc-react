@@ -24,7 +24,6 @@ const Profile = lazy(() => import('./pages/Profile/Profile'));
 const Chat = lazy(() => import('./pages/Chat/Chat'));
 const Support = lazy(() => import('./pages/Support/Support'));
 const Settings = lazy(() => import('./pages/Settings/Settings'));
-const Subscription = lazy(() => import('./pages/Subscription/Subscription'));
 const AIAssistant = lazy(() => import('./pages/AIAssistant/AIAssistant'));
 const SocialFeedPage = lazy(() => import('./pages/SocialFeed/SocialFeedPage'));
 
@@ -120,7 +119,7 @@ function App() {
   }
 
   return (
-    <NotificationProvider>
+    <NotificationProvider enabled={user?.tipoUsuario !== 'guest'}>
       <div className={`app ${darkMode ? 'dark' : 'light'} ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
         <Router>
         <Sidebar user={user} visible={sidebarVisible} />
@@ -144,29 +143,56 @@ function App() {
                     <AddBazar />
                   </ProtectedRoute>
                 } />
-                <Route path="/bazar-detalhes/:id" element={<BazarDetails />} />
+                <Route path="/bazar-detalhes/:id" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <BazarDetails />
+                  </ProtectedRoute>
+                } />
                 <Route path="/editar-bazar/:id" element={
                   <ProtectedRoute user={user} requireDono={true}>
                     <EditBazar />
                   </ProtectedRoute>
                 } />
-                <Route path="/favoritos" element={<Favorites />} />
-                <Route path="/perfil" element={<Profile user={user} setUser={setUser} />} />
-                <Route path="/chat-bazar/:id" element={<Chat />} />
-                <Route path="/suporte" element={<Support />} />
-                <Route path="/configuracoes" element={<Settings />} />
-                <Route path="/assinatura" element={
-                  <ProtectedRoute user={user} requireDono={true}>
-                    <Subscription />
+                <Route path="/favoritos" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <Favorites />
                   </ProtectedRoute>
                 } />
-                <Route path="/ia-assistente" element={
+                <Route path="/perfil" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <Profile user={user} setUser={setUser} />
+                  </ProtectedRoute>
+                } />
+                <Route path="/chat-bazar/:id" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <Chat />
+                  </ProtectedRoute>
+                } />
+                <Route path="/suporte" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <Support />
+                  </ProtectedRoute>
+                } />
+                <Route path="/configuracoes" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <Settings />
+                  </ProtectedRoute>
+                } />
+                                <Route path="/ia-assistente" element={
                   <ProtectedRoute user={user} requireDono={true}>
                     <AIAssistant />
                   </ProtectedRoute>
                 } />
-                <Route path="/feed" element={<SocialFeedPage user={user} />} />
-                <Route path="/notificacoes" element={<NotificationCenter />} />
+                <Route path="/feed" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <SocialFeedPage user={user} />
+                  </ProtectedRoute>
+                } />
+                <Route path="/notificacoes" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <NotificationCenter />
+                  </ProtectedRoute>
+                } />
                 <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </Suspense>

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVisible, onSearch }) => {
     const [searchTerm, setSearchTerm] = useState('');
-  const [notifications] = useState([
+  const [notifications] = useState(user?.tipoUsuario === 'guest' ? [] : [
     { id: 1, text: 'Novo bazar adicionado na sua região', time: '5 min', unread: true },
     { id: 2, text: 'Seu bazar recebeu uma nova avaliação', time: '1 hora', unread: true },
     { id: 3, text: 'Promoção especial em bazares vintage', time: '2 horas', unread: false }
@@ -60,32 +60,36 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
       </div>
       
       <div className="topbar-right">
-        <button 
-          className="notification-btn" 
-          onClick={() => setShowNotifications(!showNotifications)}
-        >
-          <i className="bi bi-bell-fill"></i>
-          {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
-        </button>
+        {user?.tipoUsuario !== 'guest' && (
+          <>
+            <button 
+              className="notification-btn" 
+              onClick={() => setShowNotifications(!showNotifications)}
+            >
+              <i className="bi bi-bell-fill"></i>
+              {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+            </button>
 
-        {showNotifications && (
-          <div className="notifications-dropdown">
-            <div className="notifications-header">
-              <h4>{t('topbar.notificationsTitle')}</h4>
-              <span className="notifications-count">{t('topbar.unreadCount', { count: unreadCount })}</span>
-            </div>
-            <div className="notifications-list">
-              {notifications.map(notification => (
-                <div key={notification.id} className={`notification-item ${notification.unread ? 'unread' : ''}`}>
-                  <div className="notification-content">
-                    <p>{notification.text}</p>
-                    <span className="notification-time">{notification.time}</span>
-                  </div>
-                  {notification.unread && <div className="unread-dot"></div>}
+            {showNotifications && (
+              <div className="notifications-dropdown">
+                <div className="notifications-header">
+                  <h4>{t('topbar.notificationsTitle')}</h4>
+                  <span className="notifications-count">{t('topbar.unreadCount', { count: unreadCount })}</span>
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="notifications-list">
+                  {notifications.map(notification => (
+                    <div key={notification.id} className={`notification-item ${notification.unread ? 'unread' : ''}`}>
+                      <div className="notification-content">
+                        <p>{notification.text}</p>
+                        <span className="notification-time">{notification.time}</span>
+                      </div>
+                      {notification.unread && <div className="unread-dot"></div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
         
         <button 
@@ -96,9 +100,11 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
           <i className={darkMode ? 'bi bi-sun-fill' : 'bi bi-moon-fill'}></i>
         </button>
 
-        <Link to="/perfil" className="icon-btn" title={t('topbar.myProfile')}>
-          <i className="bi bi-person-fill"></i>
-        </Link>
+        {user?.tipoUsuario !== 'guest' && (
+          <Link to="/perfil" className="icon-btn" title={t('topbar.myProfile')}>
+            <i className="bi bi-person-fill"></i>
+          </Link>
+        )}
         <button className="icon-btn" title={t('topbar.logout')} onClick={handleLogout}>
           <i className="bi bi-box-arrow-right"></i>
         </button>
