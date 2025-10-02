@@ -47,6 +47,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
   }, [bazares, selectedCategory, searchTerm, globalSearchTerm]);
 
   const toggleFavorito = (bazarId) => {
+    if (user?.tipoUsuario === 'dono') return; // Dono não pode favoritar
     const newFavoritos = favoritos.includes(bazarId)
       ? favoritos.filter(id => id !== bazarId)
       : [...favoritos, bazarId];
@@ -188,7 +189,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
                 </div>
                 <BazarCarousel 
                   bazares={group.items} 
-                  favoritos={favoritos} 
+                  favoritos={user?.tipoUsuario === 'dono' ? [] : favoritos} 
                   onToggleFavorito={toggleFavorito}
                 />
               </div>

@@ -3,14 +3,6 @@ import { useI18n } from '../../i18n/i18n';
 
 const Settings = () => {
   const [settings, setSettings] = useState({
-    notifications: {
-      push: true,
-      email: true,
-      sms: false,
-      newBazares: true,
-      messages: true,
-      promotions: true
-    },
     privacy: {
       profileVisible: true,
       showEmail: false,
@@ -84,14 +76,6 @@ const Settings = () => {
   const handleReset = () => {
     if (confirm('Tem certeza que deseja restaurar as configurações padrão?')) {
       const defaultSettings = {
-        notifications: {
-          push: true,
-          email: true,
-          sms: false,
-          newBazares: true,
-          messages: true,
-          promotions: true
-        },
         privacy: {
           profileVisible: true,
           showEmail: false,
@@ -138,179 +122,7 @@ const Settings = () => {
         <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0 }}>{t('settings.subtitle')}</p>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-        <div style={{
-          background: 'white',
-          borderRadius: '1.5rem',
-          padding: '2rem',
-          boxShadow: '0 8px 25px rgba(0,0,0,0.1)',
-          border: '1px solid #e9ecef'
-        }}>
-          <h2 style={{
-            color: '#0f2c47',
-            fontSize: '1.5rem',
-            fontWeight: '700',
-            marginBottom: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem'
-          }}>
-            <i className="bi bi-bell-fill" style={{ fontSize: '1.5rem', color: '#5f81a5' }}></i>
-            {t('settings.notifications')}
-          </h2>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '1rem 0',
-            borderBottom: '1px solid #f1f3f4'
-          }}>
-            <div>
-              <h4 style={{ color: '#0f2c47', fontWeight: '600', margin: '0 0 0.25rem 0' }}>Notificações Push</h4>
-              <p style={{ color: '#5f81a5', fontSize: '0.875rem', margin: 0 }}>Receba notificações no navegador</p>
-            </div>
-            <label style={{
-              position: 'relative',
-              display: 'inline-block',
-              width: '60px',
-              height: '34px'
-            }}>
-              <input 
-                type="checkbox" 
-                checked={settings.notifications.push}
-                onChange={() => handleToggle('notifications', 'push')}
-                style={{ opacity: 0, width: 0, height: 0 }}
-              />
-              <span style={{
-                position: 'absolute',
-                cursor: 'pointer',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: settings.notifications.push ? '#5f81a5' : '#ccc',
-                transition: '0.4s',
-                borderRadius: '34px'
-              }}>
-                <span style={{
-                  position: 'absolute',
-                  content: '',
-                  height: '26px',
-                  width: '26px',
-                  left: settings.notifications.push ? '30px' : '4px',
-                  bottom: '4px',
-                  backgroundColor: 'white',
-                  transition: '0.4s',
-                  borderRadius: '50%'
-                }}></span>
-              </span>
-            </label>
-          </div>
-          <div className="setting-item">
-            <div className="setting-info">
-              <h4>Notificações por Email</h4>
-              <p>Receba atualizações por email</p>
-            </div>
-            <label style={{
-              position: 'relative',
-              display: 'inline-block',
-              width: '60px',
-              height: '34px'
-            }}>
-              <input 
-                type="checkbox" 
-                checked={settings.notifications.email}
-                onChange={() => handleToggle('notifications', 'email')}
-                style={{ opacity: 0, width: 0, height: 0 }}
-              />
-              <span style={{
-                position: 'absolute',
-                cursor: 'pointer',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: settings.notifications.email ? '#5f81a5' : '#ccc',
-                transition: '0.4s',
-                borderRadius: '34px'
-              }}>
-                <span style={{
-                  position: 'absolute',
-                  content: '',
-                  height: '26px',
-                  width: '26px',
-                  left: settings.notifications.email ? '30px' : '4px',
-                  bottom: '4px',
-                  backgroundColor: 'white',
-                  transition: '0.4s',
-                  borderRadius: '50%'
-                }}></span>
-              </span>
-            </label>
-          </div>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '1rem 0',
-            borderBottom: '1px solid #f1f3f4'
-          }}>
-            <div>
-              <h4 style={{ color: '#0f2c47', fontWeight: '600', margin: '0 0 0.25rem 0' }}>Novos Bazares</h4>
-              <p style={{ color: '#5f81a5', fontSize: '0.875rem', margin: 0 }}>Seja notificado sobre novos bazares na sua região</p>
-            </div>
-            <label style={{
-              position: 'relative',
-              display: 'inline-block',
-              width: '60px',
-              height: '34px'
-            }}>
-              <input 
-                type="checkbox" 
-                checked={settings.notifications.newBazares}
-                onChange={() => handleToggle('notifications', 'newBazares')}
-                style={{ opacity: 0, width: 0, height: 0 }}
-              />
-              <span style={{
-                position: 'absolute',
-                cursor: 'pointer',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: settings.notifications.newBazares ? '#5f81a5' : '#ccc',
-                transition: '0.4s',
-                borderRadius: '34px'
-              }}>
-                <span style={{
-                  position: 'absolute',
-                  content: '',
-                  height: '26px',
-                  width: '26px',
-                  left: settings.notifications.newBazares ? '30px' : '4px',
-                  bottom: '4px',
-                  backgroundColor: 'white',
-                  transition: '0.4s',
-                  borderRadius: '50%'
-                }}></span>
-              </span>
-            </label>
-          </div>
-          <div className="setting-item">
-            <div className="setting-info">
-              <h4>Mensagens</h4>
-              <p>Notificações de novas mensagens no chat</p>
-            </div>
-            <label className="toggle">
-              <input 
-                type="checkbox" 
-                checked={settings.notifications.messages}
-                onChange={() => handleToggle('notifications', 'messages')}
-              />
-              <span className="slider"></span>
-            </label>
-          </div>
-        </div>
-
+        
         <div style={{
           background: 'white',
           borderRadius: '1.5rem',

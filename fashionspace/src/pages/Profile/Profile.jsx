@@ -52,6 +52,7 @@ const Profile = ({ user, setUser }) => {
     if (window.confirm('Deseja realmente sair da sua conta?')) {
       localStorage.removeItem('fashionspace_user');
       setUser(null);
+      window.location.href = '/login';
     }
   };
 
@@ -176,15 +177,17 @@ const Profile = ({ user, setUser }) => {
             <div className="stat-label">Bazares Criados</div>
           </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-icon">
-            <i className="bi bi-heart-fill"></i>
+        {user.tipoUsuario !== 'dono' && (
+          <div className="stat-card">
+            <div className="stat-icon">
+              <i className="bi bi-heart-fill"></i>
+            </div>
+            <div className="stat-info">
+              <div className="stat-number">{favoritos.length}</div>
+              <div className="stat-label">Favoritos</div>
+            </div>
           </div>
-          <div className="stat-info">
-            <div className="stat-number">{favoritos.length}</div>
-            <div className="stat-label">Favoritos</div>
-          </div>
-        </div>
+        )}
         <div className="stat-card">
           <div className="stat-icon">
             <i className="bi bi-eye-fill"></i>
@@ -316,18 +319,20 @@ const Profile = ({ user, setUser }) => {
       </div>
 
       <div className="profile-quick-actions">
-        <Link to="/favoritos" className="action-card">
-          <div className="action-icon">
-            <i className="bi bi-heart-fill"></i>
-          </div>
-          <div className="action-content">
-            <h3>Meus Favoritos</h3>
-            <p>{favoritos.length} bazares favoritados</p>
-          </div>
-          <div className="action-arrow">
-            <i className="bi bi-arrow-right"></i>
-          </div>
-        </Link>
+        {user.tipoUsuario !== 'dono' && (
+          <Link to="/favoritos" className="action-card">
+            <div className="action-icon">
+              <i className="bi bi-heart-fill"></i>
+            </div>
+            <div className="action-content">
+              <h3>Meus Favoritos</h3>
+              <p>{favoritos.length} bazares favoritados</p>
+            </div>
+            <div className="action-arrow">
+              <i className="bi bi-arrow-right"></i>
+            </div>
+          </Link>
+        )}
         
         <Link to="/" className="action-card">
           <div className="action-icon">

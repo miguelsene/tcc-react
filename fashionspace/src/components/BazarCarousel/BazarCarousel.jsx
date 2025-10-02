@@ -6,6 +6,7 @@ import './BazarCarousel.css';
 const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
+  const [isDono, setIsDono] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,6 +22,13 @@ const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem('fashionspace_user') || 'null');
+      setIsDono(user?.tipoUsuario === 'dono');
+    } catch {}
   }, []);
 
   const nextSlide = () => {
@@ -91,7 +99,7 @@ const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
         >
           {bazares.map((bazar, index) => {
             const categoriaInfo = getCategoriaInfo(bazar.categoria);
-            const isFavorito = favoritos.includes(bazar.id);
+            const isFavorito = Array.isArray(favoritos) && favoritos.includes(bazar.id);
             
             return (
               <div 
@@ -102,12 +110,14 @@ const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
                 <div className="bazar-card">
                   <div className="bazar-image">
                     <img src={bazar.imagem} alt={bazar.nome} />
-                    <button 
-                      className={`favorite-btn ${isFavorito ? 'active' : ''}`}
-                      onClick={() => onToggleFavorito(bazar.id)}
-                    >
-                      <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
-                    </button>
+                    {!isDono && (
+                      <button 
+                        className={`favorite-btn ${isFavorito ? 'active' : ''}`}
+                        onClick={() => onToggleFavorito(bazar.id)}
+                      >
+                        <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
+                      </button>
+                    )}
                     <div className="rating-overlay">
                       <div className="stars">
                         {renderStars(bazar.avaliacao)}

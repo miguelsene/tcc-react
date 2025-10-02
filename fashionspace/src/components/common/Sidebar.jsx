@@ -13,9 +13,8 @@ const Sidebar = ({ user, visible }) => {
   const allMenuItems = [
     { path: '/', icon: 'bi-house-fill', label: t('nav.home'), forAll: true },
     { path: '/feed', icon: 'bi-newspaper', label: t('nav.feed'), forAll: true, hideForGuest: true },
-    { path: '/notificacoes', icon: 'bi-bell-fill', label: t('nav.notifications'), forAll: true, hideForGuest: true },
-    { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: t('nav.addBazar'), onlyDono: true },
-    { path: '/favoritos', icon: 'bi-heart-fill', label: t('nav.favorites'), forAll: true, hideForGuest: true },
+        { path: '/adicionar-bazar', icon: 'bi-plus-circle-fill', label: t('nav.addBazar'), onlyDono: true },
+    { path: '/favoritos', icon: 'bi-heart-fill', label: t('nav.favorites'), forAll: true, hideForGuest: true, hideForDono: true },
     { path: '/perfil', icon: 'bi-person-fill', label: t('nav.profile'), forAll: true, hideForGuest: true },
     { path: '/ia-assistente', icon: 'bi-robot', label: t('nav.aiAssistant'), onlyDono: true },
     { path: '/suporte', icon: 'bi-headset', label: t('nav.support'), forAll: true, hideForGuest: true },
@@ -24,6 +23,7 @@ const Sidebar = ({ user, visible }) => {
 
   const menuItems = allMenuItems.filter(item => {
     if (user?.tipoUsuario === 'guest' && item.hideForGuest) return false;
+    if (user?.tipoUsuario === 'dono' && item.hideForDono) return false;
     if (item.forAll) return true;
     if (item.onlyDono && user?.tipoUsuario === 'dono') return true;
     return false;

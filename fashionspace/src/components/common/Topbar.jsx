@@ -5,19 +5,13 @@ import { Link } from 'react-router-dom';
 
 const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVisible, onSearch }) => {
     const [searchTerm, setSearchTerm] = useState('');
-  const [notifications] = useState(user?.tipoUsuario === 'guest' ? [] : [
-    { id: 1, text: 'Novo bazar adicionado na sua região', time: '5 min', unread: true },
-    { id: 2, text: 'Seu bazar recebeu uma nova avaliação', time: '1 hora', unread: true },
-    { id: 3, text: 'Promoção especial em bazares vintage', time: '2 horas', unread: false }
-  ]);
-  const [showNotifications, setShowNotifications] = useState(false);
-  const { t } = useI18n();
+    const { t } = useI18n();
 
-  const unreadCount = notifications.filter(n => n.unread).length;
-
+  
   const handleLogout = () => {
     localStorage.removeItem('fashionspace_user');
     setUser(null);
+    window.location.href = '/login';
   };
 
   const handleSearch = (e) => {
@@ -60,38 +54,7 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
       </div>
       
       <div className="topbar-right">
-        {user?.tipoUsuario !== 'guest' && (
-          <>
-            <button 
-              className="notification-btn" 
-              onClick={() => setShowNotifications(!showNotifications)}
-            >
-              <i className="bi bi-bell-fill"></i>
-              {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
-            </button>
-
-            {showNotifications && (
-              <div className="notifications-dropdown">
-                <div className="notifications-header">
-                  <h4>{t('topbar.notificationsTitle')}</h4>
-                  <span className="notifications-count">{t('topbar.unreadCount', { count: unreadCount })}</span>
-                </div>
-                <div className="notifications-list">
-                  {notifications.map(notification => (
-                    <div key={notification.id} className={`notification-item ${notification.unread ? 'unread' : ''}`}>
-                      <div className="notification-content">
-                        <p>{notification.text}</p>
-                        <span className="notification-time">{notification.time}</span>
-                      </div>
-                      {notification.unread && <div className="unread-dot"></div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        
+                
         <button 
           className="theme-toggle" 
           onClick={toggleTheme}
@@ -110,15 +73,7 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
         </button>
       </div>
       
-      {showNotifications && (
-        <div 
-          className="dropdown-overlay" 
-          onClick={() => {
-            setShowNotifications(false);
-          }}
-        ></div>
-      )}
-    </div>
+          </div>
   );
 };
 

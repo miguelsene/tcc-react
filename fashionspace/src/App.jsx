@@ -1,13 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { useScrollAnimationMultiple } from './hooks/useScrollAnimation';
-import { NotificationProvider } from './components/NotificationSystem/NotificationSystem';
 import PageTransition from './components/common/PageTransition';
 import Sidebar from './components/common/Sidebar';
 import Topbar from './components/common/Topbar';
 import './components/common/Button.css';
 import Login from './pages/Login/Login';
-import NotificationCenter from './components/NotificationSystem/NotificationSystem';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import './App.css';
 import './global-palette.css';
@@ -114,14 +112,12 @@ function App() {
     localStorage.setItem('fashionspace_sidebar', JSON.stringify(newSidebarState));
   };
 
-  if (!user) {
-    return <Login setUser={setUser} />;
-  }
-
+  
   return (
-    <NotificationProvider enabled={user?.tipoUsuario !== 'guest'}>
-      <div className={`app ${darkMode ? 'dark' : 'light'} ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'}`}>
+          <div className={`app ${darkMode ? 'dark' : 'light'} ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${user?.tipoUsuario === 'dono' ? 'is-dono' : ''}`}>
         <Router>
+        {user ? (
+        <>
         <Sidebar user={user} visible={sidebarVisible} />
         <div className="main-content">
           <Topbar 
@@ -143,20 +139,20 @@ function App() {
                     <AddBazar />
                   </ProtectedRoute>
                 } />
-                <Route path="/bazar-detalhes/:id" element={
-                  <ProtectedRoute user={user} blockGuest={true}>
-                    <BazarDetails />
-                  </ProtectedRoute>
-                } />
+                <Route path="/bazar-detalhes/:id" element={<BazarDetails />} />
                 <Route path="/editar-bazar/:id" element={
                   <ProtectedRoute user={user} requireDono={true}>
                     <EditBazar />
                   </ProtectedRoute>
                 } />
                 <Route path="/favoritos" element={
-                  <ProtectedRoute user={user} blockGuest={true}>
-                    <Favorites />
-                  </ProtectedRoute>
+                  user?.tipoUsuario === 'dono'
+                    ? <Navigate to="/" />
+                    : (
+                      <ProtectedRoute user={user} blockGuest={true}>
+                        <Favorites />
+                      </ProtectedRoute>
+                    )
                 } />
                 <Route path="/perfil" element={
                   <ProtectedRoute user={user} blockGuest={true}>
@@ -188,21 +184,31 @@ function App() {
                     <SocialFeedPage user={user} />
                   </ProtectedRoute>
                 } />
-                <Route path="/notificacoes" element={
-                  <ProtectedRoute user={user} blockGuest={true}>
-                    <NotificationCenter />
-                  </ProtectedRoute>
-                } />
-                <Route path="*" element={<Navigate to="/" />} />
+                                <Route path="*" element={<Navigate to="/" />} />
               </Routes>
             </Suspense>
             </PageTransition>
           </div>
         </div>
+        </>
+        ) : (
+          <div className="main-content">
+            <div className="content">
+              <PageTransition>
+                <Suspense fallback={<div className="loading">Carregando...</div>}>
+                  <Routes>
+                    <Route path="/login" element={<Login setUser={setUser} />} />
+                    <Route path="/bazar-detalhes/:id" element={<BazarDetails />} />
+                    <Route path="*" element={<Navigate to="/login" />} />
+                  </Routes>
+                </Suspense>
+              </PageTransition>
+            </div>
+          </div>
+        )}
         </Router>
       </div>
-    </NotificationProvider>
-  );
+      );
 }
 
 export default App;

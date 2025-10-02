@@ -142,6 +142,7 @@ const BazarDetails = () => {
   }
 
   const categoriaInfo = getCategoriaInfo(bazar.categoria);
+  const imageSrc = bazar.imagem || new URL('../../assets/Image.png', import.meta.url).toString();
 
   return (
     <div className="bazar-details">
@@ -152,13 +153,15 @@ const BazarDetails = () => {
         </button>
         
         <div className="header-actions">
-          <button 
-            className={`favorite-btn ${isFavorito ? 'active' : ''}`}
-            onClick={toggleFavorito}
-          >
-            <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
-            {isFavorito ? 'Favoritado' : 'Favoritar'}
-          </button>
+          {user?.tipoUsuario !== 'dono' && (
+            <button 
+              className={`favorite-btn ${isFavorito ? 'active' : ''}`}
+              onClick={toggleFavorito}
+            >
+              <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
+              {isFavorito ? 'Favoritado' : 'Favoritar'}
+            </button>
+          )}
           <button className="share-btn" onClick={handleShare}>
             <i className="bi bi-share-fill"></i>
             Compartilhar
@@ -168,24 +171,53 @@ const BazarDetails = () => {
 
       
       
+          <div className="bazar-hero">
+            <div className="bazar-image">
+              <img src={imageSrc} alt={bazar.nome} loading="lazy" decoding="async" />
+            </div>
+            <div className="bazar-info">
+              <div className="bazar-title">
+                <h1>{bazar.nome}</h1>
+                <span className="categoria-badge" style={{ backgroundColor: categoriaInfo.cor }}>
+                  {categoriaInfo.nome}
+                </span>
+              </div>
+              <div className="bazar-meta">
+                <span className="rating-badge">
+                  <i className="bi bi-star-fill"></i>
+                  {bazar.avaliacao || getAverageRating() || '5.0'}
+                  <span className="rating-count">{bazar.totalAvaliacoes ? `(${bazar.totalAvaliacoes})` : ''}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div className="bazar-overview">
         <p className="bazar-description">{bazar.descricao}</p>
         
         <div className="quick-actions">
-          <Link 
-            to={`/chat-bazar/${bazar.id}`} 
-            className="btn btn-primary"
-          >
-            <i className="bi bi-chat-dots-fill"></i>
-            Enviar Mensagem
-          </Link>
-          <button 
-            className="btn btn-secondary" 
-            onClick={handleDirections}
-          >
-            <i className="bi bi-geo-alt-fill"></i>
-            Como Chegar
-          </button>
+          {user && user.tipoUsuario !== 'guest' ? (
+            <>
+              <Link 
+                to={`/chat-bazar/${bazar.id}`} 
+                className="btn btn-primary"
+              >
+                <i className="bi bi-chat-dots-fill"></i>
+                Enviar Mensagem
+              </Link>
+              <button 
+                className="btn btn-secondary" 
+                onClick={handleDirections}
+              >
+                <i className="bi bi-geo-alt-fill"></i>
+                Como Chegar
+              </button>
+            </>
+          ) : (
+            <div className="info-note" style={{marginTop:'8px', color:'#5f81a5'}}>
+              Faça login para usar o chat, ver avaliações e o mapa.
+            </div>
+          )}
         </div>
       </div>
 
@@ -196,18 +228,22 @@ const BazarDetails = () => {
         >
           <i className="bi bi-info-circle"></i> Informações
         </button>
-        <button 
-          className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
-          onClick={() => setActiveTab('reviews')}
-        >
-          <i className="bi bi-star"></i> Avaliações
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
-          onClick={() => setActiveTab('map')}
-        >
-          <i className="bi bi-geo-alt"></i> Localização
-        </button>
+        {user && user.tipoUsuario !== 'guest' && (
+          <>
+            <button 
+              className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+              onClick={() => setActiveTab('reviews')}
+            >
+              <i className="bi bi-star"></i> Avaliações
+            </button>
+            <button 
+              className={`tab-btn ${activeTab === 'map' ? 'active' : ''}`}
+              onClick={() => setActiveTab('map')}
+            >
+              <i className="bi bi-geo-alt"></i> Localização
+            </button>
+          </>
+        )}
       </div>
 
       <div className="details-content">
@@ -273,28 +309,38 @@ const BazarDetails = () => {
         )}
         
         {activeTab === 'map' && (
-          <MapView 
-            bazares={[bazar]} 
-            onBazarSelect={() => {}} 
-          />
+          (() => {
+            const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+            const allBazares = [...defaultBazares, ...userBazares];
+            return (
+              <MapView 
+                bazares={allBazares} 
+                onBazarSelect={() => {}} 
+              />
+            );
+          })()
         )}
       </div>
 
       <div className="action-buttons">
-        <Link 
-          to={`/chat-bazar/${bazar.id}`} 
-          className="btn btn-primary btn-large"
-        >
-          <i className="bi bi-chat-dots-fill"></i>
-          Iniciar Conversa
-        </Link>
-        <button 
-          className="btn btn-secondary btn-large" 
-          onClick={handleDirections}
-        >
-          <i className="bi bi-map-fill"></i>
-          Ver no Mapa
-        </button>
+        {user && user.tipoUsuario !== 'guest' ? (
+          <>
+            <Link 
+              to={`/chat-bazar/${bazar.id}`} 
+              className="btn btn-primary btn-large"
+            >
+              <i className="bi bi-chat-dots-fill"></i>
+              Iniciar Conversa
+            </Link>
+            <button 
+              className="btn btn-secondary btn-large" 
+              onClick={handleDirections}
+            >
+              <i className="bi bi-map-fill"></i>
+              Ver no Mapa
+            </button>
+          </>
+        ) : null}
       </div>
 
       {showRatingModal && (
