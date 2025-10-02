@@ -1,0 +1,36 @@
+# Arquivos compilados
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Arquivos do Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Banco de dados H2
+data/
+*.db
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Logs
+*.log
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+*~
