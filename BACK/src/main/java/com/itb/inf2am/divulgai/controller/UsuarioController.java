@@ -27,7 +27,12 @@ public class UsuarioController {
  @Autowired
  private UsuarioService usuarioService;
 
- @GetMapping
+ @GetMapping("/ping")
+ public ResponseEntity<String> ping() {
+  return ResponseEntity.ok("API funcionando! Servidor ativo em: " + java.time.LocalDateTime.now());
+ }
+
+ @GetMapping("/findAll")
  public ResponseEntity<List<Usuario>> findAll() {
 
   return ResponseEntity.ok(usuarioService.findAll());
@@ -57,7 +62,7 @@ public class UsuarioController {
  }
 
 
- @GetMapping("/{id}")
+ @GetMapping("/listarUsuarioPorId/{id}")
  public ResponseEntity<Object> listarUsuarioPorId(@PathVariable String id) {
   try {
    return ResponseEntity.ok(usuarioService.findById(Long.parseLong(id)));
@@ -86,7 +91,7 @@ public class UsuarioController {
 
  }
 
- @PutMapping("/{id}")
+ @PutMapping("/atualizarUsuario{id}")
  public ResponseEntity<Object> atualizarUsuario(@PathVariable String id, @RequestBody Usuario usuario) {
   try {
    Long usuarioId = Long.parseLong(id);
@@ -120,7 +125,7 @@ public class UsuarioController {
  }
 
 
- @DeleteMapping("/{id}")
+ @DeleteMapping("/excluirUsuario{id}")
  public ResponseEntity<Object> excluirUsuario(@PathVariable String id) {
   try {
    Long usuarioId = Long.parseLong(id);

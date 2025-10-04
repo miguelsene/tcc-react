@@ -14,6 +14,7 @@ const Login = ({ setUser }) => {
     tipoUsuario: 'casual'
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -41,49 +42,63 @@ const Login = ({ setUser }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) return;
 
-    if (isLogin) {
-      const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
-      const user = users.find(u => u.email === formData.email && u.senha === formData.senha);
-      
-      if (user) {
-        // Migração: adicionar tipoUsuario se não existir
-        if (!user.tipoUsuario) {
-          user.tipoUsuario = 'casual';
-          // Atualizar no localStorage
-          const updatedUsers = users.map(u => u.id === user.id ? user : u);
-          localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
+    setLoading(true);
+    try {
+      if (isLogin) {
+        // FAZER LOGIN - Enviar dados para o backend
+        const response = await fetch('http://localhost:8080/api/v1/Usuario/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            senha: formData.senha
+          })
+        });
+
+        if (response.ok) {
+          const user = await response.json();
+          localStorage.setItem('fashionspace_user', JSON.stringify(user));
+          setUser(user);
+        } else {
+          const error = await response.json();
+          setErrors({ email: error.message || 'Email ou senha incorretos' });
         }
-        localStorage.setItem('fashionspace_user', JSON.stringify(user));
-        setUser(user);
       } else {
-        setErrors({ email: 'Email ou senha incorretos' });
-      }
-    } else {
-      const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
-      
-      if (users.find(u => u.email === formData.email)) {
-        setErrors({ email: 'Email já cadastrado' });
-        return;
-      }
+        // CADASTRAR USUÁRIO - Enviar dados para o backend
+        const response = await fetch('http://localhost:8080/api/v1/Usuario', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nome: formData.nome,
+            email: formData.email,
+            senha: formData.senha,
+            tipoUsuario: formData.tipoUsuario
+          })
+        });
 
-      const newUser = {
-        id: Date.now().toString(),
-        nome: formData.nome,
-        email: formData.email,
-        senha: formData.senha,
-        tipoUsuario: formData.tipoUsuario,
-        dataCadastro: new Date().toISOString()
-      };
-
-      users.push(newUser);
-      localStorage.setItem('fashionspace_users', JSON.stringify(users));
-      localStorage.setItem('fashionspace_user', JSON.stringify(newUser));
-      setUser(newUser);
+        if (response.ok) {
+          const newUser = await response.json();
+          localStorage.setItem('fashionspace_user', JSON.stringify(newUser));
+          setUser(newUser);
+        } else {
+          const error = await response.json();
+          setErrors({ email: error.message || 'Erro ao cadastrar usuário' });
+        }
+      }
+    } catch (error) {
+      console.error('Erro na conexão:', error);
+      setErrors({ email: 'Erro de conexão com o servidor. Verifique se o backend está rodando.' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -203,8 +218,8 @@ const Login = ({ setUser }) => {
             </>
           )}
 
-          <button type="submit" className="btn btn-primary login-btn">
-            {isLogin ? 'Entrar' : 'Cadastrar'}
+          <button type="submit" className="btn btn-primary login-btn" disabled={loading}>
+            {loading ? 'Aguarde...' : (isLogin ? 'Entrar' : 'Cadastrar')}
           </button>
           <button 
             type="button" 
