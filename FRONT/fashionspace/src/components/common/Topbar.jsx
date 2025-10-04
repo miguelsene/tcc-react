@@ -69,8 +69,12 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
         </button>
 
         {user?.tipoUsuario !== 'guest' && (
-          <Link to="/perfil" className="icon-btn" title={t('topbar.myProfile')}>
-            <i className="bi bi-person-fill"></i>
+          <Link to="/perfil" className="profile-link" title={t('topbar.myProfile')}>
+            <img 
+              src={user.fotoPerfil || `https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=32`}
+              alt="Perfil"
+              className="topbar-avatar"
+            />
           </Link>
         )}
         <button className="icon-btn" title={t('topbar.logout')} onClick={handleLogout}>

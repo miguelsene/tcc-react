@@ -28,7 +28,7 @@ const SocialFeed = ({ user }) => {
       id: Date.now().toString(),
       userId: user.id,
       userName: user.nome,
-      userAvatar: user.avatar || '/default-avatar.png',
+      userAvatar: user.fotoPerfil || `https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=40`,
       content: newPost.content,
       image: newPost.image,
       timestamp: new Date().toISOString(),
@@ -111,7 +111,7 @@ const SocialFeed = ({ user }) => {
       {user.tipoUsuario === 'dono' && (
         <div className="create-post">
           <div className="post-form">
-            <img src={user.avatar || '/default-avatar.png'} alt={user.nome} className="user-avatar" />
+            <img src={user.fotoPerfil || `https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=40`} alt={user.nome} className="user-avatar" />
             <div className="form-content">
               <textarea
                 className="post-textarea"
@@ -225,7 +225,7 @@ const PostCard = ({ post, currentUser, onLike, onComment, onShare }) => {
       {showComments && (
         <div className="comments-section">
           <div className="comment-form">
-            <img src={currentUser.avatar || '/default-avatar.png'} alt={currentUser.nome} className="comment-avatar" />
+            <img src={currentUser.fotoPerfil || `https://ui-avatars.com/api/?name=${currentUser.nome}&background=5f81a5&color=fff&size=32`} alt={currentUser.nome} className="comment-avatar" />
             <div className="comment-input">
               <input
                 type="text"

@@ -116,6 +116,9 @@ public class UsuarioController {
    usuarioExistente.setEmail(usuario.getEmail());
    usuarioExistente.setSenha(usuario.getSenha());
    usuarioExistente.setTipoUsuario(usuario.getTipoUsuario());
+   if (usuario.getFotoPerfil() != null) {
+       usuarioExistente.setFotoPerfil(usuario.getFotoPerfil());
+   }
 
    Usuario usuarioAtualizada = usuarioService.save(usuarioExistente);
 

@@ -26,6 +26,9 @@ public class Usuario {
     @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;
 
+    @Column(name = "foto_perfil", columnDefinition = "TEXT")
+    private String fotoPerfil;
+
     @PrePersist
     protected void onCreate() {
         this.dataCadastro = LocalDateTime.now();
@@ -81,6 +84,12 @@ public class Usuario {
         this.dataCadastro = dataCadastro;
     }
 
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
 
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
 
 }

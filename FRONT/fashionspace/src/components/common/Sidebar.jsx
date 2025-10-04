@@ -41,7 +41,7 @@ const Sidebar = ({ user, visible }) => {
         <div className="user-welcome">
           <div className="user-avatar">
             <img 
-              src={user?.fotoPerfilUsuario || `https://ui-avatars.com/api/?name=${user?.nome}&background=5f81a5&color=fff&size=40`}
+              src={user?.fotoPerfil || `https://ui-avatars.com/api/?name=${user?.nome}&background=5f81a5&color=fff&size=40`}
               alt="Avatar"
             />
           </div>

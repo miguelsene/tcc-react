@@ -149,6 +149,29 @@
   position: relative;
 }
 
+.profile-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.topbar-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid rgba(95, 129, 165, 0.2);
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.profile-link:hover .topbar-avatar {
+  border-color: var(--secondary);
+  transform: scale(1.05);
+}
+
 .user-avatar {
   width: 44px;
   height: 44px;

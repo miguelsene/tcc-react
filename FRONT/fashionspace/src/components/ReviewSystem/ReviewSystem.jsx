@@ -26,7 +26,7 @@ const ReviewSystem = ({ bazarId, user }) => {
       bazarId,
       userId: user.id,
       userName: user.nome,
-      userAvatar: user.avatar || '/default-avatar.png',
+      userAvatar: user.fotoPerfil || `https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=40`,
       rating: newReview.rating,
       comment: newReview.comment,
       photos: newReview.photos,

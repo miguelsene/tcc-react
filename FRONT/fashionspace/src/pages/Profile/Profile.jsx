@@ -13,8 +13,9 @@ const Profile = ({ user, setUser }) => {
   const [previewBazar, setPreviewBazar] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({ nome: user.nome, email: user.email });
+  const [editData, setEditData] = useState({ nome: user.nome, email: user.email, fotoPerfil: user.fotoPerfil });
   const [stats, setStats] = useState({ views: 0, likes: 0, messages: 0 });
+  const [photoPreview, setPhotoPreview] = useState(null);
   
   useScrollAnimationMultiple();
 
@@ -91,7 +92,8 @@ const Profile = ({ user, setUser }) => {
             nome: editData.nome,
             email: editData.email,
             senha: user.senha, // manter senha atual
-            tipoUsuario: user.tipoUsuario // manter tipo atual
+            tipoUsuario: user.tipoUsuario, // manter tipo atual
+            fotoPerfil: editData.fotoPerfil
           })
         });
         
@@ -118,6 +120,24 @@ const Profile = ({ user, setUser }) => {
       }
     }
     setIsEditing(!isEditing);
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Arquivo muito grande. Máximo 5MB.');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target.result;
+        setEditData({...editData, fotoPerfil: base64});
+        setPhotoPreview(base64);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const deleteBazar = async (bazarId) => {
@@ -172,11 +192,27 @@ const Profile = ({ user, setUser }) => {
     <div className="profile">
       <div className="profile-header scroll-animate">
         <div className="user-info scroll-animate-left">
-          <img 
-            src={`https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=80`}
-            alt="Avatar"
-            className="user-avatar-large"
-          />
+          <div className="avatar-container">
+            <img 
+              src={photoPreview || user.fotoPerfil || `https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=80`}
+              alt="Avatar"
+              className="user-avatar-large"
+            />
+            {isEditing && (
+              <div className="avatar-upload">
+                <input
+                  type="file"
+                  id="photo-upload"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  style={{display: 'none'}}
+                />
+                <label htmlFor="photo-upload" className="upload-btn">
+                  <i className="bi bi-camera-fill"></i>
+                </label>
+              </div>
+            )}
+          </div>
           <div className="user-details">
             {isEditing ? (
               <div className="edit-form">
@@ -203,7 +239,8 @@ const Profile = ({ user, setUser }) => {
                       type="button" 
                       className="btn btn-secondary"
                       onClick={() => {
-                        setEditData({ nome: user.nome, email: user.email });
+                        setEditData({ nome: user.nome, email: user.email, fotoPerfil: user.fotoPerfil });
+                        setPhotoPreview(null);
                         setIsEditing(false);
                       }}
                     >
