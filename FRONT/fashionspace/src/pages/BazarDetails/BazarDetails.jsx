@@ -4,13 +4,14 @@ import { defaultBazares, categorias } from '../../data/bazares';
 import { bazarService, formatarBazarParaFrontend } from '../../services/api';
 import ReviewSystem from '../../components/ReviewSystem/ReviewSystem';
 import MapView from '../../components/MapView/MapView';
+import FavoriteButton from '../../components/FavoriteButton/FavoriteButton';
 import './BazarDetails.css';
 
 const BazarDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [bazar, setBazar] = useState(null);
-  const [isFavorito, setIsFavorito] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [userRating, setUserRating] = useState(0);
@@ -26,8 +27,7 @@ const BazarDetails = () => {
         const formattedBazar = formatarBazarParaFrontend(bazarFromAPI);
         setBazar(formattedBazar);
         
-        const favoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-        setIsFavorito(favoritos.includes(id));
+
         
         const savedRatings = JSON.parse(localStorage.getItem(`fashionspace_ratings_${id}`) || '[]');
         setRatings(savedRatings);
@@ -39,8 +39,7 @@ const BazarDetails = () => {
         const foundBazar = allBazares.find(b => b.id === id);
         if (foundBazar) {
           setBazar(foundBazar);
-          const favoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-          setIsFavorito(favoritos.includes(id));
+
         }
       }
       
@@ -52,17 +51,7 @@ const BazarDetails = () => {
     fetchBazar();
   }, [id]);
 
-  const toggleFavorito = () => {
-    const favoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-    const newFavoritos = isFavorito
-      ? favoritos.filter(fId => fId !== id)
-      : [...favoritos, id];
-    
-    localStorage.setItem('fashionspace_favoritos', JSON.stringify(newFavoritos));
-    setIsFavorito(!isFavorito);
-    // Notifica outras telas para atualizar favoritos imediatamente
-    window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: newFavoritos }));
-  };
+
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -168,13 +157,9 @@ const BazarDetails = () => {
         
         <div className="header-actions">
           {user?.tipoUsuario !== 'dono' && (
-            <button 
-              className={`favorite-btn ${isFavorito ? 'active' : ''}`}
-              onClick={toggleFavorito}
-            >
-              <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
-              {isFavorito ? 'Favoritado' : 'Favoritar'}
-            </button>
+            <div className="favorite-btn-wrapper">
+              <FavoriteButton bazarId={id} size="large" className="details-favorite" />
+            </div>
           )}
           <button className="share-btn" onClick={handleShare}>
             <i className="bi bi-share-fill"></i>

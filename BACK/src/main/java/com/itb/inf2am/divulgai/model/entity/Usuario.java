@@ -1,7 +1,7 @@
 package com.itb.inf2am.divulgai.model.entity;
 
 import java.time.LocalDateTime;
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "usuarios")

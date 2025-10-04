@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { categorias } from '../../data/bazares';
+import FavoriteButton from '../FavoriteButton/FavoriteButton';
 import './BazarCarousel.css';
 
-const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
+const BazarCarousel = ({ bazares }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
   const [isDono, setIsDono] = useState(false);
@@ -99,7 +100,7 @@ const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
         >
           {bazares.map((bazar, index) => {
             const categoriaInfo = getCategoriaInfo(bazar.categoria);
-            const isFavorito = Array.isArray(favoritos) && favoritos.includes(bazar.id);
+
             
             return (
               <div 
@@ -111,12 +112,9 @@ const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
                   <div className="bazar-image">
                     <img src={bazar.imagem} alt={bazar.nome} />
                     {!isDono && (
-                      <button 
-                        className={`favorite-btn ${isFavorito ? 'active' : ''}`}
-                        onClick={() => onToggleFavorito(bazar.id)}
-                      >
-                        <i className={isFavorito ? 'bi bi-heart-fill' : 'bi bi-heart'}></i>
-                      </button>
+                      <div className="favorite-btn-container">
+                        <FavoriteButton bazarId={bazar.id} size="medium" />
+                      </div>
                     )}
                     <div className="rating-overlay">
                       <div className="stars">

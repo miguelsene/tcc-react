@@ -1,5 +1,40 @@
 // Configuração da API
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = 'http://localhost:8080/api';
+
+// Serviço para Usuários
+export const usuarioService = {
+  // Login
+  login: async (email, senha) => {
+    const response = await fetch(`${API_BASE_URL}/usuario/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+    if (!response.ok) throw new Error('Credenciais inválidas');
+    return response.json();
+  },
+
+  // Criar usuário
+  criar: async (usuario) => {
+    const response = await fetch(`${API_BASE_URL}/usuario`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(usuario)
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Erro ao criar usuário');
+    }
+    return response.json();
+  },
+
+  // Buscar usuário por ID
+  buscarPorId: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/usuario/${id}`);
+    if (!response.ok) throw new Error('Usuário não encontrado');
+    return response.json();
+  }
+};
 
 // Serviço para Bazares
 export const bazarService = {
@@ -58,6 +93,40 @@ export const bazarService = {
   }
 };
 
+// Serviço para Favoritos
+export const favoritoService = {
+  // Listar favoritos do usuário
+  listarPorUsuario: async (usuarioId) => {
+    const response = await fetch(`${API_BASE_URL}/favoritos/usuario/${usuarioId}`);
+    if (!response.ok) throw new Error('Erro ao buscar favoritos');
+    return response.json();
+  },
+
+  // Adicionar favorito
+  adicionar: async (usuarioId, bazarId) => {
+    const response = await fetch(`${API_BASE_URL}/favoritos/usuario/${usuarioId}/bazar/${bazarId}`, {
+      method: 'POST'
+    });
+    if (!response.ok) throw new Error('Erro ao adicionar favorito');
+    return response.json();
+  },
+
+  // Remover favorito
+  remover: async (usuarioId, bazarId) => {
+    const response = await fetch(`${API_BASE_URL}/favoritos/usuario/${usuarioId}/bazar/${bazarId}`, {
+      method: 'DELETE'
+    });
+    if (!response.ok) throw new Error('Erro ao remover favorito');
+  },
+
+  // Verificar se é favorito
+  verificar: async (usuarioId, bazarId) => {
+    const response = await fetch(`${API_BASE_URL}/favoritos/usuario/${usuarioId}/bazar/${bazarId}/check`);
+    if (!response.ok) throw new Error('Erro ao verificar favorito');
+    return response.json();
+  }
+};
+
 // Função para converter bazar do backend para frontend
 export const formatarBazarParaFrontend = (bazar) => ({
   id: bazar.id.toString(),
@@ -93,3 +162,19 @@ export const formatarBazarParaBackend = (bazar, usuarioId) => ({
   horario: bazar.horario,
   usuarioId: usuarioId
 });
+
+// Função para obter usuário logado
+export const getUsuarioLogado = () => {
+  const usuario = localStorage.getItem('fashionspace_user');
+  return usuario ? JSON.parse(usuario) : null;
+};
+
+// Função para salvar usuário logado
+export const setUsuarioLogado = (usuario) => {
+  localStorage.setItem('fashionspace_user', JSON.stringify(usuario));
+};
+
+// Função para logout
+export const logout = () => {
+  localStorage.removeItem('fashionspace_user');
+};

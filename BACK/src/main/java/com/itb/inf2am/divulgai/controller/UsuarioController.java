@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/Usuario")
+@RequestMapping("/api/usuario")
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
  @Autowired
@@ -30,6 +31,15 @@ public class UsuarioController {
  @GetMapping("/ping")
  public ResponseEntity<String> ping() {
   return ResponseEntity.ok("API funcionando! Servidor ativo em: " + java.time.LocalDateTime.now());
+ }
+
+ @GetMapping("/health")
+ public ResponseEntity<Object> health() {
+  return ResponseEntity.ok(Map.of(
+    "status", "UP",
+    "timestamp", java.time.LocalDateTime.now(),
+    "service", "FashionSpace API"
+  ));
  }
 
  @GetMapping("/findAll")
@@ -62,7 +72,7 @@ public class UsuarioController {
  }
 
 
- @GetMapping("/listarUsuarioPorId/{id}")
+ @GetMapping("/{id}")
  public ResponseEntity<Object> listarUsuarioPorId(@PathVariable String id) {
   try {
    return ResponseEntity.ok(usuarioService.findById(Long.parseLong(id)));
@@ -91,7 +101,7 @@ public class UsuarioController {
 
  }
 
- @PutMapping("/atualizarUsuario{id}")
+ @PutMapping("/{id}")
  public ResponseEntity<Object> atualizarUsuario(@PathVariable String id, @RequestBody Usuario usuario) {
   try {
    Long usuarioId = Long.parseLong(id);
@@ -125,7 +135,7 @@ public class UsuarioController {
  }
 
 
- @DeleteMapping("/excluirUsuario{id}")
+ @DeleteMapping("/{id}")
  public ResponseEntity<Object> excluirUsuario(@PathVariable String id) {
   try {
    Long usuarioId = Long.parseLong(id);

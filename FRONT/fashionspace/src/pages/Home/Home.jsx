@@ -10,7 +10,7 @@ import { useI18n } from '../../i18n/i18n';
 const Home = ({ searchTerm: globalSearchTerm, user }) => {
   const [bazares, setBazares] = useState([]);
   const [filteredBazares, setFilteredBazares] = useState([]);
-  const [favoritos, setFavoritos] = useState([]);
+
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const frequentSearches = ['vestido floral', 'jaqueta jeans', 'camisa social', 'calça wide leg', 'tênis branco', 'saia midi', 'blazer oversized', 'moletom', 'bota de couro', 'acessórios vintage'];
@@ -33,8 +33,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
       }
     };
 
-    const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-    setFavoritos(savedFavoritos);
+
     fetchBazares();
     
     // Listener para recarregar quando novos bazares forem criados
@@ -71,17 +70,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
     setFilteredBazares(filtered);
   }, [bazares, selectedCategory, searchTerm, globalSearchTerm]);
 
-  const toggleFavorito = (bazarId) => {
-    if (user?.tipoUsuario === 'dono') return; // Dono não pode favoritar
-    const newFavoritos = favoritos.includes(bazarId)
-      ? favoritos.filter(id => id !== bazarId)
-      : [...favoritos, bazarId];
-    
-    setFavoritos(newFavoritos);
-    localStorage.setItem('fashionspace_favoritos', JSON.stringify(newFavoritos));
-    // Notifica outras telas para atualizar a lista de favoritos
-    window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: newFavoritos }));
-  };
+
 
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
@@ -212,11 +201,7 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
                 <div className="section-header">
                   <h3>{group.name}</h3>
                 </div>
-                <BazarCarousel 
-                  bazares={group.items} 
-                  favoritos={user?.tipoUsuario === 'dono' ? [] : favoritos} 
-                  onToggleFavorito={toggleFavorito}
-                />
+                <BazarCarousel bazares={group.items} />
               </div>
             ))}
           </>

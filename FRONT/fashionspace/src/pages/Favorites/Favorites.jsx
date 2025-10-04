@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { defaultBazares, categorias } from '../../data/bazares';
+import { categorias } from '../../data/bazares';
 import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import BazarPreview from '../../components/BazarPreview/BazarPreview';
+import { favoritoService, getUsuarioLogado, formatarBazarParaFrontend } from '../../services/api';
 import './Favorites.css';
 
 const Favorites = () => {
@@ -14,15 +15,21 @@ const Favorites = () => {
   useScrollAnimationMultiple();
 
   useEffect(() => {
-    const loadFavorites = () => {
-      const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-      const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-      const allBazares = [...defaultBazares, ...userBazares];
-      
-      const bazaresFavs = allBazares.filter(bazar => savedFavoritos.includes(bazar.id));
-      
-      setFavoritos(savedFavoritos);
-      setBazaresFavoritos(bazaresFavs);
+    const loadFavorites = async () => {
+      const usuario = getUsuarioLogado();
+      if (!usuario) {
+        setBazaresFavoritos([]);
+        return;
+      }
+
+      try {
+        const bazaresFavs = await favoritoService.listarPorUsuario(usuario.id);
+        const bazaresFormatados = bazaresFavs.map(formatarBazarParaFrontend);
+        setBazaresFavoritos(bazaresFormatados);
+      } catch (error) {
+        console.error('Erro ao carregar favoritos:', error);
+        setBazaresFavoritos([]);
+      }
     };
 
     loadFavorites();
@@ -32,24 +39,25 @@ const Favorites = () => {
     };
     
     window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
-    window.addEventListener('bazaresUpdated', handleFavoritesUpdate);
-    window.addEventListener('storage', handleFavoritesUpdate);
     
     return () => {
       window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
-      window.removeEventListener('bazaresUpdated', handleFavoritesUpdate);
-      window.removeEventListener('storage', handleFavoritesUpdate);
     };
   }, []);
 
-  const removeFavorito = (bazarId) => {
+  const removeFavorito = async (bazarId) => {
+    const usuario = getUsuarioLogado();
+    if (!usuario) return;
+
     if (window.confirm('Deseja remover este bazar dos favoritos?')) {
-      const newFavoritos = favoritos.filter(id => id !== bazarId);
-      
-      setFavoritos(newFavoritos);
-      localStorage.setItem('fashionspace_favoritos', JSON.stringify(newFavoritos));
-      
-      window.dispatchEvent(new CustomEvent('favoritesUpdated', { detail: newFavoritos }));
+      try {
+        await favoritoService.remover(usuario.id, bazarId);
+        setBazaresFavoritos(prev => prev.filter(bazar => bazar.id !== bazarId));
+        window.dispatchEvent(new CustomEvent('favoritesUpdated'));
+      } catch (error) {
+        console.error('Erro ao remover favorito:', error);
+        alert('Erro ao remover favorito. Tente novamente.');
+      }
     }
   };
 

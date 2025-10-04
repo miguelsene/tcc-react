@@ -1,6 +1,6 @@
 package com.itb.inf2am.divulgai.model.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity

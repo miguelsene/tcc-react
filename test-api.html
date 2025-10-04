@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste API</title>
+</head>
+<body>
+    <h1>Teste da API</h1>
+    <button onclick="testAPI()">Testar API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const result = document.getElementById('result');
+            
+            try {
+                // Teste 1: Health check
+                result.innerHTML = 'Testando conexão...';
+                const healthResponse = await fetch('http://localhost:8080/api/usuario/health');
+                
+                if (healthResponse.ok) {
+                    const healthData = await healthResponse.json();
+                    result.innerHTML = `✅ Backend funcionando: ${JSON.stringify(healthData)}`;
+                } else {
+                    result.innerHTML = `❌ Backend não responde: ${healthResponse.status}`;
+                }
+            } catch (error) {
+                result.innerHTML = `❌ Erro de conexão: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

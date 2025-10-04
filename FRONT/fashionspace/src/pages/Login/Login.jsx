@@ -1,37 +1,7 @@
 import { useState } from 'react';
 import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
+import { usuarioService } from '../../services/api';
 import './Login.css';
-
-// Serviços da API
-const API_BASE_URL = 'http://localhost:8080/api/v1';
-
-const usuarioService = {
-  login: async (email, senha) => {
-    const response = await fetch(`${API_BASE_URL}/Usuario/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
-    });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Email ou senha incorretos');
-    }
-    return response.json();
-  },
-  
-  cadastrar: async (usuario) => {
-    const response = await fetch(`${API_BASE_URL}/Usuario`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(usuario)
-    });
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Erro ao cadastrar usuário');
-    }
-    return response.json();
-  }
-};
 
 const Login = ({ setUser }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -84,8 +54,9 @@ const Login = ({ setUser }) => {
         const user = await usuarioService.login(formData.email, formData.senha);
         localStorage.setItem('fashionspace_user', JSON.stringify(user));
         setUser(user);
+        window.dispatchEvent(new CustomEvent('userUpdated'));
       } else {
-        const newUser = await usuarioService.cadastrar({
+        const newUser = await usuarioService.criar({
           nome: formData.nome,
           email: formData.email,
           senha: formData.senha,
@@ -93,6 +64,7 @@ const Login = ({ setUser }) => {
         });
         localStorage.setItem('fashionspace_user', JSON.stringify(newUser));
         setUser(newUser);
+        window.dispatchEvent(new CustomEvent('userUpdated'));
       }
     } catch (error) {
       console.error('Erro:', error);
@@ -233,6 +205,7 @@ const Login = ({ setUser }) => {
               };
               localStorage.setItem('fashionspace_user', JSON.stringify(guest));
               setUser(guest);
+              window.dispatchEvent(new CustomEvent('userUpdated'));
             }}
             style={{ marginTop: '10px' }}
           >

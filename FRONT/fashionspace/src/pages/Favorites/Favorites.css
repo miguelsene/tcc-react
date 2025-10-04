@@ -128,7 +128,7 @@
 
 .remove-favorite:hover {
   background: #ff4757;
-  transform: scale(1.1);
+  transform: scale(1.1) translateZ(0);
 }
 
 .favorite-badge {
@@ -221,6 +221,9 @@
   flex: 1;
   padding: 10px 16px;
   font-size: 0.875rem;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 .btn-danger {
@@ -231,7 +234,7 @@
 
 .btn-danger:hover {
   background: #ff3742;
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
 }
 
 /* Estado Vazio */

@@ -29,6 +29,27 @@
   text-shadow: 0 1px 3px rgba(3, 22, 52, 0.2);
 }
 
+.app.dark .support-header h1,
+.app.dark .faq-section h2,
+.app.dark .contact-section h2,
+.app.dark .guides-section h2 {
+  color: #2b1717;
+}
+
+.app.dark .support-header p,
+.app.dark .faq-answer,
+.app.dark .contact-item p,
+.app.dark .guide-card p,
+.app.dark .setting-info p {
+  color: #3b1d1d;
+}
+
+.app.dark .faq-question,
+.app.dark .contact-item h4,
+.app.dark .guide-card h3 {
+  color: #523636;
+}
+
 .support-tabs {
   display: flex;
   justify-content: center;
@@ -51,6 +72,10 @@
   font-weight: 600;
 }
 
+.app.dark .tab-btn {
+  color: #351a1a;
+}
+
 .tab-btn:hover {
   background: var(--bg-tertiary);
   border-color: var(--accent);
@@ -60,7 +85,7 @@
 .tab-btn.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: white;
+  color: rgb(226, 226, 226);
 }
 
 .support-content {
