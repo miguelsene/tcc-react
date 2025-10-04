@@ -2,6 +2,37 @@ import { useState } from 'react';
 import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import './Login.css';
 
+// Serviços da API
+const API_BASE_URL = 'http://localhost:8080/api/v1';
+
+const usuarioService = {
+  login: async (email, senha) => {
+    const response = await fetch(`${API_BASE_URL}/Usuario/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Email ou senha incorretos');
+    }
+    return response.json();
+  },
+  
+  cadastrar: async (usuario) => {
+    const response = await fetch(`${API_BASE_URL}/Usuario`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(usuario)
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Erro ao cadastrar usuário');
+    }
+    return response.json();
+  }
+};
+
 const Login = ({ setUser }) => {
   const [isLogin, setIsLogin] = useState(true);
   
@@ -50,53 +81,22 @@ const Login = ({ setUser }) => {
     setLoading(true);
     try {
       if (isLogin) {
-        // FAZER LOGIN - Enviar dados para o backend
-        const response = await fetch('http://localhost:8080/api/v1/Usuario/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            senha: formData.senha
-          })
-        });
-
-        if (response.ok) {
-          const user = await response.json();
-          localStorage.setItem('fashionspace_user', JSON.stringify(user));
-          setUser(user);
-        } else {
-          const error = await response.json();
-          setErrors({ email: error.message || 'Email ou senha incorretos' });
-        }
+        const user = await usuarioService.login(formData.email, formData.senha);
+        localStorage.setItem('fashionspace_user', JSON.stringify(user));
+        setUser(user);
       } else {
-        // CADASTRAR USUÁRIO - Enviar dados para o backend
-        const response = await fetch('http://localhost:8080/api/v1/Usuario', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            nome: formData.nome,
-            email: formData.email,
-            senha: formData.senha,
-            tipoUsuario: formData.tipoUsuario
-          })
+        const newUser = await usuarioService.cadastrar({
+          nome: formData.nome,
+          email: formData.email,
+          senha: formData.senha,
+          tipoUsuario: formData.tipoUsuario
         });
-
-        if (response.ok) {
-          const newUser = await response.json();
-          localStorage.setItem('fashionspace_user', JSON.stringify(newUser));
-          setUser(newUser);
-        } else {
-          const error = await response.json();
-          setErrors({ email: error.message || 'Erro ao cadastrar usuário' });
-        }
+        localStorage.setItem('fashionspace_user', JSON.stringify(newUser));
+        setUser(newUser);
       }
     } catch (error) {
-      console.error('Erro na conexão:', error);
-      setErrors({ email: 'Erro de conexão com o servidor. Verifique se o backend está rodando.' });
+      console.error('Erro:', error);
+      setErrors({ email: error.message || 'Erro de conexão com o servidor.' });
     } finally {
       setLoading(false);
     }

@@ -12,7 +12,7 @@ const BazarCarousel = ({ bazares, favoritos, onToggleFavorito }) => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setItemsPerView(1);
-      } else if (window.innerWidth < 1024) {
+      } else if (window.innerWidth < 1200) {
         setItemsPerView(2);
       } else {
         setItemsPerView(3);

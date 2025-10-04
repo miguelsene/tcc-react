@@ -111,6 +111,21 @@ na top   border: none;
 .carousel-item {
   flex-shrink: 0;
   padding: 0 0.75rem;
+  width: calc(100% / 3);
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .carousel-item {
+    width: calc(100% / 2);
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-item {
+    width: 100%;
+    padding: 0 0.5rem;
+  }
 }
 
 .bazar-card {
@@ -121,12 +136,14 @@ na top   border: none;
   box-shadow: var(--shadow);
   border: 1px solid rgba(205, 179, 128, 0.3);
   height: 100%;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
   transition: all var(--animation-normal) var(--ease-out-quart);
   transform: translateZ(0);
   backface-visibility: hidden;
   will-change: transform;
+  max-width: 100%;
 }
 
 .bazar-card:hover {
@@ -142,6 +159,19 @@ na top   border: none;
   position: relative;
   height: 200px;
   overflow: hidden;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .bazar-image {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bazar-image {
+    height: 160px;
+  }
 }
 
 .bazar-image img {
@@ -366,16 +396,22 @@ na top   border: none;
     font-size: 1.5rem;
   }
   
-  .carousel-item {
-    padding: 0 0.5rem;
-  }
-  
   .bazar-content {
     padding: 1rem;
   }
   
+  .bazar-card {
+    min-height: 400px;
+  }
+  
   .bazar-actions {
     flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .bazar-actions .btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
   }
   
   .rating-overlay {
@@ -395,5 +431,50 @@ na top   border: none;
   
   .rating-text {
     font-size: 0.75rem;
+  }
+  
+  .carousel-arrow {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+  
+  .carousel-arrow.prev {
+    left: 10px;
+  }
+  
+  .carousel-arrow.next {
+    right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bazar-card {
+    min-height: 380px;
+  }
+  
+  .bazar-content {
+    padding: 0.875rem;
+  }
+  
+  .bazar-header h3 {
+    font-size: 1.125rem;
+  }
+  
+  .bazar-description {
+    font-size: 0.8125rem;
+    -webkit-line-clamp: 3;
+  }
+  
+  .info-item {
+    font-size: 0.8125rem;
+  }
+  
+  .carousel-arrow {
+    display: none;
+  }
+  
+  .carousel-controls {
+    display: flex;
   }
 }

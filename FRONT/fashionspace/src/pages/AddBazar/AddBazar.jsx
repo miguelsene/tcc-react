@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { categorias } from '../../data/bazares';
+import { bazarService, formatarBazarParaBackend } from '../../services/api';
 import './AddBazar.css';
 
 const AddBazar = () => {
@@ -66,10 +67,8 @@ const AddBazar = () => {
 
     try {
       const user = JSON.parse(localStorage.getItem('fashionspace_user'));
-      const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-
-      const newBazar = {
-        id: Date.now().toString(),
+      
+      const bazarData = {
         nome: formData.nome,
         descricao: formData.descricao,
         imagem: formData.imagem || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500',
@@ -82,30 +81,29 @@ const AddBazar = () => {
           cidade: formData.cidade
         },
         telefone: formData.telefone,
-        horario: formData.horario,
-        criadoPor: user.id,
-        dataCriacao: new Date().toISOString(),
-        avaliacao: 4.5,
-        totalAvaliacoes: 0,
-        isDefault: false
+        horario: formData.horario
       };
 
-      console.log('Criando bazar:', newBazar);
-      bazares.push(newBazar);
-      localStorage.setItem('fashionspace_bazares', JSON.stringify(bazares));
-      console.log('Bazares salvos:', bazares);
+      // Converter para formato do backend
+      const bazarParaBackend = formatarBazarParaBackend(bazarData, user.id);
+      console.log('Dados para enviar:', bazarParaBackend);
+      
+      // Enviar para a API
+      const novoBazar = await bazarService.criar(bazarParaBackend);
+      console.log('Bazar criado:', novoBazar);
       
       alert('Bazar criado com sucesso!');
       // Notificar outras telas para recarregar a lista
       window.dispatchEvent(new Event('bazaresUpdated'));
-      setLoading(false);
+      
       // Ir direto ao perfil para ver o novo bazar
       navigate('/perfil');
 
     } catch (error) {
-      setLoading(false);
-      alert('Erro ao criar bazar. Tente novamente.');
       console.error('Erro ao criar bazar:', error);
+      alert(error.message || 'Erro ao criar bazar. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
   };
 

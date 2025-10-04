@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
+import { bazarService, formatarBazarParaFrontend } from '../../services/api';
 import ReviewSystem from '../../components/ReviewSystem/ReviewSystem';
 import MapView from '../../components/MapView/MapView';
 import './BazarDetails.css';
@@ -19,23 +20,36 @@ const BazarDetails = () => {
   const [activeTab, setActiveTab] = useState('info');
 
   useEffect(() => {
-    const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-    const allBazares = [...defaultBazares, ...userBazares];
-    const foundBazar = allBazares.find(b => b.id === id);
-    const savedUser = JSON.parse(localStorage.getItem('fashionspace_user') || 'null');
-    
-    if (foundBazar) {
-      setBazar(foundBazar);
+    const fetchBazar = async () => {
+      try {
+        const bazarFromAPI = await bazarService.buscarPorId(id);
+        const formattedBazar = formatarBazarParaFrontend(bazarFromAPI);
+        setBazar(formattedBazar);
+        
+        const favoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
+        setIsFavorito(favoritos.includes(id));
+        
+        const savedRatings = JSON.parse(localStorage.getItem(`fashionspace_ratings_${id}`) || '[]');
+        setRatings(savedRatings);
+      } catch (error) {
+        console.error('Erro ao buscar bazar:', error);
+        // Fallback para dados locais se a API falhar
+        const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+        const allBazares = [...defaultBazares, ...userBazares];
+        const foundBazar = allBazares.find(b => b.id === id);
+        if (foundBazar) {
+          setBazar(foundBazar);
+          const favoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
+          setIsFavorito(favoritos.includes(id));
+        }
+      }
       
-      const favoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-      setIsFavorito(favoritos.includes(id));
-      
-      const savedRatings = JSON.parse(localStorage.getItem(`fashionspace_ratings_${id}`) || '[]');
-      setRatings(savedRatings);
-    }
-    
-    setUser(savedUser);
-    setLoading(false);
+      const savedUser = JSON.parse(localStorage.getItem('fashionspace_user') || 'null');
+      setUser(savedUser);
+      setLoading(false);
+    };
+
+    fetchBazar();
   }, [id]);
 
   const toggleFavorito = () => {

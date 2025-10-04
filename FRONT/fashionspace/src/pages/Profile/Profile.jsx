@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import { categorias } from '../../data/bazares';
+import { bazarService, formatarBazarParaFrontend } from '../../services/api';
 import BazarPreview from '../../components/BazarPreview/BazarPreview';
 import './Profile.css';
 
@@ -18,21 +19,31 @@ const Profile = ({ user, setUser }) => {
   useScrollAnimationMultiple();
 
   useEffect(() => {
-    const loadUserData = () => {
-      const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-      const userCreatedBazares = bazares.filter(bazar => bazar.criadoPor === user.id);
-      const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-      const posts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
-      const userPosts = posts.filter(post => post.userId === user.id);
-      
-      // Calcular estatísticas
-      const totalLikes = userPosts.reduce((sum, post) => sum + post.likes.length, 0);
-      const totalViews = userCreatedBazares.length * 150 + Math.floor(Math.random() * 500);
-      const totalMessages = Math.floor(Math.random() * 50) + userCreatedBazares.length * 5;
-      
-      setUserBazares(userCreatedBazares);
-      setFavoritos(savedFavoritos);
-      setStats({ views: totalViews, likes: totalLikes, messages: totalMessages });
+    const loadUserData = async () => {
+      try {
+        // Buscar bazares do usuário da API
+        const bazaresFromAPI = await bazarService.buscarPorUsuario(user.id);
+        const userCreatedBazares = bazaresFromAPI.map(formatarBazarParaFrontend);
+        
+        const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
+        const posts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
+        const userPosts = posts.filter(post => post.userId === user.id);
+        
+        // Calcular estatísticas
+        const totalLikes = userPosts.reduce((sum, post) => sum + post.likes.length, 0);
+        const totalViews = userCreatedBazares.length * 150 + Math.floor(Math.random() * 500);
+        const totalMessages = Math.floor(Math.random() * 50) + userCreatedBazares.length * 5;
+        
+        setUserBazares(userCreatedBazares);
+        setFavoritos(savedFavoritos);
+        setStats({ views: totalViews, likes: totalLikes, messages: totalMessages });
+      } catch (error) {
+        console.error('Erro ao carregar bazares do usuário:', error);
+        // Fallback para dados locais
+        const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+        const userCreatedBazares = bazares.filter(bazar => bazar.criadoPor === user.id);
+        setUserBazares(userCreatedBazares);
+      }
     };
 
     loadUserData();
@@ -71,17 +82,27 @@ const Profile = ({ user, setUser }) => {
     setIsEditing(!isEditing);
   };
 
-  const deleteBazar = (bazarId) => {
+  const deleteBazar = async (bazarId) => {
     if (window.confirm('Deseja realmente excluir este bazar? Esta ação não pode ser desfeita.')) {
-      const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-      const updatedBazares = bazares.filter(bazar => bazar.id !== bazarId);
-      
-      localStorage.setItem('fashionspace_bazares', JSON.stringify(updatedBazares));
-      setUserBazares(updatedBazares.filter(bazar => bazar.criadoPor === user.id));
-      
-      const updatedFavoritos = favoritos.filter(id => id !== bazarId);
-      localStorage.setItem('fashionspace_favoritos', JSON.stringify(updatedFavoritos));
-      setFavoritos(updatedFavoritos);
+      try {
+        // Deletar da API
+        await bazarService.deletar(bazarId);
+        
+        // Atualizar estado local
+        setUserBazares(prev => prev.filter(bazar => bazar.id !== bazarId));
+        
+        const updatedFavoritos = favoritos.filter(id => id !== bazarId);
+        localStorage.setItem('fashionspace_favoritos', JSON.stringify(updatedFavoritos));
+        setFavoritos(updatedFavoritos);
+        
+        // Notificar outras telas
+        window.dispatchEvent(new Event('bazaresUpdated'));
+        
+        alert('Bazar excluído com sucesso!');
+      } catch (error) {
+        console.error('Erro ao excluir bazar:', error);
+        alert('Erro ao excluir bazar. Tente novamente.');
+      }
     }
   };
 

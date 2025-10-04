@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { defaultBazares, categorias } from '../../data/bazares';
+import { bazarService, formatarBazarParaFrontend } from '../../services/api';
 import BazarCarousel from '../../components/BazarCarousel/BazarCarousel';
 import Hero from '../../components/common/Hero/Hero';
 import './Home.css';
@@ -15,13 +16,37 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
   const frequentSearches = ['vestido floral', 'jaqueta jeans', 'camisa social', 'calça wide leg', 'tênis branco', 'saia midi', 'blazer oversized', 'moletom', 'bota de couro', 'acessórios vintage'];
 
   useEffect(() => {
-    const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+    const fetchBazares = async () => {
+      try {
+        console.log('Buscando bazares da API...');
+        const bazaresFromAPI = await bazarService.listarTodos();
+        console.log('Bazares recebidos da API:', bazaresFromAPI);
+        const formattedBazares = bazaresFromAPI.map(formatarBazarParaFrontend);
+        console.log('Bazares formatados:', formattedBazares);
+        setBazares(formattedBazares);
+        setFilteredBazares(formattedBazares);
+      } catch (error) {
+        console.error('Erro ao buscar bazares:', error);
+        // Fallback para dados estáticos se houver erro
+        setBazares(defaultBazares);
+        setFilteredBazares(defaultBazares);
+      }
+    };
+
     const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-    
-    const allBazares = [...defaultBazares, ...userBazares];
-    setBazares(allBazares);
-    setFilteredBazares(allBazares);
     setFavoritos(savedFavoritos);
+    fetchBazares();
+    
+    // Listener para recarregar quando novos bazares forem criados
+    const handleBazaresUpdated = () => {
+      fetchBazares();
+    };
+    
+    window.addEventListener('bazaresUpdated', handleBazaresUpdated);
+    
+    return () => {
+      window.removeEventListener('bazaresUpdated', handleBazaresUpdated);
+    };
   }, []);
 
   useEffect(() => {
