@@ -258,14 +258,16 @@
   overflow: hidden;
   box-shadow: var(--shadow);
   border: 1px solid rgba(95, 129, 165, 0.1);
-  transition: all 0.4s var(--ease-out-quart);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform: translateZ(0);
-  will-change: transform;
+  will-change: transform, box-shadow;
+  cursor: pointer;
 }
 
 .bazar-card:hover {
-  transform: translateY(-8px) scale(1) translateZ(0);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-12px) translateZ(0);
+  box-shadow: 0 20px 40px rgba(95, 129, 165, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: rgba(95, 129, 165, 0.2);
 }
 
 .card-image {
@@ -278,14 +280,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
   backface-visibility: hidden;
-  transform: translateZ(0);
+  transform: translateZ(0) scale(1);
 }
 
 .bazar-card:hover .card-image img {
-  transform: scale(1.1);
+  transform: translateZ(0) scale(1.08);
 }
 
 .card-overlay {
@@ -294,50 +296,66 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(95, 129, 165, 0.6));
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none; /* não interfere no :hover do card */
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(10px);
 }
 
 .bazar-card:hover .card-overlay {
   opacity: 1;
-  pointer-events: auto;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .overlay-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   text-decoration: none;
   font-size: 0.875rem;
-  pointer-events: auto; /* permite clique mesmo com overlay sem eventos */
-  backface-visibility: hidden;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateY(5px);
 }
 
-.edit-btn {
-  background: var(--secondary);
+.bazar-card:hover .overlay-btn {
+  transform: translateY(0);
+}
+
+.overlay-btn.edit-btn {
+  background: rgba(95, 129, 165, 0.9);
   color: white;
 }
 
-.delete-btn {
-  background: #ff4757;
+.overlay-btn.delete-btn {
+  background: rgba(255, 71, 87, 0.9);
   color: white;
 }
 
 .overlay-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.05);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .card-content {
   padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.bazar-card:hover .card-content {
+  transform: translateY(-2px);
 }
 
 .card-header {
@@ -461,6 +479,31 @@
   outline: none;
 }
 
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.edit-actions .btn {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-actions .btn-secondary {
+  background: rgba(108, 117, 125, 0.1);
+  color: var(--text-secondary);
+  border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.edit-actions .btn-secondary:hover {
+  background: rgba(108, 117, 125, 0.2);
+}
+
 /* Responsivo */
 @media (max-width: 768px) {
   .profile-header {
@@ -495,5 +538,42 @@
   
   .card-actions {
     flex-direction: column;
+  }
+  
+  /* Melhorar hover em mobile */
+  .bazar-card {
+    transition: all 0.2s ease;
+  }
+  
+  .bazar-card:hover {
+    transform: translateY(-4px) translateZ(0);
+  }
+  
+  .card-overlay {
+    opacity: 0.95;
+    visibility: visible;
+    background: rgba(0, 0, 0, 0.85);
+  }
+  
+  .overlay-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+}
+
+/* Melhorias para telas touch */
+@media (hover: none) and (pointer: coarse) {
+  .bazar-card:active {
+    transform: translateY(-8px) translateZ(0);
+  }
+  
+  .card-overlay {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .bazar-card:active .card-overlay {
+    opacity: 1;
+    visibility: visible;
   }
 }

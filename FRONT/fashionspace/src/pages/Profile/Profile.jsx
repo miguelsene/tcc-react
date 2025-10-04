@@ -67,17 +67,55 @@ const Profile = ({ user, setUser }) => {
     }
   };
 
-  const handleEditProfile = () => {
+  const handleEditProfile = async () => {
     if (isEditing) {
-      // Salvar alterações
-      const updatedUser = { ...user, ...editData };
-      setUser(updatedUser);
-      localStorage.setItem('fashionspace_user', JSON.stringify(updatedUser));
+      // Validar dados antes de enviar
+      if (!editData.nome || editData.nome.trim().length < 2) {
+        alert('Nome deve ter pelo menos 2 caracteres');
+        return;
+      }
       
-      // Atualizar na lista de usuários
-      const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
-      const updatedUsers = users.map(u => u.id === user.id ? updatedUser : u);
-      localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
+      if (!editData.email || !editData.email.includes('@')) {
+        alert('Email inválido');
+        return;
+      }
+      
+      try {
+        // Fazer requisição para a API
+        const response = await fetch(`http://localhost:8080/api/usuario/${user.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nome: editData.nome,
+            email: editData.email,
+            senha: user.senha, // manter senha atual
+            tipoUsuario: user.tipoUsuario // manter tipo atual
+          })
+        });
+        
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUser(updatedUser);
+          localStorage.setItem('fashionspace_user', JSON.stringify(updatedUser));
+          
+          // Atualizar na lista de usuários local também
+          const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
+          const updatedUsers = users.map(u => u.id === user.id ? updatedUser : u);
+          localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
+          
+          alert('Perfil atualizado com sucesso!');
+        } else {
+          const error = await response.json();
+          alert('Erro ao atualizar perfil: ' + (error.message || 'Tente novamente'));
+          return; // não sair do modo de edição se houver erro
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar perfil:', error);
+        alert('Erro ao conectar com o servidor. Tente novamente.');
+        return; // não sair do modo de edição se houver erro
+      }
     }
     setIsEditing(!isEditing);
   };
@@ -148,6 +186,8 @@ const Profile = ({ user, setUser }) => {
                   onChange={(e) => setEditData({...editData, nome: e.target.value})}
                   className="form-control"
                   placeholder="Nome"
+                  required
+                  minLength="2"
                 />
                 <input
                   type="email"
@@ -155,7 +195,22 @@ const Profile = ({ user, setUser }) => {
                   onChange={(e) => setEditData({...editData, email: e.target.value})}
                   className="form-control"
                   placeholder="Email"
+                  required
                 />
+                {isEditing && (
+                  <div className="edit-actions">
+                    <button 
+                      type="button" 
+                      className="btn btn-secondary"
+                      onClick={() => {
+                        setEditData({ nome: user.nome, email: user.email });
+                        setIsEditing(false);
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <>

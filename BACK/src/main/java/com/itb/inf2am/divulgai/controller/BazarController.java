@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,21 +30,17 @@ public class BazarController {
         try {
             return ResponseEntity.ok(bazarService.findById(Long.parseLong(id)));
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                Map.of(
-                    "status", 400,
-                    "error", "Bad Request",
-                    "message", "O id informado não é válido: " + id
-                )
-            );
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", 400);
+            errorResponse.put("error", "Bad Request");
+            errorResponse.put("message", "O id informado não é válido: " + id);
+            return ResponseEntity.badRequest().body(errorResponse);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                Map.of(
-                    "status", 404,
-                    "error", "Not Found",
-                    "message", "Bazar não encontrado com o id " + id
-                )
-            );
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", 404);
+            errorResponse.put("error", "Not Found");
+            errorResponse.put("message", "Bazar não encontrado com o id " + id);
+            return ResponseEntity.status(404).body(errorResponse);
         }
     }
     
@@ -77,21 +74,17 @@ public class BazarController {
             return ResponseEntity.ok(bazarAtualizado);
             
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                Map.of(
-                    "status", 400,
-                    "error", "Bad Request",
-                    "message", "O id informado não é válido: " + id
-                )
-            );
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", 400);
+            errorResponse.put("error", "Bad Request");
+            errorResponse.put("message", "O id informado não é válido: " + id);
+            return ResponseEntity.badRequest().body(errorResponse);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                Map.of(
-                    "status", 404,
-                    "error", "Not Found",
-                    "message", "Bazar não encontrado com o id " + id
-                )
-            );
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", 404);
+            errorResponse.put("error", "Not Found");
+            errorResponse.put("message", "Bazar não encontrado com o id " + id);
+            return ResponseEntity.status(404).body(errorResponse);
         }
     }
     
@@ -101,23 +94,21 @@ public class BazarController {
         try {
             Long bazarId = Long.parseLong(id);
             bazarService.delete(bazarId);
-            return ResponseEntity.ok(Map.of("message", "Bazar deletado com sucesso"));
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Bazar deletado com sucesso");
+            return ResponseEntity.ok(response);
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                Map.of(
-                    "status", 400,
-                    "error", "Bad Request",
-                    "message", "O id informado não é válido: " + id
-                )
-            );
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", 400);
+            errorResponse.put("error", "Bad Request");
+            errorResponse.put("message", "O id informado não é válido: " + id);
+            return ResponseEntity.badRequest().body(errorResponse);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                Map.of(
-                    "status", 404,
-                    "error", "Not Found",
-                    "message", "Bazar não encontrado com o id " + id
-                )
-            );
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", 404);
+            errorResponse.put("error", "Not Found");
+            errorResponse.put("message", "Bazar não encontrado com o id " + id);
+            return ResponseEntity.status(404).body(errorResponse);
         }
     }
     
@@ -149,5 +140,21 @@ public class BazarController {
     @GetMapping("/top-rated")
     public ResponseEntity<List<Bazar>> findTopRated() {
         return ResponseEntity.ok(bazarService.findTopRated());
+    }
+    
+    // Endpoint de debug para testar atualização
+    @PostMapping("/debug/{id}")
+    public ResponseEntity<Object> debugUpdate(@PathVariable Long id, @RequestBody Bazar bazar) {
+        try {
+            Bazar bazarExistente = bazarService.findById(id);
+            Map<String, Object> debug = new HashMap<>();
+            debug.put("bazarOriginal", bazarExistente);
+            debug.put("dadosRecebidos", bazar);
+            return ResponseEntity.ok(debug);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("erro", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 }

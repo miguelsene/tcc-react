@@ -39,6 +39,11 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
           <i className={`bi ${sidebarVisible ? 'bi-list' : 'bi-list'}`}></i>
         </button>
         
+        <Link to="/" className="topbar-logo">
+          <img src="https://i.pinimg.com/736x/b8/22/5a/b8225adb14d7b1536e1ec62706928216.jpg" alt="FashionSpace" className="site-logo medium" />
+          <span className="logo-text">FashionSpace</span>
+        </Link>
+        
         <form className="search-form" onSubmit={handleSearch}>
           <div className="search-container">
             <i className="bi bi-search search-icon"></i>

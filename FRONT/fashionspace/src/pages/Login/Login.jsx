@@ -75,7 +75,14 @@ const Login = ({ setUser }) => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-page">
+      <img 
+        src="https://i.pinimg.com/736x/b8/22/5a/b8225adb14d7b1536e1ec62706928216.jpg" 
+        alt="FashionSpace Logo" 
+        className="login-logo"
+      />
+      
+      <div className="login-container">
 
       <div className="login-card scroll-animate">
         <div className="login-header scroll-animate-fade">
@@ -212,6 +219,7 @@ const Login = ({ setUser }) => {
             Entrar sem conta
           </button>
         </form>
+        </div>
       </div>
     </div>
   );

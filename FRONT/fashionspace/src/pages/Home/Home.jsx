@@ -99,20 +99,21 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
   const eyebrowTicker = (
     <>
       <style>{`
-        .eyebrow-ticker{display:inline-flex;align-items:center;gap:8px;}
-        .eyebrow-ticker .ticker-viewport{position:relative;width:min(60vw,520px);overflow:hidden;height:1.4em;}
-        .eyebrow-ticker .ticker-track{display:inline-block;white-space:nowrap;animation:ticker-scroll 16s linear infinite;}
-        .eyebrow-ticker .ticker-item{display:inline-flex;align-items:center;margin-right:24px;opacity:.95}
-        @keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-        @media(max-width:768px){.eyebrow-ticker .ticker-viewport{width:min(70vw,320px)}}
-        @media (prefers-reduced-motion: reduce){.eyebrow-ticker .ticker-track{animation:none}}
+        .eyebrow-ticker{display:inline-flex;align-items:center;gap:12px;color:rgba(255,255,255,0.95);font-size:16px;}
+        .eyebrow-ticker .ticker-viewport{position:relative;width:1017px;overflow:hidden;height:23px;background:rgba(255,255,255,0.1);border-radius:10px;padding:0 8px;}
+        .eyebrow-ticker .ticker-track{display:flex;align-items:center;height:100%;white-space:nowrap;animation:ticker-move 10s linear infinite;}
+        .eyebrow-ticker .ticker-item{display:inline-block;margin-right:40px;color:rgba(255,255,255,0.9);font-weight:500;font-size:16px;}
+        @keyframes ticker-move{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+        @media(max-width:768px){.eyebrow-ticker .ticker-viewport{width:280px}}
       `}</style>
       <div className="eyebrow-ticker">
-        <i className="bi bi-search" aria-hidden="true"></i>
-        <div className="ticker-viewport" aria-label="Pesquisas frequentes">
+        <i className="bi bi-search" style={{fontSize:'16px'}}></i>
+        <span style={{fontSize:'15px',opacity:0.8}}>Mais pesquisados:</span>
+        <div className="ticker-viewport">
           <div className="ticker-track">
-            {frequentSearches.map((q, idx) => (<span className="ticker-item" key={'t1-'+idx}>{q}</span>))}
-            {frequentSearches.map((q, idx) => (<span className="ticker-item" key={'t2-'+idx}>{q}</span>))}
+            {frequentSearches.concat(frequentSearches).map((q, idx) => (
+              <span className="ticker-item" key={idx}>{q}</span>
+            ))}
           </div>
         </div>
       </div>

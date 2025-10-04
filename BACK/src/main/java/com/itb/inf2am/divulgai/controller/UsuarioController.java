@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,13 +34,18 @@ public class UsuarioController {
   return ResponseEntity.ok("API funcionando! Servidor ativo em: " + java.time.LocalDateTime.now());
  }
 
+ @GetMapping("/test")
+ public ResponseEntity<String> test() {
+  return ResponseEntity.ok("Conexão OK - CORS funcionando!");
+ }
+
  @GetMapping("/health")
  public ResponseEntity<Object> health() {
-  return ResponseEntity.ok(Map.of(
-    "status", "UP",
-    "timestamp", java.time.LocalDateTime.now(),
-    "service", "FashionSpace API"
-  ));
+  Map<String, Object> response = new HashMap<>();
+  response.put("status", "UP");
+  response.put("timestamp", java.time.LocalDateTime.now());
+  response.put("service", "FashionSpace API");
+  return ResponseEntity.ok(response);
  }
 
  @GetMapping("/findAll")
@@ -57,7 +63,9 @@ public class UsuarioController {
  @PostMapping
  public ResponseEntity<Object> create(@RequestBody Usuario usuario) {
   if (usuarioService.emailExiste(usuario.getEmail())) {
-   return ResponseEntity.badRequest().body(Map.of("message", "Email já cadastrado"));
+   Map<String, String> response = new HashMap<>();
+   response.put("message", "Email já cadastrado");
+   return ResponseEntity.badRequest().body(response);
   }
   return ResponseEntity.ok(usuarioService.save(usuario));
  }
@@ -68,7 +76,9 @@ public class UsuarioController {
   if (usuario != null) {
    return ResponseEntity.ok(usuario);
   }
-  return ResponseEntity.status(401).body(Map.of("message", "Email ou senha incorretos"));
+  Map<String, String> response = new HashMap<>();
+  response.put("message", "Email ou senha incorretos");
+  return ResponseEntity.status(401).body(response);
  }
 
 
@@ -77,24 +87,19 @@ public class UsuarioController {
   try {
    return ResponseEntity.ok(usuarioService.findById(Long.parseLong(id)));
   } catch (NumberFormatException e) {
-   return ResponseEntity.badRequest().body(
-           Map.of(
-                   "status", 400,
-                   "error", "Bad Request",
-                   "message", "O id informado não é válido: " + id
-           )
-   );
+   Map<String, Object> errorResponse = new HashMap<>();
+   errorResponse.put("status", 400);
+   errorResponse.put("error", "Bad Request");
+   errorResponse.put("message", "O id informado não é válido: " + id);
+   return ResponseEntity.badRequest().body(errorResponse);
 
 
   } catch (RuntimeException e) {
-   return ResponseEntity.status(404).body(
-           Map.of(
-                   "status", 404,
-                   "error", "Not Found",
-                   "message", "Usuario não encontrada com o id " + id
-           )
-
-   );
+   Map<String, Object> errorResponse = new HashMap<>();
+   errorResponse.put("status", 404);
+   errorResponse.put("error", "Not Found");
+   errorResponse.put("message", "Usuario não encontrada com o id " + id);
+   return ResponseEntity.status(404).body(errorResponse);
 
   }
 
@@ -116,21 +121,17 @@ public class UsuarioController {
 
    return ResponseEntity.ok(usuarioAtualizada);
   } catch (NumberFormatException e) {
-   return ResponseEntity.badRequest().body(
-           Map.of(
-                   "status", 400,
-                   "error", "Bad Request",
-                   "message", "O id informado não é válido: " + id
-           )
-   );
+   Map<String, Object> errorResponse = new HashMap<>();
+   errorResponse.put("status", 400);
+   errorResponse.put("error", "Bad Request");
+   errorResponse.put("message", "O id informado não é válido: " + id);
+   return ResponseEntity.badRequest().body(errorResponse);
   } catch (RuntimeException e) {
-   return ResponseEntity.status(404).body(
-           Map.of(
-                   "status", 404,
-                   "error", "Not Found",
-                   "message", "Usuario não encontrada com o id " + id
-           )
-   );
+   Map<String, Object> errorResponse = new HashMap<>();
+   errorResponse.put("status", 404);
+   errorResponse.put("error", "Not Found");
+   errorResponse.put("message", "Usuario não encontrada com o id " + id);
+   return ResponseEntity.status(404).body(errorResponse);
   }
  }
 
@@ -140,23 +141,21 @@ public class UsuarioController {
   try {
    Long usuarioId = Long.parseLong(id);
    usuarioService.delete(usuarioId); // chama o service
-   return ResponseEntity.ok(Map.of("message", "Usuario deletada com sucesso"));
+   Map<String, String> response = new HashMap<>();
+   response.put("message", "Usuario deletada com sucesso");
+   return ResponseEntity.ok(response);
   } catch (NumberFormatException e) {
-   return ResponseEntity.badRequest().body(
-           Map.of(
-                   "status", 400,
-                   "error", "Bad Request",
-                   "message", "O id informado não é válido: " + id
-           )
-   );
+   Map<String, Object> errorResponse = new HashMap<>();
+   errorResponse.put("status", 400);
+   errorResponse.put("error", "Bad Request");
+   errorResponse.put("message", "O id informado não é válido: " + id);
+   return ResponseEntity.badRequest().body(errorResponse);
   } catch (RuntimeException e) {
-   return ResponseEntity.status(404).body(
-           Map.of(
-                   "status", 404,
-                   "error", "Not Found",
-                   "message", "Usuario não encontrada com o id " + id
-           )
-   );
+   Map<String, Object> errorResponse = new HashMap<>();
+   errorResponse.put("status", 404);
+   errorResponse.put("error", "Not Found");
+   errorResponse.put("message", "Usuario não encontrada com o id " + id);
+   return ResponseEntity.status(404).body(errorResponse);
   }
  }
 }

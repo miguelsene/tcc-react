@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BazarFavoritoService {
@@ -25,7 +26,7 @@ public class BazarFavoritoService {
     
     public List<Bazar> getBazaresFavoritos(Long usuarioId) {
         List<BazarFavorito> favoritos = bazarFavoritoRepository.findByUsuarioIdWithBazar(usuarioId);
-        return favoritos.stream().map(BazarFavorito::getBazar).toList();
+        return favoritos.stream().map(BazarFavorito::getBazar).collect(Collectors.toList());
     }
     
     @Transactional
