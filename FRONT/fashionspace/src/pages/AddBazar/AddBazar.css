@@ -163,6 +163,173 @@ select.form-control {
   cursor: not-allowed;
 }
 
+/* Modal de Captcha */
+.captcha-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.captcha-modal {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 0;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.captcha-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.captcha-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.captcha-logo i {
+  color: #4285f4;
+  font-size: 1.25rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.captcha-content {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.captcha-instruction {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.image-tile {
+  position: relative;
+  aspect-ratio: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.image-tile:hover {
+  opacity: 0.8;
+}
+
+.image-tile.selected {
+  border-color: #4285f4;
+}
+
+.image-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.selection-overlay {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #4285f4;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.captcha-error {
+  color: #d93025;
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.captcha-hint {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.captcha-hint small {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+.captcha-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.captcha-actions .btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .add-bazar {
     padding: 0 15px;
@@ -187,5 +354,29 @@ select.form-control {
   
   .page-header h1 {
     font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .captcha-modal {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+  
+  .captcha-header,
+  .captcha-content,
+  .captcha-actions {
+    padding: 1rem;
+  }
+  
+  .image-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  
+  .selection-overlay {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
   }
 }

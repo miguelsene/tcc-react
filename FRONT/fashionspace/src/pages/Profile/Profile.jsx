@@ -3,8 +3,124 @@ import { Link, useNavigate } from 'react-router-dom';
 import { categorias } from '../../data/bazares';
 import { bazarService, formatarBazarParaFrontend } from '../../services/api';
 import BazarPreview from '../../components/BazarPreview/BazarPreview';
-import BazarMessages from '../../components/common/BazarMessages';
+import { chatService } from '../../services/chatService';
 import './Profile.css';
+
+const MessagesPreview = ({ user }) => {
+  const [conversations, setConversations] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    loadConversations();
+  }, [user]);
+
+  const loadConversations = async () => {
+    try {
+      const [conversas, { count }] = await Promise.all([
+        chatService.getAllConversations(user.id, user.tipoUsuario),
+        chatService.getUnreadCount(user.id)
+      ]);
+      
+      // Buscar dados dos usuários para as conversas
+      const conversasComUsuarios = await Promise.all(
+        conversas.slice(0, 3).map(async (conversa) => {
+          try {
+            const response = await fetch(`http://localhost:8080/api/usuario/${conversa.remetenteId === user.id ? conversa.destinatarioId : conversa.remetenteId}`);
+            const usuario = response.ok ? await response.json() : null;
+            return {
+              ...conversa,
+              usuario: usuario || {
+                nome: 'Usuário',
+                fotoPerfil: `https://ui-avatars.com/api/?name=U&background=5f81a5&color=fff&size=40`
+              }
+            };
+          } catch {
+            return {
+              ...conversa,
+              usuario: {
+                nome: 'Usuário',
+                fotoPerfil: `https://ui-avatars.com/api/?name=U&background=5f81a5&color=fff&size=40`
+              }
+            };
+          }
+        })
+      );
+      
+      setConversations(conversasComUsuarios);
+      setUnreadCount(count || 0);
+    } catch (error) {
+      console.error('Erro ao carregar conversas:', error);
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffHours = Math.floor(diffMs / 3600000);
+    
+    if (diffHours < 1) return 'Agora';
+    if (diffHours < 24) return `${diffHours}h`;
+    return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+  };
+
+  return (
+    <div className="messages-section scroll-animate">
+      <div className="messages-card">
+        <div className="messages-header">
+          <div className="messages-icon">
+            <i className="bi bi-chat-dots-fill"></i>
+          </div>
+          <div className="messages-info">
+            <h3>Mensagens Recentes</h3>
+            <p>{unreadCount} não lidas • {conversations.length} conversas</p>
+          </div>
+          <Link to="/mensagens" className="messages-btn">
+            <i className="bi bi-arrow-right"></i>
+          </Link>
+        </div>
+        
+        <div className="conversations-preview">
+          {conversations.length > 0 ? (
+            conversations.map((conversa) => (
+              <Link 
+                key={conversa.id} 
+                to={`/chat/${conversa.bazarId}`}
+                className="conversation-item"
+              >
+                <img 
+                  src={conversa.usuario.fotoPerfil || `https://ui-avatars.com/api/?name=${conversa.usuario.nome}&background=5f81a5&color=fff&size=40`}
+                  alt={conversa.usuario.nome}
+                  className="user-avatar"
+                />
+                <div className="conversation-content">
+                  <div className="conversation-header">
+                    <span className="user-name">{conversa.usuario.nome}</span>
+                    <span className="message-time">{formatTime(conversa.dataEnvio)}</span>
+                  </div>
+                  <p className="last-message">
+                    {conversa.conteudo.length > 40 ? 
+                      conversa.conteudo.substring(0, 40) + '...' : 
+                      conversa.conteudo
+                    }
+                  </p>
+                </div>
+                {!conversa.lida && conversa.destinatarioId === user.id && (
+                  <div className="unread-indicator"></div>
+                )}
+              </Link>
+            ))
+          ) : (
+            <div className="no-conversations">
+              <i className="bi bi-chat-dots"></i>
+              <p>Nenhuma conversa ainda</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Profile = ({ user, setUser }) => {
   const navigate = useNavigate();
@@ -317,15 +433,15 @@ const Profile = ({ user, setUser }) => {
         </div>
       </div>
 
-      {user.tipoUsuario === 'dono' && userBazares.length > 0 && (
-        <BazarMessages bazar={userBazares[0]} user={user} />
+      {user.tipoUsuario === 'dono' && (
+        <MessagesPreview user={user} />
       )}
 
       <div className="profile-section scroll-animate">
         <div className="section-header scroll-animate-left">
           <h2>
             <i className="bi bi-shop"></i>
-            Meus Bazares
+            {user.tipoUsuario === 'dono' ? 'Meus Bazares' : 'Bazares Criados'}
           </h2>
           {user.tipoUsuario === 'dono' && (
             <Link to="/adicionar-bazar" className="btn btn-primary">
@@ -348,72 +464,64 @@ const Profile = ({ user, setUser }) => {
             )}
           </div>
         ) : (
-          <div className="bazares-grid">
+          <div className="bazares-modern-grid">
             {userBazares.map((bazar, index) => {
               const categoriaInfo = getCategoriaInfo(bazar.categoria);
+              console.log('Bazar ID para edição:', bazar.id, 'Tipo:', typeof bazar.id);
               
               return (
-                <div key={bazar.id} className="bazar-card scroll-animate-scale" style={{ animationDelay: `${index * 0.1}s` }} onMouseEnter={() => handleCardHover(bazar)} onMouseLeave={handleCardLeave}>
-                  <div className="card-image">
-                    <img src={bazar.imagem} alt={bazar.nome} />
-                    <div className="card-overlay">
-                      <Link 
-                        to={`/editar-bazar/${bazar.id}`}
-                        className="overlay-btn edit-btn"
-                      >
-                        <i className="bi bi-pencil-fill"></i>
-                        Editar
-                      </Link>
-                      <button 
-                        onClick={() => deleteBazar(bazar.id)}
-                        className="overlay-btn delete-btn"
-                      >
-                        <i className="bi bi-trash-fill"></i>
-                        Excluir
-                      </button>
+                <div key={bazar.id} className="modern-bazar-card scroll-animate-scale" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <div className="modern-card-header">
+                    <div className="bazar-avatar">
+                      <img src={bazar.imagem} alt={bazar.nome} />
                     </div>
-                  </div>
-                  
-                  <div className="card-content">
-                    <div className="card-header">
+                    <div className="bazar-info">
                       <h3>{bazar.nome}</h3>
-                      <span 
-                        className="categoria-badge"
-                        style={{ backgroundColor: categoriaInfo.cor }}
-                      >
+                      <span className="categoria-tag" style={{ backgroundColor: categoriaInfo.cor }}>
                         {categoriaInfo.nome}
                       </span>
                     </div>
+                  </div>
+                  
+                  <div className="modern-card-content">
+                    <p className="bazar-description">{bazar.descricao}</p>
                     
-                    <p className="card-description">{bazar.descricao}</p>
-                    
-                    <div className="card-info">
-                      <div className="info-item">
+                    <div className="bazar-stats">
+                      <div className="stat-item">
+                        <i className="bi bi-eye-fill"></i>
+                        <span>150 visualizações</span>
+                      </div>
+                      <div className="stat-item">
+                        <i className="bi bi-chat-dots-fill"></i>
+                        <span>12 mensagens</span>
+                      </div>
+                      <div className="stat-item">
                         <i className="bi bi-geo-alt-fill"></i>
                         <span>{bazar.endereco.cidade}</span>
                       </div>
-                      <div className="info-item">
-                        <i className="bi bi-calendar-fill"></i>
-                        <span>Criado em {formatDate(bazar.dataCriacao)}</span>
-                      </div>
                     </div>
-                    
-                    <div className="card-actions">
-                      <Link 
-                        to={`/bazar-detalhes/${bazar.id}`} 
-                        className="btn btn-secondary"
-                      >
-                        <i className="bi bi-eye-fill"></i>
-                        Visualizar
-                      </Link>
-                      <Link 
-                        to={`/editar-bazar/${bazar.id}`} 
-                        className="btn btn-primary"
-                      >
-                        <i className="bi bi-pencil-fill"></i>
-                        Editar
-                      </Link>
-                    </div>
+                  </div>
+                  
+                  <div className="modern-card-actions">
+                    <Link to={`/chat/${bazar.id}`} className="action-btn chat-btn">
+                      <i className="bi bi-chat-dots-fill"></i>
+                      Mensagens
+                    </Link>
+                    <Link to={`/editar-bazar/${bazar.id}`} className="action-btn edit-btn">
+                      <i className="bi bi-pencil-fill"></i>
+                      Editar
+                    </Link>
+                    <Link to={`/bazar-detalhes/${bazar.id}`} className="action-btn view-btn">
+                      <i className="bi bi-eye-fill"></i>
+                      Ver
+                    </Link>
+                    <button 
+                      onClick={() => deleteBazar(bazar.id)}
+                      className="action-btn delete-btn"
+                    >
+                      <i className="bi bi-trash-fill"></i>
+                      Excluir
+                    </button>
                   </div>
                 </div>
               );
@@ -423,14 +531,41 @@ const Profile = ({ user, setUser }) => {
       </div>
 
       <div className="profile-quick-actions">
-        {user.tipoUsuario !== 'dono' && (
-          <Link to="/favoritos" className="action-card">
+        {user.tipoUsuario !== 'dono' ? (
+          <>
+            <Link to="/favoritos" className="action-card">
+              <div className="action-icon">
+                <i className="bi bi-heart-fill"></i>
+              </div>
+              <div className="action-content">
+                <h3>Meus Favoritos</h3>
+                <p>{favoritos.length} bazares favoritados</p>
+              </div>
+              <div className="action-arrow">
+                <i className="bi bi-arrow-right"></i>
+              </div>
+            </Link>
+            <Link to="/mensagens" className="action-card">
+              <div className="action-icon">
+                <i className="bi bi-chat-dots-fill"></i>
+              </div>
+              <div className="action-content">
+                <h3>Minhas Mensagens</h3>
+                <p>Conversas com bazares</p>
+              </div>
+              <div className="action-arrow">
+                <i className="bi bi-arrow-right"></i>
+              </div>
+            </Link>
+          </>
+        ) : (
+          <Link to="/adicionar-bazar" className="action-card">
             <div className="action-icon">
-              <i className="bi bi-heart-fill"></i>
+              <i className="bi bi-plus-circle-fill"></i>
             </div>
             <div className="action-content">
-              <h3>Meus Favoritos</h3>
-              <p>{favoritos.length} bazares favoritados</p>
+              <h3>Criar Novo Bazar</h3>
+              <p>Adicione mais um bazar</p>
             </div>
             <div className="action-arrow">
               <i className="bi bi-arrow-right"></i>

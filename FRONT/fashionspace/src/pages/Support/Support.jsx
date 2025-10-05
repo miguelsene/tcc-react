@@ -1,37 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './Support.css';
 
 const Support = () => {
   const [activeTab, setActiveTab] = useState('faq');
-  const [isDark, setIsDark] = useState(false);
   const [contactForm, setContactForm] = useState({
     nome: '',
     email: '',
     assunto: '',
     mensagem: ''
   });
-
-  useEffect(() => {
-    const checkDarkMode = () => {
-      const appElement = document.querySelector('.app');
-      setIsDark(appElement && appElement.classList.contains('dark'));
-    };
-    
-    checkDarkMode();
-    const observer = new MutationObserver(checkDarkMode);
-    const appElement = document.querySelector('.app');
-    if (appElement) {
-      observer.observe(appElement, { attributes: true, attributeFilter: ['class'] });
-    }
-    
-    return () => observer.disconnect();
-  }, []);
-
-  const getTextColor = (defaultColor) => {
-    const appElement = document.querySelector('.app');
-    const isDarkMode = appElement && appElement.classList.contains('dark');
-    return isDarkMode ? 'rgba(15, 44, 71, 0.25)' : defaultColor;
-  };
 
   const faqs = [
     {
@@ -49,10 +26,6 @@ const Support = () => {
     {
       question: 'Como funciona o chat com os bazares?',
       answer: 'Clique no botão "Chat" em qualquer bazar para iniciar uma conversa direta com o proprietário.'
-    },
-    {
-      question: 'O que são os planos de assinatura?',
-      answer: 'Os planos de assinatura oferecem recursos premium como destaque do seu bazar e maior visibilidade.'
     }
   ];
 
@@ -63,111 +36,51 @@ const Support = () => {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'Inter, sans-serif' }}>
-      {/* Header */}
-      <div style={{
-        textAlign: 'center',
-        marginBottom: '3rem',
-        background: 'linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%)',
-        color: 'black',
-        padding: '3rem 2rem',
-        borderRadius: '1.5rem',
-        boxShadow: '0 10px 30px rgba(15, 44, 71, 0.3)'
-      }}>
-        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}><i className="bi bi-headset"></i></div>
-        <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', margin: 0, color: getTextColor('white') }}>Central de Suporte</h1>
-        <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0, color: getTextColor('white') }}>Estamos aqui para ajudar você com qualquer dúvida ou problema</p>
+    <div className="support-page">
+      <div className="support-header">
+        <div className="header-icon">
+          <i className="bi bi-headset"></i>
+        </div>
+        <h1>Central de Suporte</h1>
+        <p>Estamos aqui para ajudar você com qualquer dúvida ou problema</p>
       </div>
 
-      {/* Tabs */}
-      <div style={{
-        display: 'flex',
-        gap: '0.5rem',
-        marginBottom: '3rem',
-        justifyContent: 'center',
-        background: '#f8f9fa',
-        padding: '0.5rem',
-        borderRadius: '1rem',
-        maxWidth: '400px',
-        margin: '0 auto 3rem auto'
-      }}>
+      <div className="support-tabs">
         <button 
-          style={{
-            padding: '1rem 2rem',
-            border: 'none',
-            borderRadius: '0.75rem',
-            background: activeTab === 'faq' ? '#5f81a5' : 'transparent',
-            color: activeTab === 'faq' ? 'white' : getTextColor('#0f2c47'),
-            cursor: 'pointer',
-            fontWeight: '600',
-            transition: 'all 0.3s ease',
-            boxShadow: activeTab === 'faq' ? '0 4px 12px rgba(95, 129, 165, 0.3)' : 'none'
-          }}
+          className={`tab-btn ${activeTab === 'faq' ? 'active' : ''}`}
           onClick={() => setActiveTab('faq')}
         >
-          <i className="bi bi-question-circle-fill"></i> FAQ
+          <i className="bi bi-question-circle-fill"></i>
+          FAQ
         </button>
         <button 
-          style={{
-            padding: '1rem 2rem',
-            border: 'none',
-            borderRadius: '0.75rem',
-            background: activeTab === 'contact' ? '#5f81a5' : 'transparent',
-            color: activeTab === 'contact' ? 'white' : getTextColor('#0f2c47'),
-            cursor: 'pointer',
-            fontWeight: '600',
-            transition: 'all 0.3s ease',
-            boxShadow: activeTab === 'contact' ? '0 4px 12px rgba(95, 129, 165, 0.3)' : 'none'
-          }}
+          className={`tab-btn ${activeTab === 'contact' ? 'active' : ''}`}
           onClick={() => setActiveTab('contact')}
         >
-          <i className="bi bi-envelope-fill"></i> Contato
+          <i className="bi bi-envelope-fill"></i>
+          Contato
         </button>
         <button 
-          style={{
-            padding: '1rem 2rem',
-            border: 'none',
-            borderRadius: '0.75rem',
-            background: activeTab === 'guides' ? '#5f81a5' : 'transparent',
-            color: activeTab === 'guides' ? 'white' : getTextColor('#0f2c47'),
-            cursor: 'pointer',
-            fontWeight: '600',
-            transition: 'all 0.3s ease',
-            boxShadow: activeTab === 'guides' ? '0 4px 12px rgba(95, 129, 165, 0.3)' : 'none'
-          }}
+          className={`tab-btn ${activeTab === 'guides' ? 'active' : ''}`}
           onClick={() => setActiveTab('guides')}
         >
-          <i className="bi bi-book-fill"></i> Guias
+          <i className="bi bi-book-fill"></i>
+          Guias
         </button>
       </div>
 
-      <div>
+      <div className="support-content">
         {activeTab === 'faq' && (
-          <div>
-            <h2 style={{ color: getTextColor('#0f2c47'), fontSize: '2rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>Perguntas Frequentes</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div className="faq-section">
+            <h2>Perguntas Frequentes</h2>
+            <div className="faq-list">
               {faqs.map((faq, index) => (
-                <div key={index} style={{
-                  background: 'white',
-                  padding: '2rem',
-                  borderRadius: '1rem',
-                  border: '1px solid #e9ecef',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-                  transition: 'transform 0.3s ease'
-                }}>
-                  <div style={{
-                    fontWeight: '600',
-                    color: getTextColor('#0f2c47'),
-                    marginBottom: '1rem',
-                    fontSize: '1.1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}>
-                    <i className="bi bi-question-circle" style={{ color: getTextColor('#5f81a5') }}></i>
+                <div key={index} className="faq-item">
+                  <div className="faq-question">
+                    <i className="bi bi-question-circle"></i>
                     {faq.question}
                   </div>
-                  <div style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6' }}>
+                  <div className="faq-answer">
                     {faq.answer}
                   </div>
                 </div>
@@ -177,98 +90,60 @@ const Support = () => {
         )}
 
         {activeTab === 'contact' && (
-          <div>
-            <h2 style={{ color: getTextColor('#0f2c47'), fontSize: '2rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>Entre em Contato</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
-              {/* Info de Contato */}
-              <div style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '1rem',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-                border: '1px solid #e9ecef'
-              }}>
-                <h3 style={{ color: getTextColor('#000'), marginBottom: '1.5rem', fontSize: '1.3rem' }}>Informações de Contato</h3>
-                <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ fontSize: '1.5rem', color: getTextColor('#000') }}><i className="bi bi-envelope-fill"></i></div>
+          <div className="contact-section">
+            <h2>Entre em Contato</h2>
+            <div className="contact-grid">
+              <div className="contact-info">
+                <h3>Informações de Contato</h3>
+                <div className="contact-item">
+                  <i className="bi bi-envelope-fill"></i>
                   <div>
-                    <h4 style={{ color: getTextColor('#000'), margin: '0 0 0.25rem 0', fontWeight: '600' }}>Email</h4>
-                    <p style={{ color: getTextColor('#000'), margin: 0 }}>suporte@fashionspace.com</p>
+                    <h4>Email</h4>
+                    <p>suporte@fashionspace.com</p>
                   </div>
                 </div>
-                <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ fontSize: '1.5rem', color: getTextColor('#000') }}><i className="bi bi-telephone-fill"></i></div>
+                <div className="contact-item">
+                  <i className="bi bi-telephone-fill"></i>
                   <div>
-                    <h4 style={{ color: getTextColor('#000'), margin: '0 0 0.25rem 0', fontWeight: '600' }}>Telefone</h4>
-                    <p style={{ color: getTextColor('#000'), margin: 0 }}>(11) 9999-9999</p>
+                    <h4>Telefone</h4>
+                    <p>(11) 9999-9999</p>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ fontSize: '1.5rem', color: getTextColor('#5f81a5') }}><i className="bi bi-clock-fill"></i></div>
+                <div className="contact-item">
+                  <i className="bi bi-clock-fill"></i>
                   <div>
-                    <h4 style={{ color: getTextColor('#000'), margin: '0 0 0.25rem 0', fontWeight: '600' }}>Horário</h4>
-                    <p style={{ color: getTextColor('#000'), margin: 0 }}>Seg-Sex: 9h-18h</p>
+                    <h4>Horário</h4>
+                    <p>Seg-Sex: 9h-18h</p>
                   </div>
                 </div>
               </div>
               
-              {/* Formulário */}
-              <div style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '1rem',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-                border: '1px solid #e9ecef'
-              }}>
-                <h3 style={{ color: getTextColor('#000'), marginBottom: '1.5rem', fontSize: '1.3rem' }}>Envie sua Mensagem</h3>
+              <div className="contact-form">
+                <h3>Envie sua Mensagem</h3>
                 <form onSubmit={handleContactSubmit}>
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#000'), fontWeight: '600' }}>Nome</label>
+                  <div className="form-group">
+                    <label>Nome</label>
                     <input
                       type="text"
                       value={contactForm.nome}
                       onChange={(e) => setContactForm({...contactForm, nome: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '2px solid #e9ecef',
-                        borderRadius: '0.75rem',
-                        fontSize: '1rem',
-                        transition: 'border-color 0.3s ease'
-                      }}
                       required
                     />
                   </div>
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#000'), fontWeight: '600' }}>Email</label>
+                  <div className="form-group">
+                    <label>Email</label>
                     <input
                       type="email"
                       value={contactForm.email}
                       onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '2px solid #e9ecef',
-                        borderRadius: '0.75rem',
-                        fontSize: '1rem',
-                        transition: 'border-color 0.3s ease'
-                      }}
                       required
                     />
                   </div>
-                  <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#0f2c47'), fontWeight: '600' }}>Assunto</label>
+                  <div className="form-group">
+                    <label>Assunto</label>
                     <select
                       value={contactForm.assunto}
                       onChange={(e) => setContactForm({...contactForm, assunto: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '2px solid #e9ecef',
-                        borderRadius: '0.75rem',
-                        fontSize: '1rem',
-                        transition: 'border-color 0.3s ease'
-                      }}
                       required
                     >
                       <option value="">Selecione um assunto</option>
@@ -278,42 +153,18 @@ const Support = () => {
                       <option value="reclamacao">Reclamação</option>
                     </select>
                   </div>
-                  <div style={{ marginBottom: '2rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#0f2c47'), fontWeight: '600' }}>Mensagem</label>
+                  <div className="form-group">
+                    <label>Mensagem</label>
                     <textarea
                       value={contactForm.mensagem}
                       onChange={(e) => setContactForm({...contactForm, mensagem: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '1rem',
-                        border: '2px solid #e9ecef',
-                        borderRadius: '0.75rem',
-                        minHeight: '120px',
-                        fontSize: '1rem',
-                        resize: 'vertical',
-                        transition: 'border-color 0.3s ease'
-                      }}
                       rows="5"
                       required
                     />
                   </div>
-                  <button 
-                    type="submit" 
-                    style={{
-                      background: 'linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%)',
-                      color: 'white',
-                      border: 'none',
-                      padding: '1rem 2rem',
-                      borderRadius: '0.75rem',
-                      cursor: 'pointer',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      width: '100%',
-                      boxShadow: '0 4px 15px rgba(95, 129, 165, 0.3)',
-                      transition: 'transform 0.3s ease'
-                    }}
-                  >
-                    <i className="bi bi-send-fill"></i> Enviar Mensagem
+                  <button type="submit" className="submit-btn">
+                    <i className="bi bi-send-fill"></i>
+                    Enviar Mensagem
                   </button>
                 </form>
               </div>
@@ -322,100 +173,40 @@ const Support = () => {
         )}
 
         {activeTab === 'guides' && (
-          <div>
-            <h2 style={{ color: '#0f2c47', fontSize: '2rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>Guias e Tutoriais</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-              <div style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '1rem',
-                textAlign: 'center',
-                border: '1px solid #e9ecef',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-                transition: 'transform 0.3s ease'
-              }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-plus-circle-fill"></i></div>
-                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Como Criar um Bazar</h3>
-                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Aprenda passo a passo como criar e configurar seu bazar</p>
-                <button style={{
-                  background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: getTextColor('#0f2c47'),
-                  border: '2px solid #5f81a5',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '0.75rem',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}>Ver Guia</button>
+          <div className="guides-section">
+            <h2>Guias e Tutoriais</h2>
+            <div className="guides-grid">
+              <div className="guide-card">
+                <div className="guide-icon">
+                  <i className="bi bi-plus-circle-fill"></i>
+                </div>
+                <h3>Como Criar um Bazar</h3>
+                <p>Aprenda passo a passo como criar e configurar seu bazar</p>
+                <button className="guide-btn">Ver Guia</button>
               </div>
-              <div style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '1rem',
-                textAlign: 'center',
-                border: '1px solid #e9ecef',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-                transition: 'transform 0.3s ease'
-              }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-camera-fill"></i></div>
-                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Fotografias de Produtos</h3>
-                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Dicas para tirar fotos atrativas dos seus produtos</p>
-                <button style={{
-                  background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: getTextColor('#0f2c47'),
-                  border: '2px solid #5f81a5',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '0.75rem',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}>Ver Guia</button>
+              <div className="guide-card">
+                <div className="guide-icon">
+                  <i className="bi bi-camera-fill"></i>
+                </div>
+                <h3>Fotografias de Produtos</h3>
+                <p>Dicas para tirar fotos atrativas dos seus produtos</p>
+                <button className="guide-btn">Ver Guia</button>
               </div>
-              <div style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '1rem',
-                textAlign: 'center',
-                border: '1px solid #e9ecef',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-                transition: 'transform 0.3s ease'
-              }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-graph-up-arrow"></i></div>
-                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Aumentar Vendas</h3>
-                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Estratégias para impulsionar seu bazar</p>
-                <button style={{
-                  background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: getTextColor('#0f2c47'),
-                  border: '2px solid #5f81a5',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '0.75rem',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}>Ver Guia</button>
+              <div className="guide-card">
+                <div className="guide-icon">
+                  <i className="bi bi-graph-up-arrow"></i>
+                </div>
+                <h3>Aumentar Vendas</h3>
+                <p>Estratégias para impulsionar seu bazar</p>
+                <button className="guide-btn">Ver Guia</button>
               </div>
-              <div style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '1rem',
-                textAlign: 'center',
-                border: '1px solid #e9ecef',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-                transition: 'transform 0.3s ease'
-              }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-shield-check"></i></div>
-                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Segurança</h3>
-                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Como manter sua conta e dados seguros</p>
-                <button style={{
-                  background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: getTextColor('#0f2c47'),
-                  border: '2px solid #5f81a5',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '0.75rem',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}>Ver Guia</button>
+              <div className="guide-card">
+                <div className="guide-icon">
+                  <i className="bi bi-shield-check"></i>
+                </div>
+                <h3>Segurança</h3>
+                <p>Como manter sua conta e dados seguros</p>
+                <button className="guide-btn">Ver Guia</button>
               </div>
             </div>
           </div>

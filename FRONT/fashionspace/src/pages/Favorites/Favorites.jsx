@@ -107,65 +107,59 @@ const Favorites = () => {
           </Link>
         </div>
       ) : (
-        <div className="favorites-grid">
+        <div className="favorites-modern-grid">
           {bazaresFavoritos.map(bazar => {
             const categoriaInfo = getCategoriaInfo(bazar.categoria);
             
             return (
-              <div key={bazar.id} className="favorite-card scroll-animate-scale" onMouseEnter={() => handleCardHover(bazar)} onMouseLeave={handleCardLeave}>
-                <div className="card-image">
-                  <img src={bazar.imagem} alt={bazar.nome} />
-                  <button 
-                    className="remove-favorite"
-                    onClick={() => removeFavorito(bazar.id)}
-                    title="Remover dos favoritos"
-                  >
-                    <i className="bi bi-x-circle-fill"></i>
-                  </button>
-                </div>
-                
-                <div className="card-content">
-                  <div className="card-header">
+              <div key={bazar.id} className="modern-favorite-card scroll-animate-scale">
+                <div className="favorite-card-wrapper">
+                  <div className="favorite-card-header">
+                  <div className="bazar-avatar">
+                    <img src={bazar.imagem} alt={bazar.nome} />
+                  </div>
+                  <div className="bazar-info">
                     <h3>{bazar.nome}</h3>
-                    <span 
-                      className="categoria-badge"
-                      style={{ backgroundColor: categoriaInfo.cor }}
-                    >
+                    <span className="categoria-tag" style={{ backgroundColor: categoriaInfo.cor }}>
                       {categoriaInfo.nome}
                     </span>
                   </div>
+                  <button 
+                    className="remove-favorite-btn"
+                    onClick={() => removeFavorito(bazar.id)}
+                    title="Remover dos favoritos"
+                  >
+                    <i className="bi bi-heart-fill"></i>
+                  </button>
+                </div>
+                
+                <div className="favorite-card-content">
+                  <p className="bazar-description">{bazar.descricao}</p>
                   
-                  <p className="card-description">{bazar.descricao}</p>
-                  
-                  <div className="card-info">
-                    <div className="info-item">
+                  <div className="bazar-stats">
+                    <div className="stat-item">
                       <i className="bi bi-geo-alt-fill"></i>
                       <span>{bazar.endereco.cidade}</span>
                     </div>
-                    <div className="info-item">
+                    <div className="stat-item">
                       <i className="bi bi-telephone-fill"></i>
                       <span>{bazar.telefone}</span>
                     </div>
-                    <div className="info-item">
+                    <div className="stat-item">
                       <i className="bi bi-clock-fill"></i>
                       <span>{bazar.horario}</span>
                     </div>
                   </div>
-                  
-                  <div className="card-actions">
-                    <Link 
-                      to={`/bazar-detalhes/${bazar.id}`} 
-                      className="btn btn-primary"
-                    >
+                </div>
+                
+                  <div className="favorite-card-actions">
+                    <Link to={`/chat/${bazar.id}`} className="action-btn chat-btn">
+                      <i className="bi bi-chat-dots-fill"></i>
+                      Mensagem
+                    </Link>
+                    <Link to={`/bazar-detalhes/${bazar.id}`} className="action-btn view-btn">
                       <i className="bi bi-eye-fill"></i>
                       Ver Detalhes
-                    </Link>
-                    <Link 
-                      to={`/chat-bazar/${bazar.id}`} 
-                      className="btn btn-secondary"
-                    >
-                      <i className="bi bi-chat-dots-fill"></i>
-                      Chat
                     </Link>
                   </div>
                 </div>

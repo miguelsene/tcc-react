@@ -21,6 +21,9 @@ const AddBazar = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [captchaChallenge, setCaptchaChallenge] = useState({ question: '', images: { images: [], hasTarget: false, correctCount: 0 } });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,6 +40,63 @@ const AddBazar = () => {
         setFormData({ ...formData, imagem: e.target.result });
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const generateCaptcha = () => {
+    const challenges = [
+      { type: 'select', question: 'Clique em VERIFICAR se não houver carros', target: 'car' },
+      { type: 'select', question: 'Clique em VERIFICAR se não houver semáforos', target: 'traffic' },
+      { type: 'select', question: 'Clique em VERIFICAR se não houver bicicletas', target: 'bike' }
+    ];
+    
+    const challenge = challenges[Math.floor(Math.random() * challenges.length)];
+    const images = generateImageGrid(challenge.target);
+    setCaptchaChallenge({ ...challenge, images });
+  };
+
+  const generateImageGrid = (targetType) => {
+    const images = [];
+    // Decidir se haverá imagens do tipo alvo (30% de chance de não haver)
+    const hasTarget = Math.random() > 0.3;
+    const correctCount = hasTarget ? Math.floor(Math.random() * 3) + 2 : 0;
+    
+    for (let i = 0; i < 9; i++) {
+      const isTarget = i < correctCount;
+      images.push({
+        id: i,
+        isTarget,
+        url: `https://picsum.photos/120/120?random=${Date.now()}-${i}`
+      });
+    }
+    
+    return {
+      images: images.sort(() => Math.random() - 0.5),
+      hasTarget,
+      correctCount
+    };
+  };
+
+  const handleCepChange = async (e) => {
+    const cep = e.target.value.replace(/\D/g, '');
+    setFormData({ ...formData, cep: e.target.value });
+    
+    if (cep.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+        
+        if (!data.erro) {
+          setFormData(prev => ({
+            ...prev,
+            rua: data.logradouro || '',
+            bairro: data.bairro || '',
+            cidade: `${data.localidade}, ${data.uf}` || ''
+          }));
+        }
+      } catch (error) {
+        console.log('Erro ao buscar CEP:', error);
+      }
     }
   };
 
@@ -62,6 +122,12 @@ const AddBazar = () => {
     e.preventDefault();
     
     if (!validateForm()) return;
+    
+    if (!captchaVerified) {
+      generateCaptcha();
+      setShowCaptcha(true);
+      return;
+    }
 
     setLoading(true);
 
@@ -199,9 +265,10 @@ const AddBazar = () => {
                 type="text"
                 name="cep"
                 value={formData.cep}
-                onChange={handleChange}
+                onChange={handleCepChange}
                 className={`form-control ${errors.cep ? 'error' : ''}`}
                 placeholder="00000-000"
+                maxLength="9"
               />
               {errors.cep && <span className="error-text">{errors.cep}</span>}
             </div>
@@ -301,11 +368,128 @@ const AddBazar = () => {
             Cancelar
           </button>
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            <i className="bi bi-check-circle-fill"></i>
-            {loading ? 'Criando...' : 'Criar Bazar'}
+            <i className="bi bi-shield-check"></i>
+            {loading ? 'Criando...' : (captchaVerified ? 'Criar Bazar' : 'Verificar e Criar')}
           </button>
         </div>
       </form>
+      
+      {showCaptcha && (
+        <CaptchaModal 
+          challenge={captchaChallenge}
+          onVerify={() => {
+            setCaptchaVerified(true);
+            setShowCaptcha(false);
+            // Reenviar o formulário após verificação
+            setTimeout(() => {
+              const form = document.querySelector('.bazar-form');
+              if (form) {
+                const event = new Event('submit', { bubbles: true, cancelable: true });
+                form.dispatchEvent(event);
+              }
+            }, 100);
+          }}
+          onClose={() => setShowCaptcha(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+const CaptchaModal = ({ challenge, onVerify, onClose }) => {
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [error, setError] = useState('');
+  const [attempts, setAttempts] = useState(0);
+
+  const handleImageClick = (imageId) => {
+    setSelectedImages(prev => 
+      prev.includes(imageId) 
+        ? prev.filter(id => id !== imageId)
+        : [...prev, imageId]
+    );
+    setError('');
+  };
+
+  const handleVerify = () => {
+    // Se não há objetos alvo, usuário deve clicar verificar sem selecionar nada
+    // Se há objetos alvo, usuário deve selecionar as imagens corretas
+    const hasTarget = challenge.images.hasTarget;
+    const targetImages = challenge.images.images.filter(img => img.isTarget).map(img => img.id);
+    
+    let isCorrect = false;
+    
+    if (!hasTarget) {
+      // Não há objetos alvo, deve clicar verificar sem selecionar
+      isCorrect = selectedImages.length === 0;
+    } else {
+      // Há objetos alvo, deve selecionar todos
+      isCorrect = targetImages.length === selectedImages.length && 
+                  targetImages.every(id => selectedImages.includes(id));
+    }
+    
+    if (isCorrect || attempts >= 2) {
+      onVerify();
+    } else {
+      setError('Tente novamente. Leia a instrução com atenção.');
+      setSelectedImages([]);
+      setAttempts(prev => prev + 1);
+    }
+  };
+
+  return (
+    <div className="captcha-overlay">
+      <div className="captcha-modal">
+        <div className="captcha-header">
+          <div className="captcha-logo">
+            <i className="bi bi-shield-check"></i>
+            <span>reCAPTCHA</span>
+          </div>
+          <button className="close-btn" onClick={onClose}>
+            <i className="bi bi-x"></i>
+          </button>
+        </div>
+        
+        <div className="captcha-content">
+          <p className="captcha-instruction">{challenge.question}</p>
+          
+          <div className="image-grid">
+            {challenge.images.images.map((image) => (
+              <div 
+                key={image.id}
+                className={`image-tile ${selectedImages.includes(image.id) ? 'selected' : ''}`}
+                onClick={() => handleImageClick(image.id)}
+              >
+                <img src={image.url} alt="Captcha" />
+                {selectedImages.includes(image.id) && (
+                  <div className="selection-overlay">
+                    <i className="bi bi-check-circle-fill"></i>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <div className="captcha-hint">
+            <small>Dica: Se não encontrar o objeto mencionado, clique em VERIFICAR sem selecionar nada.</small>
+          </div>
+          
+          {error && <div className="captcha-error">{error}</div>}
+        </div>
+        
+        <div className="captcha-actions">
+          <button className="btn btn-secondary" onClick={onClose}>
+            Cancelar
+          </button>
+          <button 
+            className="btn btn-primary" 
+            onClick={handleVerify}
+            disabled={selectedImages.length === 0}
+          >
+            <i className="bi bi-check-circle"></i>
+            Verificar
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

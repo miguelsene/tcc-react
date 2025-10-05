@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { categorias } from '../../data/bazares';
+import { bazarService } from '../../services/api';
 import './EditBazar.css';
 
 const EditBazar = () => {
@@ -25,28 +26,59 @@ const EditBazar = () => {
   const [bazarFound, setBazarFound] = useState(false);
 
   useEffect(() => {
-    const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-    const bazar = bazares.find(b => b.id === id);
+    const loadBazar = async () => {
+      try {
+        // Tentar buscar da API primeiro
+        const response = await fetch(`http://localhost:8080/api/bazar/${id}`);
+        if (response.ok) {
+          const bazar = await response.json();
+          setFormData({
+            nome: bazar.nome,
+            descricao: bazar.descricao,
+            imagem: bazar.imagem,
+            fotoPerfil: bazar.fotoPerfil || '',
+            categoria: bazar.categoria,
+            cep: bazar.endereco?.cep || '',
+            rua: bazar.endereco?.rua || '',
+            numero: bazar.endereco?.numero || '',
+            bairro: bazar.endereco?.bairro || '',
+            cidade: bazar.endereco?.cidade || '',
+            telefone: bazar.telefone,
+            horario: bazar.horario
+          });
+          setBazarFound(true);
+          return;
+        }
+      } catch (error) {
+        console.log('API não disponível, buscando no localStorage');
+      }
+      
+      // Fallback para localStorage
+      const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+      const bazar = bazares.find(b => String(b.id) === String(id));
+      
+      if (bazar) {
+        setFormData({
+          nome: bazar.nome,
+          descricao: bazar.descricao,
+          imagem: bazar.imagem,
+          fotoPerfil: bazar.fotoPerfil || '',
+          categoria: bazar.categoria,
+          cep: bazar.endereco?.cep || '',
+          rua: bazar.endereco?.rua || '',
+          numero: bazar.endereco?.numero || '',
+          bairro: bazar.endereco?.bairro || '',
+          cidade: bazar.endereco?.cidade || '',
+          telefone: bazar.telefone,
+          horario: bazar.horario
+        });
+        setBazarFound(true);
+      } else {
+        setBazarFound(false);
+      }
+    };
     
-    if (bazar) {
-      setFormData({
-        nome: bazar.nome,
-        descricao: bazar.descricao,
-        imagem: bazar.imagem,
-        fotoPerfil: bazar.fotoPerfil || '',
-        categoria: bazar.categoria,
-        cep: bazar.endereco.cep,
-        rua: bazar.endereco.rua,
-        numero: bazar.endereco.numero,
-        bairro: bazar.endereco.bairro,
-        cidade: bazar.endereco.cidade,
-        telefone: bazar.telefone,
-        horario: bazar.horario
-      });
-      setBazarFound(true);
-    } else {
-      setBazarFound(false);
-    }
+    loadBazar();
   }, [id]);
 
   const handleChange = (e) => {
@@ -104,36 +136,65 @@ const EditBazar = () => {
     setLoading(true);
 
     try {
+      const updatedBazar = {
+        nome: formData.nome,
+        descricao: formData.descricao,
+        imagem: formData.imagem,
+        fotoPerfil: formData.fotoPerfil,
+        categoria: formData.categoria,
+        endereco: {
+          cep: formData.cep,
+          rua: formData.rua,
+          numero: formData.numero,
+          bairro: formData.bairro,
+          cidade: formData.cidade
+        },
+        telefone: formData.telefone,
+        horario: formData.horario
+      };
+
+      // Tentar atualizar na API primeiro
+      try {
+        const response = await fetch(`http://localhost:8080/api/bazar/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedBazar)
+        });
+        
+        if (response.ok) {
+          alert('Bazar atualizado com sucesso!');
+          window.dispatchEvent(new Event('bazaresUpdated'));
+          navigate(`/bazar-detalhes/${id}`);
+          return;
+        }
+      } catch (apiError) {
+        console.log('API não disponível, salvando no localStorage');
+      }
+      
+      // Fallback para localStorage
       const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-      const bazarIndex = bazares.findIndex(b => b.id === id);
+      const bazarIndex = bazares.findIndex(b => String(b.id) === String(id));
 
       if (bazarIndex !== -1) {
-        const updatedBazar = {
+        bazares[bazarIndex] = {
           ...bazares[bazarIndex],
-          ...formData,
-          fotoPerfil: formData.fotoPerfil,
-          endereco: {
-            cep: formData.cep,
-            rua: formData.rua,
-            numero: formData.numero,
-            bairro: formData.bairro,
-            cidade: formData.cidade
-          },
+          ...updatedBazar,
           dataAtualizacao: new Date().toISOString()
         };
 
-        bazares[bazarIndex] = updatedBazar;
         localStorage.setItem('fashionspace_bazares', JSON.stringify(bazares));
-
-        setTimeout(() => {
-          setLoading(false);
-          navigate(`/bazar-detalhes/${id}`);
-        }, 1000);
+        window.dispatchEvent(new Event('bazaresUpdated'));
+        alert('Bazar atualizado com sucesso!');
+        navigate(`/bazar-detalhes/${id}`);
       }
 
     } catch (error) {
-      setLoading(false);
       console.error('Erro ao atualizar bazar:', error);
+      alert('Erro ao atualizar bazar. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
