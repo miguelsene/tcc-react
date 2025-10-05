@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './Topbar.css';
 import { useI18n } from '../../i18n/i18n';
 import { Link } from 'react-router-dom';
+import ChatNotifications from '../chat/ChatNotifications';
 
 const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVisible, onSearch }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -59,6 +60,9 @@ const Topbar = ({ user, setUser, darkMode, toggleTheme, toggleSidebar, sidebarVi
       </div>
       
       <div className="topbar-right">
+        {user && user.tipoUsuario !== 'guest' && (
+          <ChatNotifications user={user} />
+        )}
                 
         <button 
           className="theme-toggle" 

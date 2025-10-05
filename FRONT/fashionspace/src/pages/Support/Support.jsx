@@ -1,13 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import './Support.css';
 
 const Support = () => {
   const [activeTab, setActiveTab] = useState('faq');
+  const [isDark, setIsDark] = useState(false);
   const [contactForm, setContactForm] = useState({
     nome: '',
     email: '',
     assunto: '',
     mensagem: ''
   });
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      const appElement = document.querySelector('.app');
+      setIsDark(appElement && appElement.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    const appElement = document.querySelector('.app');
+    if (appElement) {
+      observer.observe(appElement, { attributes: true, attributeFilter: ['class'] });
+    }
+    
+    return () => observer.disconnect();
+  }, []);
+
+  const getTextColor = (defaultColor) => {
+    const appElement = document.querySelector('.app');
+    const isDarkMode = appElement && appElement.classList.contains('dark');
+    return isDarkMode ? 'rgba(15, 44, 71, 0.25)' : defaultColor;
+  };
 
   const faqs = [
     {
@@ -45,14 +69,14 @@ const Support = () => {
         textAlign: 'center',
         marginBottom: '3rem',
         background: 'linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%)',
-        color: 'white',
+        color: 'black',
         padding: '3rem 2rem',
         borderRadius: '1.5rem',
         boxShadow: '0 10px 30px rgba(15, 44, 71, 0.3)'
       }}>
         <div style={{ fontSize: '4rem', marginBottom: '1rem' }}><i className="bi bi-headset"></i></div>
-        <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', margin: 0 }}>Central de Suporte</h1>
-        <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0 }}>Estamos aqui para ajudar você com qualquer dúvida ou problema</p>
+        <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', margin: 0, color: getTextColor('white') }}>Central de Suporte</h1>
+        <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0, color: getTextColor('white') }}>Estamos aqui para ajudar você com qualquer dúvida ou problema</p>
       </div>
 
       {/* Tabs */}
@@ -73,7 +97,7 @@ const Support = () => {
             border: 'none',
             borderRadius: '0.75rem',
             background: activeTab === 'faq' ? '#5f81a5' : 'transparent',
-            color: activeTab === 'faq' ? 'white' : '#0f2c47',
+            color: activeTab === 'faq' ? 'white' : getTextColor('#0f2c47'),
             cursor: 'pointer',
             fontWeight: '600',
             transition: 'all 0.3s ease',
@@ -89,7 +113,7 @@ const Support = () => {
             border: 'none',
             borderRadius: '0.75rem',
             background: activeTab === 'contact' ? '#5f81a5' : 'transparent',
-            color: activeTab === 'contact' ? 'white' : '#0f2c47',
+            color: activeTab === 'contact' ? 'white' : getTextColor('#0f2c47'),
             cursor: 'pointer',
             fontWeight: '600',
             transition: 'all 0.3s ease',
@@ -105,7 +129,7 @@ const Support = () => {
             border: 'none',
             borderRadius: '0.75rem',
             background: activeTab === 'guides' ? '#5f81a5' : 'transparent',
-            color: activeTab === 'guides' ? 'white' : '#0f2c47',
+            color: activeTab === 'guides' ? 'white' : getTextColor('#0f2c47'),
             cursor: 'pointer',
             fontWeight: '600',
             transition: 'all 0.3s ease',
@@ -120,7 +144,7 @@ const Support = () => {
       <div>
         {activeTab === 'faq' && (
           <div>
-            <h2 style={{ color: '#0f2c47', fontSize: '2rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>Perguntas Frequentes</h2>
+            <h2 style={{ color: getTextColor('#0f2c47'), fontSize: '2rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>Perguntas Frequentes</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {faqs.map((faq, index) => (
                 <div key={index} style={{
@@ -133,17 +157,17 @@ const Support = () => {
                 }}>
                   <div style={{
                     fontWeight: '600',
-                    color: '#0f2c47',
+                    color: getTextColor('#0f2c47'),
                     marginBottom: '1rem',
                     fontSize: '1.1rem',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem'
                   }}>
-                    <i className="bi bi-question-circle" style={{ color: '#5f81a5' }}></i>
+                    <i className="bi bi-question-circle" style={{ color: getTextColor('#5f81a5') }}></i>
                     {faq.question}
                   </div>
-                  <div style={{ color: '#5f81a5', lineHeight: '1.6' }}>
+                  <div style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6' }}>
                     {faq.answer}
                   </div>
                 </div>
@@ -154,7 +178,7 @@ const Support = () => {
 
         {activeTab === 'contact' && (
           <div>
-            <h2 style={{ color: '#0f2c47', fontSize: '2rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>Entre em Contato</h2>
+            <h2 style={{ color: getTextColor('#0f2c47'), fontSize: '2rem', fontWeight: '700', marginBottom: '2rem', textAlign: 'center' }}>Entre em Contato</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
               {/* Info de Contato */}
               <div style={{
@@ -164,26 +188,26 @@ const Support = () => {
                 boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
                 border: '1px solid #e9ecef'
               }}>
-                <h3 style={{ color: '#0f2c47', marginBottom: '1.5rem', fontSize: '1.3rem' }}>Informações de Contato</h3>
+                <h3 style={{ color: getTextColor('#000'), marginBottom: '1.5rem', fontSize: '1.3rem' }}>Informações de Contato</h3>
                 <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ fontSize: '1.5rem', color: '#5f81a5' }}><i className="bi bi-envelope-fill"></i></div>
+                  <div style={{ fontSize: '1.5rem', color: getTextColor('#000') }}><i className="bi bi-envelope-fill"></i></div>
                   <div>
-                    <h4 style={{ color: '#0f2c47', margin: '0 0 0.25rem 0', fontWeight: '600' }}>Email</h4>
-                    <p style={{ color: '#5f81a5', margin: 0 }}>suporte@fashionspace.com</p>
+                    <h4 style={{ color: getTextColor('#000'), margin: '0 0 0.25rem 0', fontWeight: '600' }}>Email</h4>
+                    <p style={{ color: getTextColor('#000'), margin: 0 }}>suporte@fashionspace.com</p>
                   </div>
                 </div>
                 <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ fontSize: '1.5rem', color: '#5f81a5' }}><i className="bi bi-telephone-fill"></i></div>
+                  <div style={{ fontSize: '1.5rem', color: getTextColor('#000') }}><i className="bi bi-telephone-fill"></i></div>
                   <div>
-                    <h4 style={{ color: '#0f2c47', margin: '0 0 0.25rem 0', fontWeight: '600' }}>Telefone</h4>
-                    <p style={{ color: '#5f81a5', margin: 0 }}>(11) 9999-9999</p>
+                    <h4 style={{ color: getTextColor('#000'), margin: '0 0 0.25rem 0', fontWeight: '600' }}>Telefone</h4>
+                    <p style={{ color: getTextColor('#000'), margin: 0 }}>(11) 9999-9999</p>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ fontSize: '1.5rem', color: '#5f81a5' }}><i className="bi bi-clock-fill"></i></div>
+                  <div style={{ fontSize: '1.5rem', color: getTextColor('#5f81a5') }}><i className="bi bi-clock-fill"></i></div>
                   <div>
-                    <h4 style={{ color: '#0f2c47', margin: '0 0 0.25rem 0', fontWeight: '600' }}>Horário</h4>
-                    <p style={{ color: '#5f81a5', margin: 0 }}>Seg-Sex: 9h-18h</p>
+                    <h4 style={{ color: getTextColor('#000'), margin: '0 0 0.25rem 0', fontWeight: '600' }}>Horário</h4>
+                    <p style={{ color: getTextColor('#000'), margin: 0 }}>Seg-Sex: 9h-18h</p>
                   </div>
                 </div>
               </div>
@@ -196,10 +220,10 @@ const Support = () => {
                 boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
                 border: '1px solid #e9ecef'
               }}>
-                <h3 style={{ color: '#0f2c47', marginBottom: '1.5rem', fontSize: '1.3rem' }}>Envie sua Mensagem</h3>
+                <h3 style={{ color: getTextColor('#000'), marginBottom: '1.5rem', fontSize: '1.3rem' }}>Envie sua Mensagem</h3>
                 <form onSubmit={handleContactSubmit}>
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: '#0f2c47', fontWeight: '600' }}>Nome</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#000'), fontWeight: '600' }}>Nome</label>
                     <input
                       type="text"
                       value={contactForm.nome}
@@ -216,7 +240,7 @@ const Support = () => {
                     />
                   </div>
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: '#0f2c47', fontWeight: '600' }}>Email</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#000'), fontWeight: '600' }}>Email</label>
                     <input
                       type="email"
                       value={contactForm.email}
@@ -233,7 +257,7 @@ const Support = () => {
                     />
                   </div>
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: '#0f2c47', fontWeight: '600' }}>Assunto</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#0f2c47'), fontWeight: '600' }}>Assunto</label>
                     <select
                       value={contactForm.assunto}
                       onChange={(e) => setContactForm({...contactForm, assunto: e.target.value})}
@@ -255,7 +279,7 @@ const Support = () => {
                     </select>
                   </div>
                   <div style={{ marginBottom: '2rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', color: '#0f2c47', fontWeight: '600' }}>Mensagem</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', color: getTextColor('#0f2c47'), fontWeight: '600' }}>Mensagem</label>
                     <textarea
                       value={contactForm.mensagem}
                       onChange={(e) => setContactForm({...contactForm, mensagem: e.target.value})}
@@ -310,12 +334,12 @@ const Support = () => {
                 boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
                 transition: 'transform 0.3s ease'
               }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#5f81a5' }}><i className="bi bi-plus-circle-fill"></i></div>
-                <h3 style={{ color: '#0f2c47', fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Como Criar um Bazar</h3>
-                <p style={{ color: '#5f81a5', lineHeight: '1.6', marginBottom: '1.5rem' }}>Aprenda passo a passo como criar e configurar seu bazar</p>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-plus-circle-fill"></i></div>
+                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Como Criar um Bazar</h3>
+                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Aprenda passo a passo como criar e configurar seu bazar</p>
                 <button style={{
                   background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: '#0f2c47',
+                  color: getTextColor('#0f2c47'),
                   border: '2px solid #5f81a5',
                   padding: '0.75rem 1.5rem',
                   borderRadius: '0.75rem',
@@ -333,12 +357,12 @@ const Support = () => {
                 boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
                 transition: 'transform 0.3s ease'
               }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#5f81a5' }}><i className="bi bi-camera-fill"></i></div>
-                <h3 style={{ color: '#0f2c47', fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Fotografias de Produtos</h3>
-                <p style={{ color: '#5f81a5', lineHeight: '1.6', marginBottom: '1.5rem' }}>Dicas para tirar fotos atrativas dos seus produtos</p>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-camera-fill"></i></div>
+                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Fotografias de Produtos</h3>
+                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Dicas para tirar fotos atrativas dos seus produtos</p>
                 <button style={{
                   background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: '#0f2c47',
+                  color: getTextColor('#0f2c47'),
                   border: '2px solid #5f81a5',
                   padding: '0.75rem 1.5rem',
                   borderRadius: '0.75rem',
@@ -356,12 +380,12 @@ const Support = () => {
                 boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
                 transition: 'transform 0.3s ease'
               }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#5f81a5' }}><i className="bi bi-graph-up-arrow"></i></div>
-                <h3 style={{ color: '#0f2c47', fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Aumentar Vendas</h3>
-                <p style={{ color: '#5f81a5', lineHeight: '1.6', marginBottom: '1.5rem' }}>Estratégias para impulsionar seu bazar</p>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-graph-up-arrow"></i></div>
+                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Aumentar Vendas</h3>
+                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Estratégias para impulsionar seu bazar</p>
                 <button style={{
                   background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: '#0f2c47',
+                  color: getTextColor('#0f2c47'),
                   border: '2px solid #5f81a5',
                   padding: '0.75rem 1.5rem',
                   borderRadius: '0.75rem',
@@ -379,12 +403,12 @@ const Support = () => {
                 boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
                 transition: 'transform 0.3s ease'
               }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: '#5f81a5' }}><i className="bi bi-shield-check"></i></div>
-                <h3 style={{ color: '#0f2c47', fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Segurança</h3>
-                <p style={{ color: '#5f81a5', lineHeight: '1.6', marginBottom: '1.5rem' }}>Como manter sua conta e dados seguros</p>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem', color: getTextColor('#5f81a5') }}><i className="bi bi-shield-check"></i></div>
+                <h3 style={{ color: getTextColor('#0f2c47'), fontSize: '1.3rem', fontWeight: '600', marginBottom: '1rem' }}>Segurança</h3>
+                <p style={{ color: getTextColor('#5f81a5'), lineHeight: '1.6', marginBottom: '1.5rem' }}>Como manter sua conta e dados seguros</p>
                 <button style={{
                   background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                  color: '#0f2c47',
+                  color: getTextColor('#0f2c47'),
                   border: '2px solid #5f81a5',
                   padding: '0.75rem 1.5rem',
                   borderRadius: '0.75rem',

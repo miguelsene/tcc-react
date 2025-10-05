@@ -1,4 +1,5 @@
 .support {
+  color: #000;
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
@@ -7,12 +8,13 @@
 }
 
 .support-header {
+  color: #000;
   text-align: center;
   margin-bottom: 3rem;
 }
 
 .support-header h1 {
-  color: var(--text-primary);
+  color: #000;
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
@@ -24,33 +26,18 @@
 }
 
 .support-header p {
-  color: var(--text-secondary);
+  color: #000;
   font-size: 1.125rem;
   text-shadow: 0 1px 3px rgba(3, 22, 52, 0.2);
 }
 
-.app.dark .support-header h1,
-.app.dark .faq-section h2,
-.app.dark .contact-section h2,
-.app.dark .guides-section h2 {
-  color: #2b1717;
-}
 
-.app.dark .support-header p,
-.app.dark .faq-answer,
-.app.dark .contact-item p,
-.app.dark .guide-card p,
-.app.dark .setting-info p {
-  color: #3b1d1d;
-}
 
-.app.dark .faq-question,
-.app.dark .contact-item h4,
-.app.dark .guide-card h3 {
-  color: #523636;
-}
+
+
 
 .support-tabs {
+  color: #000;
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -68,13 +55,11 @@
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: var(--text-secondary);
+
   font-weight: 600;
 }
 
-.app.dark .tab-btn {
-  color: #351a1a;
-}
+
 
 .tab-btn:hover {
   background: var(--bg-tertiary);
@@ -85,10 +70,11 @@
 .tab-btn.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: rgb(226, 226, 226);
+  color: rgb(97, 82, 82);
 }
 
 .support-content {
+  color: #000;
   background: rgba(232, 221, 203, 0.3);
   backdrop-filter: blur(20px);
   border-radius: 0.5rem;
@@ -97,10 +83,9 @@
   border: 1px solid rgba(205, 179, 128, 0.3);
 }
 
-.faq-section h2,
-.contact-section h2,
+
 .guides-section h2 {
-  color: var(--text-primary);
+  color: #000;
   font-size: 2rem;
   font-weight: 600;
   margin-bottom: 2rem;
@@ -122,7 +107,7 @@
 }
 
 .faq-question {
-  color: var(--text-primary);
+  color: #000;
   font-weight: 600;
   font-size: 1.125rem;
   margin-bottom: 0.75rem;
@@ -132,7 +117,7 @@
 }
 
 .faq-answer {
-  color: var(--text-secondary);
+  color: #000;
   line-height: 1.6;
 }
 
@@ -143,6 +128,7 @@
 }
 
 .contact-info {
+  color: #000;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -161,16 +147,13 @@
 
 .contact-item i {
   font-size: 1.5rem;
-  color: var(--accent);
+  color: #000;
 }
 
-.contact-item h4 {
-  color: var(--text-primary);
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
+
 
 .contact-item p {
+  color: #000;
   color: var(--text-secondary);
   margin: 0;
 }
@@ -209,7 +192,7 @@
 }
 
 .guide-card h3 {
-  color: var(--text-primary);
+  
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -220,34 +203,30 @@
   line-height: 1.5;
 }
 
-@media (max-width: 768px) {
-  .support {
-    padding: 1rem;
-  }
-  
-  .support-header h1 {
-    font-size: 2rem;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .support-tabs {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .tab-btn {
-    width: 100%;
-    max-width: 300px;
-    justify-content: center;
-  }
-  
-  .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .guides-grid {
-    grid-template-columns: 1fr;
-  }
+/* Modo Dark - Cor Rosa */
+.app.dark .support,
+.app.dark .support-header,
+.app.dark .support-header h1,
+.app.dark .support-header p,
+.app.dark .support-tabs,
+.app.dark .support-content,
+.app.dark .guides-section h2,
+.app.dark .faq-question,
+.app.dark .faq-answer,
+.app.dark .contact-info,
+.app.dark .contact-item,
+.app.dark .contact-item i,
+.app.dark .contact-item p,
+.app.dark .guide-card h3,
+.app.dark .guide-card p {
+  color: #ff69b4 !important;
 }
+
+.app.dark .tab-btn {
+  color: #ff69b4 !important;
+}
+
+.app.dark .tab-btn.active {
+  color: #ffffff !important;
+}
+

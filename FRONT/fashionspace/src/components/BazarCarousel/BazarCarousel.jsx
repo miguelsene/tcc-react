@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { categorias } from '../../data/bazares';
 import FavoriteButton from '../FavoriteButton/FavoriteButton';
 import './BazarCarousel.css';
@@ -8,6 +8,8 @@ const BazarCarousel = ({ bazares }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
   const [isDono, setIsDono] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -27,10 +29,19 @@ const BazarCarousel = ({ bazares }) => {
 
   useEffect(() => {
     try {
-      const user = JSON.parse(localStorage.getItem('fashionspace_user') || 'null');
-      setIsDono(user?.tipoUsuario === 'dono');
+      const userData = JSON.parse(localStorage.getItem('fashionspace_user') || 'null');
+      setUser(userData);
+      setIsDono(userData?.tipoUsuario === 'dono');
     } catch {}
   }, []);
+
+  const openChat = (bazar) => {
+    if (!user) {
+      alert('Faça login para enviar mensagens');
+      return;
+    }
+    navigate(`/chat/${bazar.id}`);
+  };
 
   const nextSlide = () => {
     setCurrentIndex((prev) => 
@@ -157,13 +168,15 @@ const BazarCarousel = ({ bazares }) => {
                         <i className="bi bi-eye-fill"></i>
                         Ver Detalhes
                       </Link>
-                      <Link 
-                        to={`/chat-bazar/${bazar.id}`} 
-                        className="btn btn-secondary"
-                      >
-                        <i className="bi bi-chat-dots-fill"></i>
-                        Chat
-                      </Link>
+                      {!isDono && user?.tipoUsuario !== 'dono' && (
+                        <button 
+                          onClick={() => openChat(bazar)}
+                          className="btn btn-secondary"
+                        >
+                          <i className="bi bi-chat-dots-fill"></i>
+                          Chat
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -182,6 +195,8 @@ const BazarCarousel = ({ bazares }) => {
           />
         ))}
       </div>
+      
+
     </div>
   );
 };

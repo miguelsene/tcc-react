@@ -1,16 +1,32 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { defaultBazares } from '../../data/bazares';
+import BazarMessages from '../../components/common/BazarMessages';
 import './Chat.css';
 
 const Chat = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const messagesEndRef = useRef(null);
   const [bazar, setBazar] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+  
+  console.log('Chat component loaded with id:', id);
+  console.log('Location pathname:', location.pathname);
+  
+  // Se estiver na rota /mensagens, mostrar o componente BazarMessages
+  const isGeneralMessages = location.pathname === '/mensagens';
+  
+  useEffect(() => {
+    const savedUser = JSON.parse(localStorage.getItem('fashionspace_user') || 'null');
+    setUser(savedUser);
+  }, []);
 
   const autoResponses = [
     "Olá! Bem-vindo ao nosso bazar! Como posso ajudá-lo hoje?",
@@ -26,32 +42,128 @@ const Chat = () => {
   ];
 
   useEffect(() => {
-    const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-    const allBazares = [...defaultBazares, ...userBazares];
-    const foundBazar = allBazares.find(b => b.id === id);
-    
-    if (foundBazar) {
-      setBazar(foundBazar);
+    try {
+      console.log('Loading chat for bazar ID:', id, typeof id);
+      setLoading(true);
+      setError(null);
       
-      const savedMessages = JSON.parse(localStorage.getItem(`chat_${id}`) || '[]');
-      if (savedMessages.length === 0) {
-        const welcomeMessage = {
-          id: Date.now(),
-          text: autoResponses[0],
-          sender: 'bazar',
-          timestamp: new Date().toISOString()
-        };
-        setMessages([welcomeMessage]);
-        localStorage.setItem(`chat_${id}`, JSON.stringify([welcomeMessage]));
-      } else {
-        setMessages(savedMessages);
+      const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+      const allBazares = [...defaultBazares, ...userBazares];
+      console.log('Available bazares:', allBazares.length);
+      console.log('All bazar IDs:', allBazares.map(b => ({ id: b.id, nome: b.nome })));
+      
+      // Múltiplas estratégias de busca
+      let foundBazar = null;
+      
+      // 1. Busca exata
+      foundBazar = allBazares.find(b => b.id === id);
+      
+      // 2. Busca convertendo para string
+      if (!foundBazar) {
+        foundBazar = allBazares.find(b => String(b.id) === String(id));
       }
+      
+      // 3. Busca por número se o ID for numérico
+      if (!foundBazar && !isNaN(id)) {
+        foundBazar = allBazares.find(b => b.id === parseInt(id) || String(b.id) === id);
+      }
+      
+      // 4. Busca case-insensitive se for string
+      if (!foundBazar && typeof id === 'string') {
+        foundBazar = allBazares.find(b => String(b.id).toLowerCase() === id.toLowerCase());
+      }
+      
+      console.log('Found bazar:', foundBazar);
+      
+      if (foundBazar) {
+        setBazar(foundBazar);
+        
+        const savedMessages = JSON.parse(localStorage.getItem(`chat_${foundBazar.id}`) || '[]');
+        if (savedMessages.length === 0) {
+          const welcomeMessage = {
+            id: Date.now(),
+            text: autoResponses[0],
+            sender: 'bazar',
+            timestamp: new Date().toISOString()
+          };
+          setMessages([welcomeMessage]);
+          localStorage.setItem(`chat_${foundBazar.id}`, JSON.stringify([welcomeMessage]));
+        } else {
+          setMessages(savedMessages);
+        }
+      } else {
+        console.error('Bazar not found with ID:', id);
+        console.error('Available IDs:', allBazares.map(b => ({ id: b.id, type: typeof b.id })));
+        setError(`Bazar não encontrado (ID: ${id})`);
+      }
+    } catch (err) {
+      console.error('Error loading chat:', err);
+      setError('Erro ao carregar chat');
+    } finally {
+      setLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  
+  // Se for a rota geral de mensagens, mostrar o componente BazarMessages
+  if (isGeneralMessages) {
+    if (!user) {
+      return (
+        <div className="chat-loading">
+          <i className="bi bi-exclamation-triangle"></i>
+          <p>Usuário não encontrado</p>
+          <button onClick={() => navigate('/')} className="btn btn-primary">
+            Voltar ao Início
+          </button>
+        </div>
+      );
+    }
+    
+    // Para donos de bazar, mostrar mensagens do primeiro bazar
+    if (user.tipoUsuario === 'dono') {
+      const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
+      const userCreatedBazares = userBazares.filter(bazar => bazar.criadoPor === user.id);
+      
+      if (userCreatedBazares.length > 0) {
+        return (
+          <div className="messages-page">
+            <div className="messages-header">
+              <button className="back-btn" onClick={() => navigate(-1)}>
+                <i className="bi bi-arrow-left"></i>
+                Voltar
+              </button>
+              <h1>Mensagens dos Bazares</h1>
+            </div>
+            <BazarMessages bazar={userCreatedBazares[0]} user={user} />
+          </div>
+        );
+      } else {
+        return (
+          <div className="chat-loading">
+            <i className="bi bi-shop"></i>
+            <p>Você precisa ter um bazar para ver mensagens</p>
+            <button onClick={() => navigate('/adicionar-bazar')} className="btn btn-primary">
+              Criar Bazar
+            </button>
+          </div>
+        );
+      }
+    } else {
+      // Para usuários casuais, mostrar lista de conversas
+      return (
+        <div className="chat-loading">
+          <i className="bi bi-chat-dots"></i>
+          <p>Use o chat nos bazares para iniciar conversas</p>
+          <button onClick={() => navigate('/')} className="btn btn-primary">
+            Explorar Bazares
+          </button>
+        </div>
+      );
+    }
+  }
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -72,6 +184,8 @@ const Chat = () => {
     setNewMessage('');
     setIsTyping(true);
 
+    // Simular delay de resposta mais realista
+    const responseDelay = Math.random() * 2000 + 1000; // 1-3 segundos
     setTimeout(() => {
       const randomResponse = autoResponses[Math.floor(Math.random() * autoResponses.length)];
       const bazarMessage = {
@@ -86,7 +200,7 @@ const Chat = () => {
       setIsTyping(false);
       
       localStorage.setItem(`chat_${id}`, JSON.stringify(finalMessages));
-    }, 1500);
+    }, responseDelay);
 
     localStorage.setItem(`chat_${id}`, JSON.stringify(updatedMessages));
   };
@@ -105,11 +219,35 @@ const Chat = () => {
     });
   };
 
-  if (!bazar) {
+  if (loading) {
     return (
       <div className="chat-loading">
         <i className="bi bi-arrow-clockwise loading-spinner"></i>
         <p>Carregando chat...</p>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="chat-loading">
+        <i className="bi bi-exclamation-triangle"></i>
+        <p>{error}</p>
+        <button onClick={() => navigate(-1)} className="btn btn-primary">
+          Voltar
+        </button>
+      </div>
+    );
+  }
+  
+  if (!bazar) {
+    return (
+      <div className="chat-loading">
+        <i className="bi bi-exclamation-triangle"></i>
+        <p>Bazar não encontrado</p>
+        <button onClick={() => navigate(-1)} className="btn btn-primary">
+          Voltar
+        </button>
       </div>
     );
   }
@@ -176,9 +314,14 @@ const Chat = () => {
         <div className="input-container">
           <textarea
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => {
+              setNewMessage(e.target.value);
+              // Auto-resize textarea
+              e.target.style.height = 'auto';
+              e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
+            }}
             onKeyPress={handleKeyPress}
-            placeholder="Digite sua mensagem..."
+            placeholder="Mensagem"
             rows="1"
             className="message-input"
           />

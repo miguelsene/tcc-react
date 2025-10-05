@@ -76,6 +76,14 @@ const BazarDetails = () => {
     window.open(mapsUrl, '_blank');
   };
 
+  const openChat = () => {
+    if (!user) {
+      alert('Faça login para enviar mensagens');
+      return;
+    }
+    navigate(`/chat/${bazar.id}`);
+  };
+
   const getCategoriaInfo = (categoria) => {
     return categorias.find(cat => cat.nome.toLowerCase() === categoria.toLowerCase()) || 
            { cor: '#5f81a5', nome: categoria };
@@ -197,13 +205,15 @@ const BazarDetails = () => {
         <div className="quick-actions">
           {user && user.tipoUsuario !== 'guest' ? (
             <>
-              <Link 
-                to={`/chat-bazar/${bazar.id}`} 
-                className="btn btn-primary"
-              >
-                <i className="bi bi-chat-dots-fill"></i>
-                Enviar Mensagem
-              </Link>
+              {user.tipoUsuario !== 'dono' && (
+                <button 
+                  onClick={openChat}
+                  className="btn btn-primary"
+                >
+                  <i className="bi bi-chat-dots-fill"></i>
+                  Enviar Mensagem
+                </button>
+              )}
               <button 
                 className="btn btn-secondary" 
                 onClick={handleDirections}
@@ -308,29 +318,33 @@ const BazarDetails = () => {
         )}
         
         {activeTab === 'map' && (
-          (() => {
-            const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-            const allBazares = [...defaultBazares, ...userBazares];
-            return (
-              <MapView 
-                bazares={allBazares} 
-                onBazarSelect={() => {}} 
-              />
-            );
-          })()
+          <div className="map-container">
+            <iframe 
+              src="https://www.google.com/maps/d/embed?mid=1-VGAvtH46uIfi2Duyol2NUZVb29O5Fc&ehbc=2E312F" 
+              width="100%" 
+              height="480"
+              style={{border: 0, borderRadius: '12px'}}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Localização dos Bazares"
+            ></iframe>
+          </div>
         )}
       </div>
 
       <div className="action-buttons">
         {user && user.tipoUsuario !== 'guest' ? (
           <>
-            <Link 
-              to={`/chat-bazar/${bazar.id}`} 
-              className="btn btn-primary btn-large"
-            >
-              <i className="bi bi-chat-dots-fill"></i>
-              Iniciar Conversa
-            </Link>
+            {user.tipoUsuario !== 'dono' && (
+              <button 
+                onClick={openChat}
+                className="btn btn-primary btn-large"
+              >
+                <i className="bi bi-chat-dots-fill"></i>
+                Iniciar Conversa
+              </button>
+            )}
             <button 
               className="btn btn-secondary btn-large" 
               onClick={handleDirections}
@@ -391,6 +405,8 @@ const BazarDetails = () => {
           </div>
         </div>
       )}
+      
+
     </div>
   );
 };

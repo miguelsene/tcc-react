@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useI18n } from '../../i18n/i18n';
+import './Settings.css';
 
 const Settings = () => {
   const [settings, setSettings] = useState({
@@ -17,7 +18,30 @@ const Settings = () => {
     }
   });
   const [loading, setLoading] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const { t, setLanguage } = useI18n();
+
+  useEffect(() => {
+    const checkDarkMode = () => {
+      const appElement = document.querySelector('.app');
+      setIsDark(appElement && appElement.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    const appElement = document.querySelector('.app');
+    if (appElement) {
+      observer.observe(appElement, { attributes: true, attributeFilter: ['class'] });
+    }
+    
+    return () => observer.disconnect();
+  }, []);
+
+  const getTextColor = (defaultColor) => {
+    const appElement = document.querySelector('.app');
+    const isDarkMode = appElement && appElement.classList.contains('dark');
+    return isDarkMode ? 'rgba(15, 44, 71, 0.25)' : defaultColor;
+  };
 
   useEffect(() => {
     const savedSettings = JSON.parse(localStorage.getItem('fashionspace_settings') || '{}');
@@ -118,8 +142,8 @@ const Settings = () => {
         boxShadow: '0 10px 30px rgba(15, 44, 71, 0.3)'
       }}>
         <div style={{ fontSize: '4rem', marginBottom: '1rem' }}><i className="bi bi-gear-fill"></i></div>
-        <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', margin: 0 }}>{t('settings.title')}</h1>
-        <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0 }}>{t('settings.subtitle')}</p>
+        <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem', margin: 0, color: getTextColor('white') }}>{t('settings.title')}</h1>
+        <p style={{ fontSize: '1.3rem', opacity: 0.9, margin: 0, color: getTextColor('white') }}>{t('settings.subtitle')}</p>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         
@@ -131,7 +155,7 @@ const Settings = () => {
           border: '1px solid #e9ecef'
         }}>
           <h2 style={{
-            color: '#0f2c47',
+            color: getTextColor('#0f2c47'),
             fontSize: '1.5rem',
             fontWeight: '700',
             marginBottom: '1.5rem',
@@ -139,7 +163,7 @@ const Settings = () => {
             alignItems: 'center',
             gap: '0.75rem'
           }}>
-            <i className="bi bi-shield-fill" style={{ fontSize: '1.5rem', color: '#5f81a5' }}></i>
+            <i className="bi bi-shield-fill" style={{ fontSize: '1.5rem', color: getTextColor('#5f81a5') }}></i>
             {t('settings.privacy')}
           </h2>
           <div className="setting-item">
@@ -194,7 +218,7 @@ const Settings = () => {
           border: '1px solid #e9ecef'
         }}>
           <h2 style={{
-            color: '#0f2c47',
+            color: getTextColor('#0f2c47'),
             fontSize: '1.5rem',
             fontWeight: '700',
             marginBottom: '1.5rem',
@@ -202,7 +226,7 @@ const Settings = () => {
             alignItems: 'center',
             gap: '0.75rem'
           }}>
-            <i className="bi bi-palette-fill" style={{ fontSize: '1.5rem', color: '#5f81a5' }}></i>
+            <i className="bi bi-palette-fill" style={{ fontSize: '1.5rem', color: getTextColor('#5f81a5') }}></i>
             {t('settings.preferences')}
           </h2>
           <div className="setting-item">

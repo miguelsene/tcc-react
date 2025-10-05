@@ -4,12 +4,20 @@ import './SocialFeed.css';
 const SocialFeed = ({ user }) => {
   const [posts, setPosts] = useState([]);
   const [following, setFollowing] = useState([]);
-  const [newPost, setNewPost] = useState({ content: '', image: null });
+  const [newPost, setNewPost] = useState({ content: '', media: null, mediaType: null });
 
   useEffect(() => {
+    cleanExpiredPosts();
     loadPosts();
     loadFollowing();
   }, []);
+
+  const cleanExpiredPosts = () => {
+    const allPosts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const validPosts = allPosts.filter(post => new Date(post.timestamp) > oneDayAgo);
+    localStorage.setItem('fashionspace_posts', JSON.stringify(validPosts));
+  };
 
   const loadPosts = () => {
     const savedPosts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
@@ -22,7 +30,7 @@ const SocialFeed = ({ user }) => {
   };
 
   const createPost = () => {
-    if (!newPost.content.trim()) return;
+    if (!newPost.content.trim() && !newPost.media) return;
 
     const post = {
       id: Date.now().toString(),
@@ -30,7 +38,8 @@ const SocialFeed = ({ user }) => {
       userName: user.nome,
       userAvatar: user.fotoPerfil || `https://ui-avatars.com/api/?name=${user.nome}&background=5f81a5&color=fff&size=40`,
       content: newPost.content,
-      image: newPost.image,
+      media: newPost.media,
+      mediaType: newPost.mediaType,
       timestamp: new Date().toISOString(),
       likes: [],
       comments: [],
@@ -42,7 +51,46 @@ const SocialFeed = ({ user }) => {
     localStorage.setItem('fashionspace_posts', JSON.stringify(allPosts));
     
     setPosts(allPosts);
-    setNewPost({ content: '', image: null });
+    setNewPost({ content: '', media: null, mediaType: null });
+  };
+
+  const deletePost = (postId) => {
+    if (window.confirm('Deseja excluir esta postagem?')) {
+      const allPosts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
+      const updatedPosts = allPosts.filter(p => p.id !== postId);
+      localStorage.setItem('fashionspace_posts', JSON.stringify(updatedPosts));
+      setPosts(updatedPosts);
+    }
+  };
+
+  const deleteComment = (postId, commentId) => {
+    if (window.confirm('Deseja excluir este comentário?')) {
+      const allPosts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
+      const postIndex = allPosts.findIndex(p => p.id === postId);
+      if (postIndex !== -1) {
+        allPosts[postIndex].comments = allPosts[postIndex].comments.filter(c => c.id !== commentId);
+        localStorage.setItem('fashionspace_posts', JSON.stringify(allPosts));
+        setPosts([...allPosts]);
+      }
+    }
+  };
+
+  const handleMediaUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Arquivo muito grande. Máximo 10MB.');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const mediaType = file.type.startsWith('image/') ? 'image' : 
+                         file.type.startsWith('video/') ? 'video' : 'file';
+        setNewPost({...newPost, media: e.target.result, mediaType});
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const toggleLike = (postId) => {
@@ -119,14 +167,37 @@ const SocialFeed = ({ user }) => {
                 value={newPost.content}
                 onChange={(e) => setNewPost({...newPost, content: e.target.value})}
               />
+              {newPost.media && (
+                <div className="media-preview">
+                  {newPost.mediaType === 'image' && (
+                    <img src={newPost.media} alt="Preview" className="preview-media" />
+                  )}
+                  {newPost.mediaType === 'video' && (
+                    <video src={newPost.media} controls className="preview-media" />
+                  )}
+                  <button 
+                    className="remove-media"
+                    onClick={() => setNewPost({...newPost, media: null, mediaType: null})}
+                  >
+                    <i className="bi bi-x"></i>
+                  </button>
+                </div>
+              )}
               <div className="form-actions">
-                <button className="btn btn-secondary">
-                  <i className="bi bi-image"></i> Foto
-                </button>
+                <input
+                  type="file"
+                  id="media-upload"
+                  accept="image/*,video/*,.gif"
+                  onChange={handleMediaUpload}
+                  style={{display: 'none'}}
+                />
+                <label htmlFor="media-upload" className="btn btn-secondary">
+                  <i className="bi bi-image"></i> Mídia
+                </label>
                 <button 
                   className="btn btn-primary"
                   onClick={createPost}
-                  disabled={!newPost.content.trim()}
+                  disabled={!newPost.content.trim() && !newPost.media}
                 >
                   Publicar
                 </button>
@@ -152,6 +223,8 @@ const SocialFeed = ({ user }) => {
               onLike={toggleLike}
               onComment={addComment}
               onShare={sharePost}
+              onDelete={deletePost}
+              onDeleteComment={deleteComment}
             />
           ))
         )}
@@ -160,7 +233,7 @@ const SocialFeed = ({ user }) => {
   );
 };
 
-const PostCard = ({ post, currentUser, onLike, onComment, onShare }) => {
+const PostCard = ({ post, currentUser, onLike, onComment, onShare, onDelete, onDeleteComment }) => {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
 
@@ -183,12 +256,24 @@ const PostCard = ({ post, currentUser, onLike, onComment, onShare }) => {
             {new Date(post.timestamp).toLocaleString()}
           </span>
         </div>
+        {post.userId === currentUser.id && (
+          <button className="delete-post-btn" onClick={() => onDelete(post.id)}>
+            <i className="bi bi-trash"></i>
+          </button>
+        )}
       </div>
 
       <div className="post-content">
         <p>{post.content}</p>
-        {post.image && (
-          <img src={post.image} alt="Post" className="post-image" />
+        {post.media && (
+          <div className="post-media">
+            {post.mediaType === 'image' && (
+              <img src={post.media} alt="Post" className="post-image" />
+            )}
+            {post.mediaType === 'video' && (
+              <video src={post.media} controls className="post-video" />
+            )}
+          </div>
         )}
       </div>
 
@@ -247,6 +332,14 @@ const PostCard = ({ post, currentUser, onLike, onComment, onShare }) => {
                   <div className="comment-bubble">
                     <strong>{comment.userName}</strong>
                     <p>{comment.content}</p>
+                    {comment.userId === currentUser.id && (
+                      <button 
+                        className="delete-comment-btn"
+                        onClick={() => onDeleteComment(post.id, comment.id)}
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    )}
                   </div>
                   <div className="comment-timestamp">
                     {new Date(comment.timestamp).toLocaleString()}

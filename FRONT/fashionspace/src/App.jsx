@@ -4,6 +4,7 @@ import { useScrollAnimationMultiple } from './hooks/useScrollAnimation';
 import PageTransition from './components/common/PageTransition';
 import Sidebar from './components/common/Sidebar';
 import Topbar from './components/common/Topbar';
+
 import './components/common/Button.css';
 import Login from './pages/Login/Login';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -20,6 +21,7 @@ const EditBazar = lazy(() => import('./pages/EditBazar/EditBazar'));
 const Favorites = lazy(() => import('./pages/Favorites/Favorites'));
 const Profile = lazy(() => import('./pages/Profile/Profile'));
 const Chat = lazy(() => import('./pages/Chat/Chat'));
+const ChatPage = lazy(() => import('./pages/ChatPage/ChatPage'));
 const Support = lazy(() => import('./pages/Support/Support'));
 const Settings = lazy(() => import('./pages/Settings/Settings'));
 const AIAssistant = lazy(() => import('./pages/AIAssistant/AIAssistant'));
@@ -162,6 +164,11 @@ function App() {
                 <Route path="/chat-bazar/:id" element={
                   <ProtectedRoute user={user} blockGuest={true}>
                     <Chat />
+                  </ProtectedRoute>
+                } />
+                <Route path="/chat/:bazarId" element={
+                  <ProtectedRoute user={user} blockGuest={true}>
+                    <ChatPage />
                   </ProtectedRoute>
                 } />
                 <Route path="/suporte" element={

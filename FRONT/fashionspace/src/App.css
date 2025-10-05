@@ -19,6 +19,30 @@
   --shadow-lg: 0 20px 60px rgba(15, 44, 71, 0.25);
   --border-radius: 16px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Text colors */
+  --text-primary: #0f2c47;
+  --text-secondary: #5f81a5;
+  --text-muted: #6c757d;
+  --text-light: #ffffff;
+  
+  /* Background colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-dark: #0f2c47;
+  --bg-darker: #000000;
+}
+
+.app.dark {
+  --text-primary: #ffffff;
+  --text-secondary: #e9ecef;
+  --text-muted: #adb5bd;
+  --text-light: #000000;
+  
+  --bg-primary: #0f2c47;
+  --bg-secondary: #1a3a5c;
+  --bg-dark: #ffffff;
+  --bg-darker: #f0f0f0;
 }
 
 body {
@@ -249,24 +273,55 @@ body {
 
 /* Modo Dark */
 .app.dark {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .app.dark .card {
   background: rgba(15, 44, 71, 0.9);
   border-color: rgba(95, 129, 165, 0.3);
+  color: var(--text-primary);
 }
 
 .app.dark .form-control {
   background: rgba(15, 44, 71, 0.8);
   border-color: rgba(95, 129, 165, 0.3);
-  color: white;
+  color: var(--text-primary);
 }
 
 .app.dark .btn-secondary {
   background: rgba(15, 44, 71, 0.8);
-  color: white;
+  color: var(--text-primary);
   border-color: var(--secondary);
+}
+
+/* Textos que devem contrastar com fundo escuro */
+.app.dark .card h1,
+.app.dark .card h2,
+.app.dark .card h3,
+.app.dark .card h4,
+.app.dark .card h5,
+.app.dark .card h6 {
+  color: var(--text-primary);
+}
+
+.app.dark .card p,
+.app.dark .card span {
+  color: var(--text-secondary);
+}
+
+/* Textos que devem contrastar com fundo claro */
+.app.dark .btn-primary,
+.app.dark .badge,
+.app.dark .alert {
+  color: var(--text-light);
+}
+
+/* Cores específicas para Support e Settings no modo dark */
+.app.dark [style*="color: #0f2c47"],
+.app.dark [style*="color: #5f81a5"],
+.app.dark [style*="color: #000"],
+.app.dark [style*="color: white"] {
+  color: rgba(15, 44, 71, 0.25) !important;
 }
 
 /* Responsivo */

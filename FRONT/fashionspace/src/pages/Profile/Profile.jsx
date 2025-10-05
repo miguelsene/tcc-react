@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import { categorias } from '../../data/bazares';
 import { bazarService, formatarBazarParaFrontend } from '../../services/api';
 import BazarPreview from '../../components/BazarPreview/BazarPreview';
+import BazarMessages from '../../components/common/BazarMessages';
 import './Profile.css';
 
 const Profile = ({ user, setUser }) => {
@@ -16,13 +16,10 @@ const Profile = ({ user, setUser }) => {
   const [editData, setEditData] = useState({ nome: user.nome, email: user.email, fotoPerfil: user.fotoPerfil });
   const [stats, setStats] = useState({ views: 0, likes: 0, messages: 0 });
   const [photoPreview, setPhotoPreview] = useState(null);
-  
-  useScrollAnimationMultiple();
 
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        // Buscar bazares do usuário da API
         const bazaresFromAPI = await bazarService.buscarPorUsuario(user.id);
         const userCreatedBazares = bazaresFromAPI.map(formatarBazarParaFrontend);
         
@@ -30,7 +27,6 @@ const Profile = ({ user, setUser }) => {
         const posts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
         const userPosts = posts.filter(post => post.userId === user.id);
         
-        // Calcular estatísticas
         const totalLikes = userPosts.reduce((sum, post) => sum + post.likes.length, 0);
         const totalViews = userCreatedBazares.length * 150 + Math.floor(Math.random() * 500);
         const totalMessages = Math.floor(Math.random() * 50) + userCreatedBazares.length * 5;
@@ -40,7 +36,6 @@ const Profile = ({ user, setUser }) => {
         setStats({ views: totalViews, likes: totalLikes, messages: totalMessages });
       } catch (error) {
         console.error('Erro ao carregar bazares do usuário:', error);
-        // Fallback para dados locais
         const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
         const userCreatedBazares = bazares.filter(bazar => bazar.criadoPor === user.id);
         setUserBazares(userCreatedBazares);
@@ -70,7 +65,6 @@ const Profile = ({ user, setUser }) => {
 
   const handleEditProfile = async () => {
     if (isEditing) {
-      // Validar dados antes de enviar
       if (!editData.nome || editData.nome.trim().length < 2) {
         alert('Nome deve ter pelo menos 2 caracteres');
         return;
@@ -82,7 +76,6 @@ const Profile = ({ user, setUser }) => {
       }
       
       try {
-        // Fazer requisição para a API
         const response = await fetch(`http://localhost:8080/api/usuario/${user.id}`, {
           method: 'PUT',
           headers: {
@@ -91,8 +84,8 @@ const Profile = ({ user, setUser }) => {
           body: JSON.stringify({
             nome: editData.nome,
             email: editData.email,
-            senha: user.senha, // manter senha atual
-            tipoUsuario: user.tipoUsuario, // manter tipo atual
+            senha: user.senha,
+            tipoUsuario: user.tipoUsuario,
             fotoPerfil: editData.fotoPerfil
           })
         });
@@ -102,7 +95,6 @@ const Profile = ({ user, setUser }) => {
           setUser(updatedUser);
           localStorage.setItem('fashionspace_user', JSON.stringify(updatedUser));
           
-          // Atualizar na lista de usuários local também
           const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
           const updatedUsers = users.map(u => u.id === user.id ? updatedUser : u);
           localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
@@ -111,12 +103,12 @@ const Profile = ({ user, setUser }) => {
         } else {
           const error = await response.json();
           alert('Erro ao atualizar perfil: ' + (error.message || 'Tente novamente'));
-          return; // não sair do modo de edição se houver erro
+          return;
         }
       } catch (error) {
         console.error('Erro ao atualizar perfil:', error);
         alert('Erro ao conectar com o servidor. Tente novamente.');
-        return; // não sair do modo de edição se houver erro
+        return;
       }
     }
     setIsEditing(!isEditing);
@@ -143,17 +135,14 @@ const Profile = ({ user, setUser }) => {
   const deleteBazar = async (bazarId) => {
     if (window.confirm('Deseja realmente excluir este bazar? Esta ação não pode ser desfeita.')) {
       try {
-        // Deletar da API
         await bazarService.deletar(bazarId);
         
-        // Atualizar estado local
         setUserBazares(prev => prev.filter(bazar => bazar.id !== bazarId));
         
         const updatedFavoritos = favoritos.filter(id => id !== bazarId);
         localStorage.setItem('fashionspace_favoritos', JSON.stringify(updatedFavoritos));
         setFavoritos(updatedFavoritos);
         
-        // Notificar outras telas
         window.dispatchEvent(new Event('bazaresUpdated'));
         
         alert('Bazar excluído com sucesso!');
@@ -233,21 +222,19 @@ const Profile = ({ user, setUser }) => {
                   placeholder="Email"
                   required
                 />
-                {isEditing && (
-                  <div className="edit-actions">
-                    <button 
-                      type="button" 
-                      className="btn btn-secondary"
-                      onClick={() => {
-                        setEditData({ nome: user.nome, email: user.email, fotoPerfil: user.fotoPerfil });
-                        setPhotoPreview(null);
-                        setIsEditing(false);
-                      }}
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                )}
+                <div className="edit-actions">
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setEditData({ nome: user.nome, email: user.email, fotoPerfil: user.fotoPerfil });
+                      setPhotoPreview(null);
+                      setIsEditing(false);
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
             ) : (
               <>
@@ -329,6 +316,10 @@ const Profile = ({ user, setUser }) => {
           </div>
         </div>
       </div>
+
+      {user.tipoUsuario === 'dono' && userBazares.length > 0 && (
+        <BazarMessages bazar={userBazares[0]} user={user} />
+      )}
 
       <div className="profile-section scroll-animate">
         <div className="section-header scroll-animate-left">
