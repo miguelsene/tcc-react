@@ -7,7 +7,7 @@
 }
 
 .ai-header {
-  background: linear-gradient(135deg, #667eea 0%, #4b5c94 100%);
+  background: linear-gradient(135deg, #6ba0d8 0%, #0f2c47 100%);
   color: white;
   padding: 3rem 2rem;
   border-radius: 24px;
@@ -170,7 +170,7 @@
 }
 
 .message.ai .message-avatar {
-  background: linear-gradient(135deg, #667eea 0%, #1c3357 100%);
+  background: linear-gradient(135deg, #667eea 0%, #0f2c47 100%);
   color: white;
 }
 
@@ -193,7 +193,7 @@
 }
 
 .message.user .message-content {
-  background: linear-gradient(135deg, #667eea 0%, #272f74 100%);
+  background: linear-gradient(135deg, #667eea 0%, #0f2c47 100%);
   color: white;
   border-bottom-right-radius: 8px;
 }
@@ -310,7 +310,7 @@
   height: 50px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #5f81a5 0%, #0f2c47 100%);
   color: white;
   cursor: pointer;
   display: flex;
@@ -352,7 +352,7 @@
 }
 
 .start-chat-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #649fde 0%, #0f2c47 100%);
   color: white;
   border: none;
   padding: 1.25rem 4rem;
@@ -447,7 +447,7 @@
 }
 
 .app.dark .suggestion-btn:hover {
-  border-color: #667eea;
+  border-color: #649fde;
   background: #333;
 }
 
@@ -464,7 +464,7 @@
 
 .app.dark .message-input:focus {
   background: #333;
-  border-color: #667eea;
+  border-color: #649fde;
 }
 
 .app.dark .feature-card {
