@@ -60,25 +60,49 @@ const BazarCarousel = ({ bazares }) => {
            { cor: '#5f81a5', nome: categoria };
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (rating, bazarId) => {
     const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<i key={i} className="bi bi-star-fill star-filled"></i>);
-    }
-
-    if (hasHalfStar) {
-      stars.push(<i key="half" className="bi bi-star-half star-filled"></i>);
-    }
-
-    const emptyStars = 5 - Math.ceil(rating);
-    for (let i = 0; i < emptyStars; i++) {
-      stars.push(<i key={`empty-${i}`} className="bi bi-star star-empty"></i>);
+    
+    for (let i = 1; i <= 5; i++) {
+      const filled = i <= Math.floor(rating);
+      const half = i === Math.ceil(rating) && rating % 1 !== 0;
+      
+      stars.push(
+        <i 
+          key={i} 
+          className={`bi ${filled ? 'bi-star-fill star-filled' : half ? 'bi-star-half star-filled' : 'bi-star star-empty'} star-clickable`}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleRating(bazarId, i);
+          }}
+          title={`Avaliar com ${i} estrela${i > 1 ? 's' : ''}`}
+        ></i>
+      );
     }
 
     return stars;
+  };
+
+  const handleRating = async (bazarId, rating) => {
+    if (!user) {
+      alert('Faça login para avaliar');
+      return;
+    }
+    if (user.tipoUsuario === 'dono') {
+      alert('Donos de bazar não podem avaliar');
+      return;
+    }
+    
+    try {
+      // Aqui você pode adicionar a lógica de API para salvar a avaliação
+      alert(`Você avaliou com ${rating} estrela${rating > 1 ? 's' : ''}!`);
+      // Recarregar bazares após avaliação
+      window.dispatchEvent(new Event('bazaresUpdated'));
+    } catch (error) {
+      console.error('Erro ao avaliar:', error);
+      alert('Erro ao enviar avaliação');
+    }
   };
 
   return (
@@ -129,7 +153,7 @@ const BazarCarousel = ({ bazares }) => {
                     )}
                     <div className="rating-overlay">
                       <div className="stars">
-                        {renderStars(bazar.avaliacao)}
+                        {renderStars(bazar.avaliacao, bazar.id)}
                       </div>
                       <span className="rating-text">{bazar.avaliacao}</span>
                     </div>

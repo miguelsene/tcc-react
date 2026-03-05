@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect, lazy, Suspense } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useScrollAnimationMultiple } from './hooks/useScrollAnimation';
 import PageTransition from './components/common/PageTransition';
 import Sidebar from './components/common/Sidebar';
@@ -116,7 +117,8 @@ function App() {
 
   
   return (
-          <div className={`app ${darkMode ? 'dark' : 'light'} ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${user?.tipoUsuario === 'dono' ? 'is-dono' : ''}`}>
+    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+      <div className={`app ${darkMode ? 'dark' : 'light'} ${sidebarVisible ? 'sidebar-visible' : 'sidebar-hidden'} ${user?.tipoUsuario === 'dono' ? 'is-dono' : ''}`}>
         <Router>
         {user ? (
         <>
@@ -215,6 +217,7 @@ function App() {
         )}
         </Router>
       </div>
+    </GoogleOAuthProvider>
       );
 }
 

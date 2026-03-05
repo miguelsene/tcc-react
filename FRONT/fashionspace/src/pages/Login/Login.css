@@ -1,19 +1,24 @@
 
 .login-page {
- margin-top: 10px;
- 
+  margin-top: 10px;
   overflow-y: auto;
-  
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .login-container {
   margin-left: 420px;
-  
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   position: relative;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .login-container::before {
@@ -121,6 +126,34 @@
   color: #dc3545;
   font-size: 14px;
   margin-top: 4px;
+  font-weight: 600;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #666;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.divider span {
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.google-login-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .login-btn {
@@ -203,6 +236,7 @@
 @media (max-width: 768px) {
   .login-page {
     padding: 20px 0;
+    min-height: auto;
   }
   
   .login-container {
@@ -225,6 +259,7 @@
   .login-card {
     padding: 30px 20px;
     margin: 0;
+    max-width: 100%;
   }
   
   .login-header h1 {
@@ -238,6 +273,28 @@
   
   .login-form .form-control {
     font-size: 16px;
+  }
+  
+  .google-login-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 20px 15px;
+  }
+  
+  .login-header h1 {
+    font-size: 20px;
+  }
+  
+  .login-header p {
+    font-size: 14px;
+  }
+  
+  .login-form .form-control {
+    padding: 10px 14px;
   }
 }
 .login-logo {

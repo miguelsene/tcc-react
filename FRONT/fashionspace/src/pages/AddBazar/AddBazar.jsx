@@ -21,6 +21,7 @@ const AddBazar = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -32,6 +33,11 @@ const AddBazar = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validar tamanho (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors({ ...errors, imagem: 'Imagem muito grande. Máximo 5MB.' });
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (e) => {
         setFormData({ ...formData, imagem: e.target.result });
@@ -83,17 +89,20 @@ const AddBazar = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setShowErrors(true);
     
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      alert('Algo está errado! Verifique os campos destacados em vermelho.');
+      return;
+    }
 
     setLoading(true);
 
     try {
       const user = JSON.parse(localStorage.getItem('fashionspace_user'));
       
-      // Evitar enviar base64 para o backend (pode estourar coluna no banco)
-      const isBase64 = typeof formData.imagem === 'string' && formData.imagem.startsWith('data:');
-      const imagemParaSalvar = isBase64 ? '' : (formData.imagem || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500');
+      // Usar URL de imagem ao invés de base64
+      const imagemParaSalvar = formData.imagem || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500';
 
       const bazarData = {
         nome: formData.nome,
@@ -111,24 +120,19 @@ const AddBazar = () => {
         horario: formData.horario
       };
 
-      // Converter para formato do backend
       const bazarParaBackend = formatarBazarParaBackend(bazarData, user.id);
       console.log('Dados para enviar:', bazarParaBackend);
       
-      // Enviar para a API
       const novoBazar = await bazarService.criar(bazarParaBackend);
       console.log('Bazar criado:', novoBazar);
       
       alert('Bazar criado com sucesso!');
-      // Notificar outras telas para recarregar a lista
       window.dispatchEvent(new Event('bazaresUpdated'));
-      
-      // Ir direto ao perfil para ver o novo bazar
       navigate('/perfil');
 
     } catch (error) {
       console.error('Erro ao criar bazar:', error);
-      alert(error.message || 'Erro ao criar bazar. Tente novamente.');
+      alert('Algo está errado! ' + (error.message || 'Erro ao criar bazar. Tente novamente.'));
     } finally {
       setLoading(false);
     }
@@ -159,23 +163,24 @@ const AddBazar = () => {
               name="nome"
               value={formData.nome}
               onChange={handleChange}
-              className={`form-control ${errors.nome ? 'error' : ''}`}
+              className={`form-control ${showErrors && errors.nome ? 'error' : ''}`}
               placeholder="Ex: Bazar da Moda Vintage"
             />
-            {errors.nome && <span className="error-text">{errors.nome}</span>}
+            {showErrors && errors.nome && <span className="error-text">❌ {errors.nome}</span>}
           </div>
 
           <div className="form-group">
-            <label>Descrição *</label>
+            <label>Descrição * (Obrigatório)</label>
             <textarea
               name="descricao"
               value={formData.descricao}
               onChange={handleChange}
-              className={`form-control ${errors.descricao ? 'error' : ''}`}
+              className={`form-control ${showErrors && errors.descricao ? 'error' : ''}`}
               placeholder="Descreva seu bazar, produtos e diferenciais..."
               rows="4"
+              required
             />
-            {errors.descricao && <span className="error-text">{errors.descricao}</span>}
+            {showErrors && errors.descricao && <span className="error-text">❌ {errors.descricao}</span>}
           </div>
 
           <div className="form-group">
@@ -184,30 +189,32 @@ const AddBazar = () => {
               name="categoria"
               value={formData.categoria}
               onChange={handleChange}
-              className={`form-control ${errors.categoria ? 'error' : ''}`}
+              className={`form-control ${showErrors && errors.categoria ? 'error' : ''}`}
             >
               <option value="">Selecione uma categoria</option>
               {categorias.map(cat => (
                 <option key={cat.id} value={cat.nome}>{cat.nome}</option>
               ))}
             </select>
-            {errors.categoria && <span className="error-text">{errors.categoria}</span>}
+            {showErrors && errors.categoria && <span className="error-text">❌ {errors.categoria}</span>}
           </div>
 
           <div className="form-group">
             <label>
               <i className="bi bi-image-fill"></i>
-              Imagem do Bazar
+              URL da Imagem do Bazar
             </label>
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
+              type="url"
+              name="imagem"
+              value={formData.imagem}
+              onChange={handleChange}
               className="form-control"
+              placeholder="https://exemplo.com/imagem.jpg"
             />
             {formData.imagem && (
               <div className="image-preview">
-                <img src={formData.imagem} alt="Preview" />
+                <img src={formData.imagem} alt="Preview" onError={(e) => e.target.src = 'https://via.placeholder.com/200x120?text=Imagem+Inválida'} />
               </div>
             )}
           </div>

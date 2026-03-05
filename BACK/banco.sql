@@ -15,8 +15,10 @@ GO
 CREATE TABLE usuarios (
     id INT IDENTITY(1,1) PRIMARY KEY,
     nome NVARCHAR(100) NOT NULL,
-    email NVARCHAR(100) NOT NULL UNIQUE,
-    senha NVARCHAR(255) NOT NULL,
+    email NVARCHAR(100) UNIQUE,
+    senha NVARCHAR(255),
+    google_id NVARCHAR(255) UNIQUE,
+    foto_perfil NVARCHAR(500),
     tipo_usuario NVARCHAR(20) DEFAULT 'casual' 
         CHECK (tipo_usuario IN ('casual', 'dono', 'guest')),
     data_cadastro DATETIME DEFAULT GETDATE()
@@ -43,7 +45,7 @@ GO
 CREATE TABLE bazares (
     id INT IDENTITY(1,1) PRIMARY KEY,
     nome NVARCHAR(255) NOT NULL,
-    descricao NVARCHAR(MAX),
+    descricao NVARCHAR(MAX) NOT NULL,
     imagem NVARCHAR(500),
     categoria NVARCHAR(50) NOT NULL,
     cep NVARCHAR(10),

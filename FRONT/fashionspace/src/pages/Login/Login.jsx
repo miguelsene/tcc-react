@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useScrollAnimationMultiple } from '../../hooks/useScrollAnimation';
 import { usuarioService } from '../../services/api';
+import { GoogleLogin } from '@react-oauth/google';
 import './Login.css';
 
 const Login = ({ setUser }) => {
@@ -16,6 +17,7 @@ const Login = ({ setUser }) => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,10 +45,45 @@ const Login = ({ setUser }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      // Decodificar o JWT do Google
+      const decoded = JSON.parse(atob(credentialResponse.credential.split('.')[1]));
+      
+      // Criar ou buscar usuário com Google
+      const user = {
+        id: decoded.sub,
+        nome: decoded.name,
+        email: decoded.email,
+        fotoPerfil: decoded.picture,
+        googleId: decoded.sub,
+        tipoUsuario: 'casual'
+      };
+      
+      localStorage.setItem('fashionspace_user', JSON.stringify(user));
+      setUser(user);
+      window.dispatchEvent(new CustomEvent('userUpdated'));
+    } catch (error) {
+      console.error('Erro no login com Google:', error);
+      setErrors({ email: 'Erro ao fazer login com Google' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setErrors({ email: 'Falha no login com Google' });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setShowErrors(true);
     
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      alert('❌ Algo está errado! Verifique os campos destacados.');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -69,6 +106,7 @@ const Login = ({ setUser }) => {
     } catch (error) {
       console.error('Erro:', error);
       setErrors({ email: error.message || 'Erro de conexão com o servidor.' });
+      alert('❌ Algo está errado! ' + (error.message || 'Verifique suas credenciais.'));
     } finally {
       setLoading(false);
     }
@@ -128,10 +166,10 @@ const Login = ({ setUser }) => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`form-control ${errors.email ? 'error' : ''}`}
+              className={`form-control ${showErrors && errors.email ? 'error' : ''}`}
               placeholder="Digite seu email"
             />
-            {errors.email && <span className="error-text">{errors.email}</span>}
+            {showErrors && errors.email && <span className="error-text">❌ {errors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -141,10 +179,10 @@ const Login = ({ setUser }) => {
               name="senha"
               value={formData.senha}
               onChange={handleChange}
-              className={`form-control ${errors.senha ? 'error' : ''}`}
+              className={`form-control ${showErrors && errors.senha ? 'error' : ''}`}
               placeholder="Digite sua senha"
             />
-            {errors.senha && <span className="error-text">{errors.senha}</span>}
+            {showErrors && errors.senha && <span className="error-text">❌ {errors.senha}</span>}
           </div>
 
           {!isLogin && (
@@ -200,6 +238,21 @@ const Login = ({ setUser }) => {
           <button type="submit" className="btn btn-primary login-btn" disabled={loading}>
             {loading ? 'Aguarde...' : (isLogin ? 'Entrar' : 'Cadastrar')}
           </button>
+          
+          <div className="divider">
+            <span>ou</span>
+          </div>
+          
+          <div className="google-login-container">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              text={isLogin ? 'signin_with' : 'signup_with'}
+              width="100%"
+              locale="pt-BR"
+            />
+          </div>
+          
           <button 
             type="button" 
             className="btn btn-secondary login-btn"
