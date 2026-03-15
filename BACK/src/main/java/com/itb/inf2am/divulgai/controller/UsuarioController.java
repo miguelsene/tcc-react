@@ -67,6 +67,10 @@ public class UsuarioController {
    response.put("message", "Email já cadastrado");
    return ResponseEntity.badRequest().body(response);
   }
+  // Cadastro via mobile sempre cria usuário casual
+  if (usuario.getTipoUsuario() == null || usuario.getTipoUsuario().trim().isEmpty()) {
+   usuario.setTipoUsuario("casual");
+  }
   return ResponseEntity.ok(usuarioService.save(usuario));
  }
  
@@ -114,8 +118,12 @@ public class UsuarioController {
 
    usuarioExistente.setNome(usuario.getNome());
    usuarioExistente.setEmail(usuario.getEmail());
-   usuarioExistente.setSenha(usuario.getSenha());
-   usuarioExistente.setTipoUsuario(usuario.getTipoUsuario());
+   if (usuario.getSenha() != null && !usuario.getSenha().trim().isEmpty()) {
+       usuarioExistente.setSenha(usuario.getSenha());
+   }
+   if (usuario.getTipoUsuario() != null && !usuario.getTipoUsuario().trim().isEmpty()) {
+       usuarioExistente.setTipoUsuario(usuario.getTipoUsuario());
+   }
    if (usuario.getFotoPerfil() != null) {
        usuarioExistente.setFotoPerfil(usuario.getFotoPerfil());
    }
