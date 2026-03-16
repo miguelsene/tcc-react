@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "39284ee3-b68d-49ff-ba4c-87c608f6dd08"
+      }
+    },
+    "android": {
+      "package": "com.fashionspace.app"
+    }
+  }
+}
