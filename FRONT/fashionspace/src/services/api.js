@@ -33,6 +33,85 @@ export const usuarioService = {
     const response = await fetch(`${API_BASE_URL}/usuario/${id}`);
     if (!response.ok) throw new Error('Usuário não encontrado');
     return response.json();
+  },
+
+  // Atualizar usuário
+  atualizar: async (id, dados) => {
+    const response = await fetch(`${API_BASE_URL}/usuario/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Erro ao atualizar usuário');
+    }
+    return response.json();
+  }
+};
+
+// Serviço para Posts
+export const postService = {
+  listarTodos: async () => {
+    const response = await fetch(`${API_BASE_URL}/posts`);
+    if (!response.ok) throw new Error('Erro ao buscar posts');
+    return response.json();
+  },
+
+  criar: async (post) => {
+    const response = await fetch(`${API_BASE_URL}/posts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(post)
+    });
+    if (!response.ok) throw new Error('Erro ao criar post');
+    return response.json();
+  },
+
+  curtir: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/posts/${id}/curtir`, { method: 'POST' });
+    if (!response.ok) throw new Error('Erro ao curtir post');
+    return response.json();
+  },
+
+  deletar: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/posts/${id}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error('Erro ao deletar post');
+  }
+};
+
+// Serviço para Mensagens
+export const mensagemService = {
+  enviar: async (mensagem) => {
+    const response = await fetch(`${API_BASE_URL}/mensagens`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(mensagem)
+    });
+    if (!response.ok) throw new Error('Erro ao enviar mensagem');
+    return response.json();
+  },
+
+  buscarConversa: async (userId, bazarId) => {
+    const response = await fetch(`${API_BASE_URL}/mensagens/conversa/${userId}/${bazarId}`);
+    if (!response.ok) throw new Error('Erro ao buscar conversa');
+    return response.json();
+  },
+
+  buscarTodasConversas: async (userId) => {
+    const response = await fetch(`${API_BASE_URL}/mensagens/conversas/${userId}`);
+    if (!response.ok) throw new Error('Erro ao buscar conversas');
+    return response.json();
+  },
+
+  marcarComoLida: async (mensagemId) => {
+    await fetch(`${API_BASE_URL}/mensagens/marcar-lida/${mensagemId}`, { method: 'PUT' });
+  },
+
+  contarNaoLidas: async (userId) => {
+    const response = await fetch(`${API_BASE_URL}/mensagens/nao-lidas/${userId}`);
+    if (!response.ok) throw new Error('Erro ao contar mensagens');
+    return response.json();
   }
 };
 

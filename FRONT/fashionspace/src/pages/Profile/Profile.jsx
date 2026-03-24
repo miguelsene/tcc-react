@@ -1,64 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { categorias } from '../../data/bazares';
-import { bazarService, formatarBazarParaFrontend } from '../../services/api';
+import { bazarService, favoritoService, usuarioService, mensagemService, formatarBazarParaFrontend } from '../../services/api';
 import BazarPreview from '../../components/BazarPreview/BazarPreview';
-import { chatService } from '../../services/chatService';
 import './Profile.css';
 
 const MessagesPreview = ({ user }) => {
   const [conversations, setConversations] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    loadConversations();
-  }, [user]);
-
-  const loadConversations = async () => {
-    try {
-      const [conversas, { count }] = await Promise.all([
-        chatService.getAllConversations(user.id, user.tipoUsuario),
-        chatService.getUnreadCount(user.id)
-      ]);
-      
-      // Buscar dados dos usuários para as conversas
-      const conversasComUsuarios = await Promise.all(
-        conversas.slice(0, 3).map(async (conversa) => {
-          try {
-            const response = await fetch(`http://localhost:8080/api/usuario/${conversa.remetenteId === user.id ? conversa.destinatarioId : conversa.remetenteId}`);
-            const usuario = response.ok ? await response.json() : null;
-            return {
-              ...conversa,
-              usuario: usuario || {
-                nome: 'Usuário',
-                fotoPerfil: `https://ui-avatars.com/api/?name=U&background=5f81a5&color=fff&size=40`
-              }
-            };
-          } catch {
-            return {
-              ...conversa,
-              usuario: {
-                nome: 'Usuário',
-                fotoPerfil: `https://ui-avatars.com/api/?name=U&background=5f81a5&color=fff&size=40`
-              }
-            };
-          }
-        })
-      );
-      
-      setConversations(conversasComUsuarios);
-      setUnreadCount(count || 0);
-    } catch (error) {
-      console.error('Erro ao carregar conversas:', error);
-    }
-  };
+    mensagemService.buscarTodasConversas(Number(user.id))
+      .then(setConversations)
+      .catch(() => {});
+  }, [user.id]);
 
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffHours = Math.floor(diffMs / 3600000);
-    
+    const diffHours = Math.floor((Date.now() - date) / 3600000);
     if (diffHours < 1) return 'Agora';
     if (diffHours < 24) return `${diffHours}h`;
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
@@ -68,44 +26,29 @@ const MessagesPreview = ({ user }) => {
     <div className="messages-section scroll-animate">
       <div className="messages-card">
         <div className="messages-header">
-          <div className="messages-icon">
-            <i className="bi bi-chat-dots-fill"></i>
-          </div>
+          <div className="messages-icon"><i className="bi bi-chat-dots-fill"></i></div>
           <div className="messages-info">
             <h3>Mensagens Recentes</h3>
-            <p>{unreadCount} não lidas • {conversations.length} conversas</p>
+            <p>{conversations.length} conversas</p>
           </div>
           <Link to="/mensagens" className="messages-btn">
             <i className="bi bi-arrow-right"></i>
           </Link>
         </div>
-        
         <div className="conversations-preview">
           {conversations.length > 0 ? (
-            conversations.map((conversa) => (
-              <Link 
-                key={conversa.id} 
-                to={`/chat/${conversa.bazarId}`}
-                className="conversation-item"
-              >
-                <img 
-                  src={conversa.usuario.fotoPerfil || `https://ui-avatars.com/api/?name=${conversa.usuario.nome}&background=5f81a5&color=fff&size=40`}
-                  alt={conversa.usuario.nome}
-                  className="user-avatar"
-                />
+            conversations.slice(0, 3).map((conversa) => (
+              <Link key={conversa.id} to={`/chat/${conversa.bazarId}`} className="conversation-item">
                 <div className="conversation-content">
                   <div className="conversation-header">
-                    <span className="user-name">{conversa.usuario.nome}</span>
+                    <span className="user-name">Bazar #{conversa.bazarId}</span>
                     <span className="message-time">{formatTime(conversa.dataEnvio)}</span>
                   </div>
                   <p className="last-message">
-                    {conversa.conteudo.length > 40 ? 
-                      conversa.conteudo.substring(0, 40) + '...' : 
-                      conversa.conteudo
-                    }
+                    {conversa.conteudo?.length > 40 ? conversa.conteudo.substring(0, 40) + '...' : conversa.conteudo}
                   </p>
                 </div>
-                {!conversa.lida && conversa.destinatarioId === user.id && (
+                {!conversa.lida && Number(conversa.destinatarioId) === Number(user.id) && (
                   <div className="unread-indicator"></div>
                 )}
               </Link>
@@ -133,43 +76,26 @@ const Profile = ({ user, setUser }) => {
   const [stats, setStats] = useState({ views: 0, likes: 0, messages: 0 });
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const bazaresFromAPI = await bazarService.buscarPorUsuario(user.id);
-        const userCreatedBazares = bazaresFromAPI.map(formatarBazarParaFrontend);
-        
-        const savedFavoritos = JSON.parse(localStorage.getItem('fashionspace_favoritos') || '[]');
-        const posts = JSON.parse(localStorage.getItem('fashionspace_posts') || '[]');
-        const userPosts = posts.filter(post => post.userId === user.id);
-        
-        const totalLikes = userPosts.reduce((sum, post) => sum + post.likes.length, 0);
-        const totalViews = userCreatedBazares.length * 150 + Math.floor(Math.random() * 500);
-        const totalMessages = Math.floor(Math.random() * 50) + userCreatedBazares.length * 5;
-        
-        setUserBazares(userCreatedBazares);
-        setFavoritos(savedFavoritos);
-        setStats({ views: totalViews, likes: totalLikes, messages: totalMessages });
-      } catch (error) {
-        console.error('Erro ao carregar bazares do usuário:', error);
-        const bazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-        const userCreatedBazares = bazares.filter(bazar => bazar.criadoPor === user.id);
-        setUserBazares(userCreatedBazares);
-      }
-    };
-
-    loadUserData();
-    
-    const handleBazaresUpdate = () => {
-      loadUserData();
-    };
-    
-    window.addEventListener('bazaresUpdated', handleBazaresUpdate);
-    
-    return () => {
-      window.removeEventListener('bazaresUpdated', handleBazaresUpdate);
-    };
+  const loadUserData = useCallback(async () => {
+    try {
+      const [bazaresFromAPI, favoritosFromAPI, conversas] = await Promise.all([
+        bazarService.buscarPorUsuario(Number(user.id)),
+        favoritoService.listarPorUsuario(Number(user.id)),
+        mensagemService.buscarTodasConversas(Number(user.id)),
+      ]);
+      setUserBazares(bazaresFromAPI.map(formatarBazarParaFrontend));
+      setFavoritos(favoritosFromAPI);
+      setStats({ views: 0, likes: 0, messages: conversas.length });
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error);
+    }
   }, [user.id]);
+
+  useEffect(() => {
+    loadUserData();
+    window.addEventListener('bazaresUpdated', loadUserData);
+    return () => window.removeEventListener('bazaresUpdated', loadUserData);
+  }, [loadUserData]);
 
   const handleLogout = () => {
     if (window.confirm('Deseja realmente sair da sua conta?')) {
@@ -192,38 +118,17 @@ const Profile = ({ user, setUser }) => {
       }
       
       try {
-        const response = await fetch(`http://localhost:8080/api/usuario/${user.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            nome: editData.nome,
-            email: editData.email,
-            senha: user.senha,
-            tipoUsuario: user.tipoUsuario,
-            fotoPerfil: editData.fotoPerfil
-          })
+        const updatedUser = await usuarioService.atualizar(user.id, {
+          nome: editData.nome,
+          email: editData.email,
+          tipoUsuario: user.tipoUsuario,
+          fotoPerfil: editData.fotoPerfil,
         });
-        
-        if (response.ok) {
-          const updatedUser = await response.json();
-          setUser(updatedUser);
-          localStorage.setItem('fashionspace_user', JSON.stringify(updatedUser));
-          
-          const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
-          const updatedUsers = users.map(u => u.id === user.id ? updatedUser : u);
-          localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
-          
-          alert('Perfil atualizado com sucesso!');
-        } else {
-          const error = await response.json();
-          alert('Erro ao atualizar perfil: ' + (error.message || 'Tente novamente'));
-          return;
-        }
+        setUser(updatedUser);
+        localStorage.setItem('fashionspace_user', JSON.stringify(updatedUser));
+        alert('Perfil atualizado com sucesso!');
       } catch (error) {
-        console.error('Erro ao atualizar perfil:', error);
-        alert('Erro ao conectar com o servidor. Tente novamente.');
+        alert('Erro ao atualizar perfil: ' + error.message);
         return;
       }
     }
@@ -254,10 +159,6 @@ const Profile = ({ user, setUser }) => {
         await bazarService.deletar(bazarId);
         
         setUserBazares(prev => prev.filter(bazar => bazar.id !== bazarId));
-        
-        const updatedFavoritos = favoritos.filter(id => id !== bazarId);
-        localStorage.setItem('fashionspace_favoritos', JSON.stringify(updatedFavoritos));
-        setFavoritos(updatedFavoritos);
         
         window.dispatchEvent(new Event('bazaresUpdated'));
         
