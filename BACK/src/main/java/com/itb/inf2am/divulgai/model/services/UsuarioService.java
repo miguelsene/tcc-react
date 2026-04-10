@@ -2,17 +2,34 @@ package com.itb.inf2am.divulgai.model.services;
 
 
 import com.itb.inf2am.divulgai.model.entity.Usuario;
+import com.itb.inf2am.divulgai.model.repository.BazarFavoritoRepository;
+import com.itb.inf2am.divulgai.model.repository.BazarRepository;
+import com.itb.inf2am.divulgai.model.repository.MensagemRepository;
+import com.itb.inf2am.divulgai.model.repository.PostRepository;
 import com.itb.inf2am.divulgai.model.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class UsuarioService {
 
-    @Autowired       // Injeção de dependência
+    @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private BazarFavoritoRepository bazarFavoritoRepository;
+
+    @Autowired
+    private MensagemRepository mensagemRepository;
+
+    @Autowired
+    private BazarRepository bazarRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     // Método responsável em listar todos os Usuarios cadastrados no banco de dados
 
@@ -54,10 +71,13 @@ public class UsuarioService {
     }
 
     // Método responsável em excluir a usuario ( exclusão física )
+    @Transactional
     public void delete(Long id) {
-
-
         Usuario usuarioExistente = findById(id);
+        bazarFavoritoRepository.deleteByUsuarioId(id);
+        mensagemRepository.deleteByRemetenteIdOrDestinatarioId(id, id);
+        bazarRepository.deleteByUsuarioId(id);
+        postRepository.deleteByUsuarioId(id);
         usuarioRepository.delete(usuarioExistente);
     }
 }

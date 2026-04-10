@@ -43,19 +43,21 @@ function App() {
     
     if (savedUser) {
       const user = JSON.parse(savedUser);
-      // Migração: adicionar tipoUsuario se não existir
       if (!user.tipoUsuario) {
         user.tipoUsuario = 'casual';
         localStorage.setItem('fashionspace_user', JSON.stringify(user));
-        
-        // Atualizar também na lista de usuários
-        const users = JSON.parse(localStorage.getItem('fashionspace_users') || '[]');
-        const updatedUsers = users.map(u => u.id === user.id ? user : u);
-        localStorage.setItem('fashionspace_users', JSON.stringify(updatedUsers));
       }
-      console.log('Usuário carregado:', user);
-      console.log('Tipo de usuário:', user.tipoUsuario);
       setUser(user);
+      // Busca dados atualizados do banco (foto de perfil pode ter mudado no mobile)
+      fetch(`http://localhost:8080/api/usuario/${user.id}`)
+        .then(res => res.ok ? res.json() : null)
+        .then(fresh => {
+          if (fresh) {
+            localStorage.setItem('fashionspace_user', JSON.stringify(fresh));
+            setUser(fresh);
+          }
+        })
+        .catch(() => {});
     }
     if (savedTheme) setDarkMode(savedTheme === 'dark');
     if (savedSidebar !== null) setSidebarVisible(JSON.parse(savedSidebar));

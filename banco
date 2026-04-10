@@ -18,7 +18,7 @@ CREATE TABLE usuarios (
     email NVARCHAR(100) UNIQUE,
     senha NVARCHAR(255),
     google_id NVARCHAR(255) UNIQUE,
-    foto_perfil NVARCHAR(500),
+    foto_perfil NVARCHAR(MAX),
     tipo_usuario NVARCHAR(20) DEFAULT 'casual' 
         CHECK (tipo_usuario IN ('casual', 'dono', 'guest')),
     data_cadastro DATETIME DEFAULT GETDATE()
@@ -46,7 +46,7 @@ CREATE TABLE bazares (
     id INT IDENTITY(1,1) PRIMARY KEY,
     nome NVARCHAR(255) NOT NULL,
     descricao NVARCHAR(MAX) NOT NULL,
-    imagem NVARCHAR(500),
+    imagem NVARCHAR(MAX),
     categoria NVARCHAR(50) NOT NULL,
     cep NVARCHAR(10),
     rua NVARCHAR(255),
@@ -180,7 +180,7 @@ CREATE TABLE posts (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
     titulo NVARCHAR(255) NOT NULL,
     conteudo NVARCHAR(1000) NOT NULL,
-    imagem NVARCHAR(500),
+    imagem NVARCHAR(MAX),
     usuario_id INT NOT NULL,
     nome_usuario NVARCHAR(100) NOT NULL,
     data_criacao DATETIME2 NOT NULL DEFAULT GETDATE(),

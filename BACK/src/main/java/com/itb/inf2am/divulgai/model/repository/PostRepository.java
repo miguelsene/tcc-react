@@ -2,8 +2,10 @@ package com.itb.inf2am.divulgai.model.repository;
 
 import com.itb.inf2am.divulgai.model.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +17,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     
     // Buscar posts de um usuário específico
     List<Post> findByUsuarioIdAndAtivoTrueOrderByDataCriacaoDesc(Long usuarioId);
+
+    @Modifying
+    @Transactional
+    void deleteByUsuarioId(Long usuarioId);
     
     // Buscar posts por título
     List<Post> findByTituloContainingIgnoreCaseAndAtivoTrueOrderByDataCriacaoDesc(String titulo);

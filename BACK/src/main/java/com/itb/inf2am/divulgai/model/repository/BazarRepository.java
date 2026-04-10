@@ -2,9 +2,11 @@ package com.itb.inf2am.divulgai.model.repository;
 
 import com.itb.inf2am.divulgai.model.entity.Bazar;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +27,11 @@ public interface BazarRepository extends JpaRepository<Bazar, Long> {
     
     // Buscar bazares de um usuário específico
     List<Bazar> findByUsuarioIdAndAtivoTrue(Long usuarioId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Bazar b SET b.ativo = false WHERE b.usuarioId = :usuarioId")
+    void deleteByUsuarioId(@Param("usuarioId") Long usuarioId);
     
     // Buscar bazares com avaliação mínima
     @Query("SELECT b FROM Bazar b WHERE b.avaliacao >= :avaliacao AND b.ativo = true ORDER BY b.avaliacao DESC")

@@ -114,7 +114,7 @@ public class UsuarioController {
  public ResponseEntity<Object> atualizarUsuario(@PathVariable String id, @RequestBody Usuario usuario) {
   try {
    Long usuarioId = Long.parseLong(id);
-   Usuario usuarioExistente = usuarioService.findById(usuarioId); // já lança exceção se não achar
+   Usuario usuarioExistente = usuarioService.findById(usuarioId);
 
    usuarioExistente.setNome(usuario.getNome());
    usuarioExistente.setEmail(usuario.getEmail());
@@ -129,20 +129,22 @@ public class UsuarioController {
    }
 
    Usuario usuarioAtualizada = usuarioService.save(usuarioExistente);
-
    return ResponseEntity.ok(usuarioAtualizada);
   } catch (NumberFormatException e) {
    Map<String, Object> errorResponse = new HashMap<>();
    errorResponse.put("status", 400);
-   errorResponse.put("error", "Bad Request");
-   errorResponse.put("message", "O id informado não é válido: " + id);
+   errorResponse.put("message", "O id informado nao e valido: " + id);
    return ResponseEntity.badRequest().body(errorResponse);
   } catch (RuntimeException e) {
    Map<String, Object> errorResponse = new HashMap<>();
    errorResponse.put("status", 404);
-   errorResponse.put("error", "Not Found");
-   errorResponse.put("message", "Usuario não encontrada com o id " + id);
+   errorResponse.put("message", "Erro RuntimeException id " + id + ": " + e.getClass().getName() + " - " + e.getMessage());
    return ResponseEntity.status(404).body(errorResponse);
+  } catch (Exception e) {
+   Map<String, Object> errorResponse = new HashMap<>();
+   errorResponse.put("status", 500);
+   errorResponse.put("message", "Erro Exception id " + id + ": " + e.getClass().getName() + " - " + e.getMessage());
+   return ResponseEntity.status(500).body(errorResponse);
   }
  }
 

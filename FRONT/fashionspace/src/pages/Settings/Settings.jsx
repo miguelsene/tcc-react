@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usuarioService, getUsuarioLogado, logout } from '../../services/api';
 import './Settings.css';
 
 const Settings = () => {
@@ -90,12 +91,21 @@ const Settings = () => {
     }
   };
 
-  const handleDeleteAccount = () => {
-    if (confirm('ATENÇÃO: Esta ação é irreversível! Deseja realmente excluir sua conta?')) {
-      if (prompt('Digite "EXCLUIR" para confirmar:') === 'EXCLUIR') {
-        localStorage.clear();
-        window.location.reload();
-      }
+  const handleDeleteAccount = async () => {
+    if (!confirm('ATENÇÃO: Esta ação é irreversível! Deseja realmente excluir sua conta?')) return;
+    if (prompt('Digite "EXCLUIR" para confirmar:') !== 'EXCLUIR') return;
+
+    setLoading(true);
+    try {
+      const usuario = getUsuarioLogado();
+      if (!usuario?.id) throw new Error('Usuário não encontrado');
+      await usuarioService.deletar(usuario.id);
+      localStorage.clear();
+      window.location.href = '/';
+    } catch (error) {
+      alert('Erro ao excluir conta: ' + (error.message || 'Tente novamente.'));
+    } finally {
+      setLoading(false);
     }
   };
 

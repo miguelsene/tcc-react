@@ -1,4 +1,6 @@
 # FashionSpace API
+java -jar C:\Users\user\Downloads\tcc-react-11\tcc-react-11\BACK\target\divulgai-0.0.1-SNAPSHOT.jar
+mvnw.cmd spring-boot:run
 
 **Base URL:** `http://localhost:8080/api`
 

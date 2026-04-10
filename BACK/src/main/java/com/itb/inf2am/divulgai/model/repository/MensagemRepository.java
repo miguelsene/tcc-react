@@ -46,6 +46,10 @@ public interface MensagemRepository extends JpaRepository<Mensagem, Long> {
     @Transactional
     void deleteByDataEnvioBeforeAndAtivaTrue(LocalDateTime dataLimite);
 
+    @Modifying
+    @Transactional
+    void deleteByRemetenteIdOrDestinatarioId(Long remetenteId, Long destinatarioId);
+
     @Query("SELECT m FROM Mensagem m WHERE " +
            "(m.remetenteId = :userId OR m.destinatarioId = :userId) " +
            "AND m.ativa = true " +

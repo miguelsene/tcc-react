@@ -26,7 +26,7 @@ public class Usuario {
     @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;
 
-    @Column(name = "foto_perfil", columnDefinition = "TEXT")
+    @Column(name = "foto_perfil", columnDefinition = "NVARCHAR(MAX)")
     private String fotoPerfil;
 
     @PrePersist

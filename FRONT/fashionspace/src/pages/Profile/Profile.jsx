@@ -135,38 +135,45 @@ const Profile = ({ user, setUser }) => {
     setIsEditing(!isEditing);
   };
 
-  const handlePhotoChange = (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Arquivo muito grande. Máximo 5MB.');
-        return;
-      }
-      
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64 = e.target.result;
-        setEditData({...editData, fotoPerfil: base64});
-        setPhotoPreview(base64);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Arquivo muito grande. Máximo 5MB.');
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const base64 = ev.target.result;
+      setPhotoPreview(base64);
+      setEditData(prev => ({ ...prev, fotoPerfil: base64 }));
+      try {
+        const updatedUser = await usuarioService.atualizar(user.id, {
+          nome: user.nome,
+          email: user.email,
+          tipoUsuario: user.tipoUsuario,
+          senha: user.senha,
+          fotoPerfil: base64,
+        });
+        setUser(updatedUser);
+        localStorage.setItem('fashionspace_user', JSON.stringify(updatedUser));
+      } catch (error) {
+        alert('Erro ao salvar foto: ' + error.message);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const deleteBazar = async (bazarId) => {
-    if (window.confirm('Deseja realmente excluir este bazar? Esta ação não pode ser desfeita.')) {
-      try {
-        await bazarService.deletar(bazarId);
-        
-        setUserBazares(prev => prev.filter(bazar => bazar.id !== bazarId));
-        
-        window.dispatchEvent(new Event('bazaresUpdated'));
-        
-        alert('Bazar excluído com sucesso!');
-      } catch (error) {
-        console.error('Erro ao excluir bazar:', error);
-        alert('Erro ao excluir bazar. Tente novamente.');
-      }
+    if (!window.confirm('Deseja realmente excluir este bazar? Esta ação não pode ser desfeita.')) return;
+    try {
+      await bazarService.deletar(bazarId);
+      setUserBazares(prev => prev.filter(b => String(b.id) !== String(bazarId)));
+      window.dispatchEvent(new Event('bazaresUpdated'));
+      alert('Bazar excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir bazar:', error);
+      alert('Erro ao excluir bazar: ' + (error.message || 'Tente novamente.'));
     }
   };
 

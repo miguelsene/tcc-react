@@ -43,10 +43,19 @@ export const usuarioService = {
       body: JSON.stringify(dados)
     });
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'Erro ao atualizar usuário');
     }
     return response.json();
+  },
+
+  // Deletar usuário
+  deletar: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/usuario/${id}`, { method: 'DELETE' });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || 'Erro ao excluir conta');
+    }
   }
 };
 
@@ -165,10 +174,9 @@ export const bazarService = {
       method: 'DELETE'
     });
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'Erro ao deletar bazar');
     }
-    return response.json();
   }
 };
 
