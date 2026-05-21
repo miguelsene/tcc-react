@@ -6,19 +6,29 @@ const SocialFeed = ({ user }) => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ titulo: '', conteudo: '', imagem: '' });
   const [loading, setLoading] = useState(true);
+  const [likedPosts, setLikedPosts] = useState(new Set());
+  const [liking, setLiking] = useState(false);
 
   const loadPosts = useCallback(async () => {
     try {
       const data = await postService.listarTodos();
       setPosts(data);
+      
+      // Carregar curtidas do usuário do localStorage
+      const storedLikes = localStorage.getItem(`fashionspace_liked_posts_${user?.id}`);
+      if (storedLikes) {
+        setLikedPosts(new Set(JSON.parse(storedLikes)));
+      }
     } catch (error) {
       console.error('Erro ao carregar posts:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.id]);
 
-  useEffect(() => { loadPosts(); }, [loadPosts]);
+  useEffect(() => { 
+    loadPosts(); 
+  }, [loadPosts]);
 
   const createPost = async () => {
     if (!newPost.conteudo.trim()) return;
@@ -38,12 +48,57 @@ const SocialFeed = ({ user }) => {
     }
   };
 
-  const handleLike = async (postId) => {
+  const handleLike = async (postId, currentLikes) => {
+    if (liking) return; // Previne múltiplos cliques
+    
+    // Verifica se já curtiu
+    const hasLiked = likedPosts.has(postId);
+    
+    setLiking(true);
     try {
-      const updated = await postService.curtir(postId);
-      setPosts(prev => prev.map(p => p.id === postId ? { ...p, curtidas: updated.curtidas } : p));
+      // Otimistic update - atualiza UI imediatamente
+      setPosts(prev => prev.map(p => {
+        if (p.id === postId) {
+          return {
+            ...p,
+            curtidas: hasLiked ? Math.max(0, p.curtidas - 1) : p.curtidas + 1
+          };
+        }
+        return p;
+      }));
+
+      // Atualiza estado de curtidas
+      const newLikedPosts = new Set(likedPosts);
+      if (hasLiked) {
+        newLikedPosts.delete(postId);
+      } else {
+        newLikedPosts.add(postId);
+      }
+      setLikedPosts(newLikedPosts);
+      
+      // Salva no localStorage
+      localStorage.setItem(`fashionspace_liked_posts_${user?.id}`, JSON.stringify([...newLikedPosts]));
+
+      // Chama API para sincronizar com backend
+      try {
+        const updated = await postService.curtir(postId, user?.id);
+        // Atualiza com o valor real do servidor
+        setPosts(prev => prev.map(p => p.id === postId ? { ...p, curtidas: updated.curtidas } : p));
+      } catch (apiError) {
+        console.log('API não disponível, usando localStorage');
+        // Reverte para o estado otimista se API falhar
+      }
     } catch (error) {
       console.error('Erro ao curtir:', error);
+      // Reverte em caso de erro
+      setPosts(prev => prev.map(p => {
+        if (p.id === postId) {
+          return { ...p, curtidas: currentLikes };
+        }
+        return p;
+      }));
+    } finally {
+      setLiking(false);
     }
   };
 
@@ -57,13 +112,21 @@ const SocialFeed = ({ user }) => {
     }
   };
 
+  const formatTime = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const h = Math.floor(diff / 3600000);
+    if (h < 1) return 'agora';
+    if (h < 24) return `${h}h atrás`;
+    return `${Math.floor(h / 24)}d atrás`;
+  };
+
   return (
     <div className="social-feed">
       <div className="feed-header">
         <h2><i className="bi bi-newspaper"></i> Feed de Novidades</h2>
       </div>
 
-      {user.tipoUsuario === 'dono' && (
+      {user?.tipoUsuario === 'dono' && (
         <div className="create-post">
           <div className="post-form">
             <img
@@ -116,65 +179,50 @@ const SocialFeed = ({ user }) => {
           </div>
         ) : (
           posts.map(post => (
-            <PostCard
-              key={post.id}
-              post={post}
-              currentUser={user}
-              onLike={handleLike}
-              onDelete={handleDelete}
-            />
+            <div key={post.id} className="post-card">
+              <div className="post-header">
+                <img
+                  src={`https://ui-avatars.com/api/?name=${post.nomeUsuario}&background=5f81a5&color=fff&size=40`}
+                  alt={post.nomeUsuario}
+                />
+                <div className="user-info">
+                  <h4>{post.nomeUsuario}</h4>
+                  <span className="timestamp">{formatTime(post.dataCriacao)}</span>
+                </div>
+                {post.usuarioId === user?.id && (
+                  <button className="delete-post-btn" onClick={() => handleDelete(post.id)}>
+                    <i className="bi bi-trash"></i>
+                  </button>
+                )}
+              </div>
+
+              <div className="post-content">
+                {post.titulo && <strong><p>{post.titulo}</p></strong>}
+                <p>{post.conteudo}</p>
+                {post.imagem && (
+                  <div className="post-media">
+                    <img src={post.imagem} alt="Post" className="post-image" />
+                  </div>
+                )}
+              </div>
+
+              <div className="post-stats">
+                <span>{post.curtidas} {post.curtidas === 1 ? 'curtida' : 'curtidas'}</span>
+              </div>
+
+              <div className="post-actions">
+                <button 
+                  className={`action-btn ${likedPosts.has(post.id) ? 'liked' : ''}`} 
+                  onClick={() => handleLike(post.id, post.curtidas)}
+                  disabled={liking}
+                >
+                  <i className={`bi ${likedPosts.has(post.id) ? 'bi-heart-fill' : 'bi-heart'}`}></i>
+                  {likedPosts.has(post.id) ? 'Curtido' : 'Curtir'}
+                </button>
+              </div>
+            </div>
           ))
         )}
-      </div>
-    </div>
-  );
-};
-
-const PostCard = ({ post, currentUser, onLike, onDelete }) => {
-  const formatTime = (dateStr) => {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const h = Math.floor(diff / 3600000);
-    if (h < 1) return 'agora';
-    if (h < 24) return `${h}h atrás`;
-    return `${Math.floor(h / 24)}d atrás`;
-  };
-
-  return (
-    <div className="post-card">
-      <div className="post-header">
-        <img
-          src={`https://ui-avatars.com/api/?name=${post.nomeUsuario}&background=5f81a5&color=fff&size=40`}
-          alt={post.nomeUsuario}
-        />
-        <div className="user-info">
-          <h4>{post.nomeUsuario}</h4>
-          <span className="timestamp">{formatTime(post.dataCriacao)}</span>
-        </div>
-        {post.usuarioId === currentUser.id && (
-          <button className="delete-post-btn" onClick={() => onDelete(post.id)}>
-            <i className="bi bi-trash"></i>
-          </button>
-        )}
-      </div>
-
-      <div className="post-content">
-        {post.titulo && <strong><p>{post.titulo}</p></strong>}
-        <p>{post.conteudo}</p>
-        {post.imagem && (
-          <div className="post-media">
-            <img src={post.imagem} alt="Post" className="post-image" />
-          </div>
-        )}
-      </div>
-
-      <div className="post-stats">
-        <span>{post.curtidas} curtidas</span>
-      </div>
-
-      <div className="post-actions">
-        <button className="action-btn" onClick={() => onLike(post.id)}>
-          <i className="bi bi-heart"></i> Curtir
-        </button>
       </div>
     </div>
   );

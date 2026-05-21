@@ -2,7 +2,7 @@ package com.itb.inf2am.divulgai.model.services;
 
 import com.itb.inf2am.divulgai.model.entity.Bazar;
 import com.itb.inf2am.divulgai.model.repository.BazarRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.itb.inf2am.divulgai.model.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +11,13 @@ import java.util.Optional;
 @Service
 public class BazarService {
     
-    @Autowired
-    private BazarRepository bazarRepository;
+    private final BazarRepository bazarRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public BazarService(BazarRepository bazarRepository, UsuarioRepository usuarioRepository) {
+        this.bazarRepository = bazarRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
     
     // Listar todos os bazares ativos
     public List<Bazar> findAll() {
@@ -61,6 +66,17 @@ public class BazarService {
     // Buscar bazares com avaliação mínima
     public List<Bazar> findByAvaliacaoMinima(Double avaliacao) {
         return bazarRepository.findByAvaliacaoMinima(avaliacao);
+    }
+
+    // Adicionar avaliação (simples - média incremental)
+    public Bazar addRating(Long bazarId, Long usuarioId, int nota) {
+        Bazar bazar = findById(bazarId);
+        if (!usuarioRepository.existsById(usuarioId)) throw new RuntimeException("Usuário não encontrado");
+        double total = bazar.getAvaliacao() * bazar.getTotalAvaliacoes();
+        total += nota;
+        bazar.setTotalAvaliacoes(bazar.getTotalAvaliacoes() + 1);
+        bazar.setAvaliacao(total / bazar.getTotalAvaliacoes());
+        return bazarRepository.save(bazar);
     }
     
     // Deletar bazar (soft delete - marca como inativo)

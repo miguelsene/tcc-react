@@ -2,9 +2,11 @@ package com.itb.inf2am.divulgai.model.repository;
 
 import com.itb.inf2am.divulgai.model.entity.BazarFavorito;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,10 @@ public interface BazarFavoritoRepository extends JpaRepository<BazarFavorito, Lo
     boolean existsByUsuarioIdAndBazarId(Long usuarioId, Long bazarId);
     
     void deleteByUsuarioIdAndBazarId(Long usuarioId, Long bazarId);
+
+    @Modifying
+    @Transactional
+    void deleteByUsuarioId(Long usuarioId);
     
     @Query("SELECT bf FROM BazarFavorito bf JOIN FETCH bf.bazar WHERE bf.usuarioId = :usuarioId")
     List<BazarFavorito> findByUsuarioIdWithBazar(@Param("usuarioId") Long usuarioId);

@@ -49,19 +49,19 @@ const server = http.createServer((req, res) => {
       body,
     }));
 
-    // Aguarda resposta por 30s
+    // Aguarda resposta por 120s
     const timer = setTimeout(() => {
       delete pending[reqId];
       res.writeHead(504);
       res.end('Timeout');
-    }, 30000);
+    }, 120000);
 
     pending[reqId] = { res, timer };
   });
 });
 
 // WebSocket para o cliente PC
-const wss = new WebSocketServer({ server });
+const wss = new WebSocketServer({ server, maxPayload: 10 * 1024 * 1024 });
 
 wss.on('connection', (ws, req) => {
   const url = new URL(req.url, 'http://localhost');

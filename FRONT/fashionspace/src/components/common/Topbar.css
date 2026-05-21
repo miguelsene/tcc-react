@@ -1,274 +1,202 @@
+/* ============================================================
+   TOPBAR — Glass + Glow
+   ============================================================ */
+
 .topbar {
   position: fixed;
-  top: 0;
-  right: 0;
-  left: 280px;
-  height: 80px;
-  background: color-mix(in oklab, var(--bg-primary) 78%, transparent);
-  backdrop-filter: blur(16px) saturate(120%);
-  border-bottom: none;
+  top: 0; right: 0; left: 280px;
+  height: 72px;
+  background: var(--glass-bg);
+  border-bottom: 1.5px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 1.75rem;
   z-index: 999;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--elev-2);
+  transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 4px 24px rgba(15,44,71,0.12);
 }
 
-.app.sidebar-hidden .topbar {
-  left: 0;
+.app.dark .topbar {
+  background: rgba(8,15,24,0.72);
+  border-bottom-color: rgba(100,159,222,0.2);
+  box-shadow: 0 4px 28px rgba(0,0,0,0.5), 0 1px 0 rgba(100,159,222,0.15);
 }
 
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+.app.sidebar-hidden .topbar { left: 0; }
+
+/* ── Left ── */
+.topbar-left { display: flex; align-items: center; gap: 1rem; }
 
 .sidebar-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  background: rgba(95, 129, 165, 0.1);
-  border: none;
-  border-radius: 12px;
-  color: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px;
+  background: var(--accent-light);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base) !important;
 }
-
 .sidebar-toggle:hover {
-  background: var(--secondary);
-  color: white;
+  background: var(--gradient-primary);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--glow-shadow);
   transform: scale(1.05);
 }
 
 .topbar-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: flex; align-items: center; gap: 0.625rem;
   text-decoration: none;
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 1.25rem;
-  transition: all 0.3s ease;
+  font-weight: 800; font-size: 1.2rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: opacity var(--transition-base) !important;
 }
+.topbar-logo:hover { opacity: 0.8; }
+.logo-text { font-family: 'Inter', sans-serif; letter-spacing: -0.5px; }
 
-.topbar-logo:hover {
-  color: var(--secondary);
-  transform: scale(1.02);
-}
-
-.logo-text {
-  font-family: 'Inter', sans-serif;
-  letter-spacing: -0.5px;
-}
-
-.search-container {
-  position: relative;
-  width: 400px;
-}
+/* ── Search ── */
+.search-container { position: relative; width: 380px; }
 
 .search-input {
   width: 100%;
-  padding: 12px 16px 12px 44px;
-  border: 1px solid color-mix(in oklab, var(--border) 35%, transparent);
-  border-radius: 24px;
-  background: color-mix(in oklab, var(--bg-secondary) 85%, transparent);
-  backdrop-filter: blur(10px);
+  padding: 11px 16px 11px 44px !important;
+  border: 1.5px solid var(--border) !important;
+  border-radius: 999px !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(12px) !important;
   font-size: 14px;
-  transition: all 0.3s ease;
+  color: var(--text-primary) !important;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base) !important;
 }
-
 .search-input:focus {
-  outline: none;
-  border-color: var(--secondary);
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 20%, transparent);
-  background: white;
+  border-color: var(--glow-border) !important;
+  box-shadow: 0 0 0 3px var(--accent-light), var(--glow-shadow) !important;
+  background: var(--bg-primary) !important;
+}
+.search-input::placeholder { color: var(--text-muted) !important; }
+
+.app.dark .search-input {
+  background: rgba(8,15,24,0.55) !important;
+  border-color: rgba(100,159,222,0.22) !important;
+  color: var(--text-primary) !important;
 }
 
 .search-icon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
+  position: absolute; left: 16px; top: 50%;
   transform: translateY(-50%);
-  color: var(--secondary);
-  font-size: 16px;
+  color: var(--text-muted); font-size: 15px;
+  pointer-events: none;
 }
 
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+/* ── Right ── */
+.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
 
 .theme-toggle,
 .notification-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  background: rgba(95, 129, 165, 0.1);
-  border: none;
-  border-radius: 12px;
-  color: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px;
+  background: var(--accent-light);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.3s ease;
   position: relative;
+  transition: all var(--transition-base) !important;
 }
-
 .theme-toggle:hover,
 .notification-btn:hover {
-  background: var(--secondary);
-  color: white;
+  background: var(--gradient-primary);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: var(--glow-shadow);
   transform: scale(1.05);
 }
 
 .notification-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 18px;
-  height: 18px;
-  background: #ff4757;
-  color: white;
+  position: absolute; top: -3px; right: -3px;
+  width: 18px; height: 18px;
+  background: #e74c3c;
+  color: #fff;
   border-radius: 50%;
-  font-size: 10px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--bg-primary);
+  box-shadow: 0 0 8px rgba(231,76,60,0.6);
 }
 
-.user-menu {
-  position: relative;
-}
-
+/* ── Avatar / dropdown ── */
 .profile-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  border-radius: 50%;
-  transition: all 0.3s ease;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; border-radius: 50%;
+  transition: all var(--transition-base) !important;
 }
 
-.topbar-avatar {
-  width: 44px;
-  height: 44px;
+.topbar-avatar, .user-avatar {
+  width: 42px; height: 42px;
   border-radius: 50%;
-  border: 3px solid rgba(95, 129, 165, 0.2);
+  border: 2.5px solid var(--glow-border);
   object-fit: cover;
-  transition: all 0.3s ease;
-}
-
-.profile-link:hover .topbar-avatar {
-  border-color: var(--secondary);
-  transform: scale(1.05);
-}
-
-.user-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 3px solid rgba(95, 129, 165, 0.2);
+  box-shadow: 0 0 12px var(--accent-glow);
+  transition: all var(--transition-base) !important;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
-
+.profile-link:hover .topbar-avatar,
 .user-avatar:hover {
-  border-color: var(--secondary);
-  transform: scale(1.05);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+  transform: scale(1.06);
 }
 
 .user-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  width: 200px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(15, 44, 71, 0.25);
-  border: 1px solid rgba(95, 129, 165, 0.1);
+  position: absolute; top: calc(100% + 10px); right: 0;
+  width: 210px;
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-xl), var(--glow-shadow);
   overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
+  opacity: 0; visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transition: all var(--transition-base) !important;
 }
-
 .user-dropdown.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+  opacity: 1; visibility: visible;
+  transform: translateY(0) scale(1);
+}
+.app.dark .user-dropdown {
+  background: rgba(8,15,24,0.88);
+  border-color: rgba(100,159,222,0.28);
 }
 
 .dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  color: var(--primary);
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  color: var(--text-secondary) !important;
   text-decoration: none;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid rgba(95, 129, 165, 0.1);
+  border-bottom: 1px solid var(--border-light);
+  transition: background var(--transition-base), color var(--transition-base) !important;
 }
-
+.dropdown-item:last-child { border-bottom: none; }
 .dropdown-item:hover {
-  background: rgba(95, 129, 165, 0.1);
-  color: var(--secondary);
+  background: var(--accent-light);
+  color: var(--accent) !important;
 }
+.dropdown-item i { font-size: 15px; width: 18px; text-align: center; }
 
-.dropdown-item:last-child {
-  border-bottom: none;
-}
-
-.dropdown-item i {
-  font-size: 16px;
-  width: 20px;
-  text-align: center;
-}
-
-/* Dark Mode */
-.app.dark .topbar {
-  background: color-mix(in oklab, var(--bg-primary) 35%, transparent);
-  border-bottom: none;
-}
-
-.app.dark .search-input {
-  background: color-mix(in oklab, var(--bg-secondary) 30%, transparent);
-  border-color: color-mix(in oklab, var(--border) 25%, transparent);
-  color: white;
-}
-
-.app.dark .user-dropdown {
-  background: rgba(15, 44, 71, 0.95);
-  border-color: rgba(95, 129, 165, 0.3);
-}
-
-.app.dark .dropdown-item {
-  color: white;
-  border-bottom-color: rgba(95, 129, 165, 0.2);
-}
-
-/* Responsivo */
+/* ── Responsivo ── */
 @media (max-width: 768px) {
-  .topbar {
-    left: 0;
-    padding: 0 1rem;
-  }
-  
-  .search-container {
-    width: 200px;
-  }
-  
-  .topbar-right {
-    gap: 0.5rem;
-  }
+  .topbar { left: 0; padding: 0 1rem; height: 64px; }
+  .search-container { width: 180px; }
+  .topbar-right { gap: 0.5rem; }
+}
+@media (max-width: 480px) {
+  .search-container { width: 140px; }
+  .topbar-logo .logo-text { display: none; }
 }

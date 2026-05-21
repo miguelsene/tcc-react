@@ -3,7 +3,6 @@ package com.itb.inf2am.divulgai.controller;
 import com.itb.inf2am.divulgai.model.entity.Bazar;
 import com.itb.inf2am.divulgai.model.entity.BazarFavorito;
 import com.itb.inf2am.divulgai.model.services.BazarFavoritoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +10,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/favoritos")
-@CrossOrigin(origins = "*")
 public class BazarFavoritoController {
     
-    @Autowired
-    private BazarFavoritoService bazarFavoritoService;
+    private final BazarFavoritoService bazarFavoritoService;
+
+    public BazarFavoritoController(BazarFavoritoService bazarFavoritoService) {
+        this.bazarFavoritoService = bazarFavoritoService;
+    }
     
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Bazar>> getBazaresFavoritos(@PathVariable Long usuarioId) {

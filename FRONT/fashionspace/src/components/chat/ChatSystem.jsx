@@ -35,22 +35,25 @@ const ChatSystem = ({ bazarId, user, onClose }) => {
         String(b.id) === String(bazarId) ||
         b.id === `default-${bazarId}`
       );
-      
-      setBazar(foundBazar);
+
+      if (!foundBazar) {
+        const response = await fetch(`http://localhost:8080/api/bazar/${bazarId}`);
+        if (response.ok) {
+          const data = await response.json();
+          foundBazar = { ...data, id: String(data.id) };
+        }
+      }
+
+      setBazar(foundBazar || null);
     } catch (error) {
       console.error('Erro ao carregar bazar:', error);
+      setBazar(null);
     }
   };
 
   const loadMessages = async () => {
     try {
-      console.log('=== CARREGANDO MENSAGENS DO CHAT ===');
-      console.log('User ID:', user.id, 'Bazar ID:', bazarId);
       const data = await chatService.getConversation(user.id, bazarId);
-      console.log('Mensagens recebidas do backend:', data.length);
-      data.forEach(msg => {
-        console.log('Mensagem:', msg.id, 'Remetente:', msg.remetenteId, 'Destinatário:', msg.destinatarioId, 'Conteúdo:', msg.conteudo);
-      });
       const formattedMessages = data.map(msg => ({
         id: msg.id,
         content: msg.conteudo,
@@ -70,42 +73,19 @@ const ChatSystem = ({ bazarId, user, onClose }) => {
 
     setLoading(true);
     try {
-      let destinatarioId = 1; // Default para bazares padrão
-      
-      console.log('Enviando mensagem - User:', user);
-      console.log('Bazar:', bazar);
-      console.log('BazarId:', bazarId);
-      
-      // Identificar destinatário baseado no tipo de usuário e bazar
+      let destinatarioId;
+
       if (user.tipoUsuario === 'dono') {
-        // Dono respondendo - buscar cliente na conversa
         const clientMessage = messages.find(m => !m.isOwn);
-        if (clientMessage) {
-          destinatarioId = clientMessage.senderId;
-          console.log('Dono respondendo para cliente ID:', destinatarioId);
-        }
+        destinatarioId = clientMessage ? clientMessage.senderId : null;
       } else {
-        // Cliente enviando - sempre para o dono do bazar
-        if (bazarId.startsWith('default-')) {
-          // Bazar padrão - sempre para admin (ID 1)
-          destinatarioId = 1;
-          console.log('Enviando para bazar padrão - Admin ID: 1');
-        } else {
-          // Bazar de usuário - buscar o criador
-          const userBazares = JSON.parse(localStorage.getItem('fashionspace_bazares') || '[]');
-          const bazarData = userBazares.find(b => String(b.id) === String(bazarId));
-          
-          if (bazarData?.criadoPor) {
-            destinatarioId = bazarData.criadoPor;
-            console.log('Enviando para dono do bazar ID:', destinatarioId);
-          } else {
-            console.log('Bazar não encontrado, usando admin como fallback');
-            destinatarioId = 1;
-          }
-        }
+        destinatarioId = bazar.usuarioId || 1;
       }
 
-      console.log('Destinatário ID:', destinatarioId);
+      if (!destinatarioId) {
+        alert('Não foi possível identificar o destinatário.');
+        return;
+      }
 
       const messageData = {
         remetenteId: user.id,
@@ -113,8 +93,6 @@ const ChatSystem = ({ bazarId, user, onClose }) => {
         bazarId: String(bazarId),
         conteudo: newMessage.trim()
       };
-
-      console.log('Dados da mensagem:', messageData);
 
       await chatService.sendMessage(messageData);
       setNewMessage('');
@@ -141,8 +119,9 @@ const ChatSystem = ({ bazarId, user, onClose }) => {
   if (!bazar) {
     return (
       <div className="chat-loading">
-        <div className="loading-spinner"></div>
-        <p>Carregando chat...</p>
+        <i className="bi bi-exclamation-triangle" style={{ fontSize: '48px', color: '#ff6b6b' }}></i>
+        <p>Bazar não encontrado</p>
+        <button onClick={onClose || (() => navigate(-1))} className="send-btn" style={{ borderRadius: '8px', width: 'auto', padding: '8px 16px' }}>Voltar</button>
       </div>
     );
   }

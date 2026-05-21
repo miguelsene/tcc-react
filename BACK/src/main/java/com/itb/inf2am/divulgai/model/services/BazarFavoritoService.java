@@ -5,7 +5,6 @@ import com.itb.inf2am.divulgai.model.entity.BazarFavorito;
 import com.itb.inf2am.divulgai.model.repository.BazarFavoritoRepository;
 import com.itb.inf2am.divulgai.model.repository.BazarRepository;
 import com.itb.inf2am.divulgai.model.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,14 +14,18 @@ import java.util.stream.Collectors;
 @Service
 public class BazarFavoritoService {
     
-    @Autowired
-    private BazarFavoritoRepository bazarFavoritoRepository;
+    private final BazarFavoritoRepository bazarFavoritoRepository;
+    private final BazarRepository bazarRepository;
+    private final UsuarioRepository usuarioRepository;
     
-    @Autowired
-    private BazarRepository bazarRepository;
-    
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    public BazarFavoritoService(
+            BazarFavoritoRepository bazarFavoritoRepository,
+            BazarRepository bazarRepository,
+            UsuarioRepository usuarioRepository) {
+        this.bazarFavoritoRepository = bazarFavoritoRepository;
+        this.bazarRepository = bazarRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
     
     public List<Bazar> getBazaresFavoritos(Long usuarioId) {
         List<BazarFavorito> favoritos = bazarFavoritoRepository.findByUsuarioIdWithBazar(usuarioId);

@@ -50,7 +50,14 @@ function forwardRequest(msg, port) {
       });
     });
 
-    req.on('error', () => resolve({ status: 502, headers: {}, body: '' }));
+    req.on('error', (err) => {
+      console.error('forwardRequest error:', err.message);
+      resolve({ status: 502, headers: {}, body: Buffer.from(JSON.stringify({ message: err.message })).toString('base64') });
+    });
+    req.setTimeout(120000, () => {
+      req.destroy();
+      resolve({ status: 504, headers: {}, body: Buffer.from(JSON.stringify({ message: 'Timeout' })).toString('base64') });
+    });
     if (body.length > 0) req.write(body);
     req.end();
   });
@@ -58,7 +65,7 @@ function forwardRequest(msg, port) {
 
 function connectPort({ port, label }) {
   const wsUrl = RAILWAY_URL.replace('https://', 'wss://').replace('http://', 'ws://');
-  const ws = new WebSocket(`${wsUrl}/?secret=${SECRET}&port=${port}`);
+  const ws = new WebSocket(`${wsUrl}/?secret=${SECRET}&port=${port}`, { maxPayload: 10 * 1024 * 1024 });
 
   ws.on('open', () => {
     console.log(`✅ ${label} (${port}) conectado ao Railway`);

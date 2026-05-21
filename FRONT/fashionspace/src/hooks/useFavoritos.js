@@ -45,18 +45,19 @@ export const useFavoritos = () => {
 
     setLoading(true);
     try {
-      const isFavorito = favoritos.has(bazarId);
+      const bazarIdNormalizado = String(bazarId);
+      const isFavorito = favoritos.has(bazarIdNormalizado);
       
       if (isFavorito) {
         await favoritoService.remover(usuario.id, bazarId);
         setFavoritos(prev => {
           const newSet = new Set(prev);
-          newSet.delete(bazarId);
+          newSet.delete(bazarIdNormalizado);
           return newSet;
         });
       } else {
         await favoritoService.adicionar(usuario.id, bazarId);
-        setFavoritos(prev => new Set([...prev, bazarId]));
+        setFavoritos(prev => new Set([...prev, bazarIdNormalizado]));
       }
 
       window.dispatchEvent(new CustomEvent('favoritesUpdated'));
@@ -71,7 +72,7 @@ export const useFavoritos = () => {
   };
 
   const isFavorito = (bazarId) => {
-    return favoritos.has(bazarId);
+    return favoritos.has(String(bazarId));
   };
 
   const carregarFavoritos = async () => {
@@ -88,6 +89,19 @@ export const useFavoritos = () => {
 
   useEffect(() => {
     carregarFavoritos();
+  }, [usuario?.id]);
+
+  useEffect(() => {
+    const atualizarFavoritos = () => {
+      carregarFavoritos();
+    };
+
+    window.addEventListener('favoritesUpdated', atualizarFavoritos);
+    window.addEventListener('focus', atualizarFavoritos);
+    return () => {
+      window.removeEventListener('favoritesUpdated', atualizarFavoritos);
+      window.removeEventListener('focus', atualizarFavoritos);
+    };
   }, [usuario?.id]);
 
   return {

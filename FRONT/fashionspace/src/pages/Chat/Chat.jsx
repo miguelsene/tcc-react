@@ -49,11 +49,15 @@ const Chat = () => {
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !user || !bazar) return;
+    if (!bazar.usuarioId) {
+      alert('Não foi possível identificar o dono do bazar.');
+      return;
+    }
     try {
       await mensagemService.enviar({
         remetenteId: Number(user.id),
         destinatarioId: Number(bazar.usuarioId),
-        bazarId: Number(id),
+        bazarId: id,
         conteudo: newMessage.trim(),
       });
       setNewMessage('');

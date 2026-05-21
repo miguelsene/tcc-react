@@ -18,11 +18,8 @@ const Home = ({ searchTerm: globalSearchTerm, user }) => {
   useEffect(() => {
     const fetchBazares = async () => {
       try {
-        console.log('Buscando bazares da API...');
         const bazaresFromAPI = await bazarService.listarTodos();
-        console.log('Bazares recebidos da API:', bazaresFromAPI);
         const formattedBazares = bazaresFromAPI.map(formatarBazarParaFrontend);
-        console.log('Bazares formatados:', formattedBazares);
         setBazares(formattedBazares);
         setFilteredBazares(formattedBazares);
       } catch (error) {

@@ -1,4 +1,22 @@
 {
-  "compilerOptions": {},
-  "extends": "expo/tsconfig.base"
+  "extends": "./MOBILE/FashionSpace/node_modules/expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./MOBILE/FashionSpace/*"
+      ]
+    }
+  },
+  "include": [
+    "MOBILE/FashionSpace/**/*.ts",
+    "MOBILE/FashionSpace/**/*.tsx",
+    "MOBILE/FashionSpace/.expo/types/**/*.ts",
+    "MOBILE/FashionSpace/expo-env.d.ts"
+  ],
+  "exclude": [
+    "BACK",
+    "FRONT",
+    "MOBILE/FashionSpace/node_modules"
+  ]
 }

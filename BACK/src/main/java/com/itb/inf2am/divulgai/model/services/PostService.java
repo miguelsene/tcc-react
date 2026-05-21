@@ -2,7 +2,10 @@ package com.itb.inf2am.divulgai.model.services;
 
 import com.itb.inf2am.divulgai.model.entity.Post;
 import com.itb.inf2am.divulgai.model.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.itb.inf2am.divulgai.model.repository.PostLikeRepository;
+import com.itb.inf2am.divulgai.model.repository.UsuarioRepository;
+import com.itb.inf2am.divulgai.model.entity.PostLike;
+import com.itb.inf2am.divulgai.model.entity.Usuario;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +13,15 @@ import java.util.List;
 @Service
 public class PostService {
     
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public PostService(PostRepository postRepository, PostLikeRepository postLikeRepository, UsuarioRepository usuarioRepository) {
+        this.postRepository = postRepository;
+        this.postLikeRepository = postLikeRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
     
     // Listar todos os posts ativos
     public List<Post> findAll() {
@@ -44,10 +54,22 @@ public class PostService {
         return postRepository.findTopCurtidos();
     }
     
-    // Curtir post
-    public Post curtirPost(Long id) {
-        Post post = findById(id);
-        post.setCurtidas(post.getCurtidas() + 1);
+    // Alternar curtida por usuário (toggle)
+    public Post toggleLike(Long postId, Long usuarioId) {
+        Post post = findById(postId);
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        boolean alreadyLiked = postLikeRepository.existsByPostIdAndUsuarioId(postId, usuarioId);
+        if (alreadyLiked) {
+            postLikeRepository.deleteByPostIdAndUsuarioId(postId, usuarioId);
+            post.setCurtidas(Math.max(0, post.getCurtidas() - 1));
+        } else {
+            Usuario usuario = usuarioRepository.findById(usuarioId).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            PostLike like = new PostLike(post, usuario);
+            postLikeRepository.save(like);
+            post.setCurtidas(post.getCurtidas() + 1);
+        }
         return postRepository.save(post);
     }
     

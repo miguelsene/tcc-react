@@ -7,10 +7,10 @@ import { favoritoService, getUsuarioLogado, formatarBazarParaFrontend } from '..
 import './Favorites.css';
 
 const Favorites = () => {
-  const [favoritos, setFavoritos] = useState([]);
   const [bazaresFavoritos, setBazaresFavoritos] = useState([]);
   const [previewBazar, setPreviewBazar] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   
   useScrollAnimationMultiple();
 
@@ -39,9 +39,11 @@ const Favorites = () => {
     };
     
     window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
+    window.addEventListener('focus', handleFavoritesUpdate);
     
     return () => {
       window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
+      window.removeEventListener('focus', handleFavoritesUpdate);
     };
   }, []);
 
@@ -56,7 +58,7 @@ const Favorites = () => {
         window.dispatchEvent(new CustomEvent('favoritesUpdated'));
       } catch (error) {
         console.error('Erro ao remover favorito:', error);
-        alert('Erro ao remover favorito. Tente novamente.');
+        setErrorMessage('Erro ao remover favorito. Tente novamente.');
       }
     }
   };
@@ -95,6 +97,12 @@ const Favorites = () => {
           }
         </p>
       </div>
+
+      {errorMessage && (
+        <div className="empty-state" role="alert">
+          <p>{errorMessage}</p>
+        </div>
+      )}
 
       {bazaresFavoritos.length === 0 ? (
         <div className="empty-favorites">

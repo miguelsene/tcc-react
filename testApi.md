@@ -1,5 +1,15 @@
 # FashionSpace API
+java -jar C:\Users\user\Downloads\tcc-react-11\tcc-react-11\BACK\target\divulgai-0.0.1-SNAPSHOT.jar
+mvnw.cmd spring-boot:run
 
+
+/senha variavel ambiente
+cd C:\Users\rm95370\Downloads\FashionSpace-v5\FashionSpace-v3\BACK
+
+$env:DB_USERNAME="sa"
+$env:DB_PASSWORD="@ITB123456"
+
+.\mvnw spring-boot:run
 **Base URL:** `http://localhost:8080/api`
 
 ## USUÁRIOS

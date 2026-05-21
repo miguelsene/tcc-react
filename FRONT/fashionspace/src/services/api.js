@@ -43,8 +43,45 @@ export const usuarioService = {
       body: JSON.stringify(dados)
     });
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'Erro ao atualizar usuário');
+    }
+    return response.json();
+  },
+
+  // Deletar usuário
+  deletar: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/usuario/${id}`, { method: 'DELETE' });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || 'Erro ao excluir conta');
+    }
+  },
+
+  // Esqueci a senha - solicitar reset
+  esqueciSenha: async (email) => {
+    const response = await fetch(`${API_BASE_URL}/usuario/esqueci-senha`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Erro ao enviar email de recuperação');
+    }
+    return response.json();
+  },
+
+  // Confirmar reset de senha
+  confirmarResetSenha: async (token, novaSenha) => {
+    const response = await fetch(`${API_BASE_URL}/usuario/confirmar-reset-senha`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, novaSenha })
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Token inválido ou expirado');
     }
     return response.json();
   }
@@ -68,8 +105,9 @@ export const postService = {
     return response.json();
   },
 
-  curtir: async (id) => {
-    const response = await fetch(`${API_BASE_URL}/posts/${id}/curtir`, { method: 'POST' });
+  curtir: async (id, usuarioId) => {
+    const url = `${API_BASE_URL}/posts/${id}/curtir${usuarioId ? `?usuarioId=${usuarioId}` : ''}`;
+    const response = await fetch(url, { method: 'POST' });
     if (!response.ok) throw new Error('Erro ao curtir post');
     return response.json();
   },
@@ -77,6 +115,7 @@ export const postService = {
   deletar: async (id) => {
     const response = await fetch(`${API_BASE_URL}/posts/${id}`, { method: 'DELETE' });
     if (!response.ok) throw new Error('Erro ao deletar post');
+    return response.json();
   }
 };
 
@@ -165,9 +204,18 @@ export const bazarService = {
       method: 'DELETE'
     });
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'Erro ao deletar bazar');
     }
+  },
+
+  avaliar: async (id, usuarioId, nota) => {
+    const response = await fetch(`${API_BASE_URL}/bazar/${id}/avaliar?usuarioId=${usuarioId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nota })
+    });
+    if (!response.ok) throw new Error('Erro ao avaliar bazar');
     return response.json();
   }
 };
@@ -196,6 +244,7 @@ export const favoritoService = {
       method: 'DELETE'
     });
     if (!response.ok) throw new Error('Erro ao remover favorito');
+    return response.json();
   },
 
   // Verificar se é favorito
@@ -209,6 +258,7 @@ export const favoritoService = {
 // Função para converter bazar do backend para frontend
 export const formatarBazarParaFrontend = (bazar) => ({
   id: bazar.id.toString(),
+  usuarioId: bazar.usuarioId,
   nome: bazar.nome,
   descricao: bazar.descricao,
   imagem: bazar.imagem,
